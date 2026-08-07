@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
   ensureStyle('assets/css/refinement.css');
   ensureStyle('assets/css/enhance.css');
+  ensureStyle('assets/css/system-ui.css');
 
   const toggle=document.querySelector('.menu-toggle');
   const nav=document.querySelector('.nav');
@@ -32,12 +33,10 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(found) link.textContent=found[1];
   });
 
-  /* FAQ */
   document.querySelectorAll('.faq-q').forEach(btn=>{
     btn.addEventListener('click',()=>btn.closest('.faq-item').classList.toggle('open'));
   });
 
-  /* File upload: 10MB guidance */
   const maxUpload=10*1024*1024;
   document.querySelectorAll('input[type="file"]').forEach(input=>{
     const box=input.closest('.upload-box') || input.parentElement;
@@ -56,7 +55,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
   });
 
-  /* Footer business information */
   document.querySelectorAll('.footer').forEach(footer=>{
     const container=footer.querySelector('.container');
     if(!container || container.querySelector('.business-footer')) return;
