@@ -24,6 +24,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Inject SEO metadata
+        run: python3 scripts/inject-seo.py
+
       - name: Build social preview assets
         run: |
           sudo apt-get update -qq
