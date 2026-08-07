@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js';
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, query, orderBy, limit, updateDoc } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js';
+import { getStorage, ref, uploadBytes, getBytes } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-storage.js';
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
 
 const firebaseConfig = {
@@ -33,8 +33,7 @@ async function uploadRequestFiles(type, requestId, files=[]) {
     const path = `requests/${type}/${requestId}/${Date.now()}-${safeName(file.name)}`;
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' });
-    const url = await getDownloadURL(storageRef);
-    uploaded.push({ name: file.name, size: file.size, type: file.type || '', path, url });
+    uploaded.push({ name: file.name, size: file.size, type: file.type || '', path });
   }
   return uploaded;
 }
@@ -93,4 +92,18 @@ export async function updateAdminRequest(type, id, patch) {
   const collectionName = COLLECTIONS[type];
   if (!collectionName) throw new Error('UNKNOWN_REQUEST_TYPE');
   await updateDoc(doc(db, collectionName, id), { ...patch, updatedAtClient: new Date().toISOString() });
+}
+
+export async function downloadAdminFile(path, filename='attachment') {
+  if (!path) throw new Error('NO_FILE_PATH');
+  const bytes = await getBytes(ref(storage, path), MAX_FILE_SIZE);
+  const blob = new Blob([bytes]);
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
