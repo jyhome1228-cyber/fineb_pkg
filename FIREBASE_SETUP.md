@@ -2,62 +2,65 @@
 
 프로젝트: `finebpkg`
 
+## 현재 사용 범위
+현재 웹사이트는 **Firestore만 사용**합니다.
+
+- `quotes` : 견적 요청
+- `samples` : 샘플 제작 요청
+- `inquiries` : 제작 문의
+
+첨부파일 업로드는 사용하지 않습니다. 디자인·도면·참고이미지 등은 `whales84@naver.com`으로 받습니다.
+
 ## 1. Firestore Database 활성화
 Firebase Console → **Firestore Database** → 데이터베이스 만들기.
 
-- 운영 모드로 생성 권장
-- 생성 후 저장소의 `firestore.rules` 내용을 **Rules** 탭에 붙여넣고 게시
+생성 후 저장소의 `firestore.rules` 내용을 Firebase Console의 **Rules** 탭에 붙여넣고 게시합니다.
 
-컬렉션은 웹에서 첫 요청이 들어오면 자동 생성됩니다.
+컬렉션은 첫 요청이 들어오면 자동으로 만들어집니다.
 
 - `quotes`
 - `samples`
 - `inquiries`
-- `admins`
 
-## 2. 관리자 로그인 활성화
-Firebase Console → **Authentication** → Sign-in method → **Email/Password** 활성화.
+## 2. 현재 Firestore Rules 구조
+공개 홈페이지에서는 새 요청을 **생성(create)** 할 수 있습니다.
 
-Authentication → Users에서 관리자 계정 1개를 생성합니다.
+개인정보 보호를 위해 웹 클라이언트에서 Firestore 요청 목록을 공개 조회하거나 수정하는 것은 차단합니다.
 
-생성한 사용자의 **UID**를 복사한 뒤 Firestore에서 아래 문서를 직접 만듭니다.
+따라서 `admin.html`은 로그인 없이 열리는 임시 운영화면이지만, **같은 브라우저의 localStorage 테스트 데이터만 표시**합니다.
 
-- Collection: `admins`
-- Document ID: `관리자 UID`
-- Field: `active` / boolean / `true`
-- Field: `email` / string / `관리자 이메일`
+전체 실제 접수 데이터는 Firebase Console → Firestore Database에서 확인합니다.
 
-`admin.html`은 이 문서가 존재하고 `active: true`인 계정만 접근할 수 있습니다.
+> 고객 이름, 연락처, 이메일을 로그인 없는 공개 admin.html에서 직접 조회하게 만들려면 Firestore 공개 read 권한이 필요하며, 이는 개인정보가 외부에 노출될 수 있어 적용하지 않습니다.
 
-## 3. GitHub Pages 도메인 허용
-Firebase Console → Authentication → Settings → Authorized domains에 아래 도메인을 추가합니다.
+## 3. 파일 전달
+웹사이트에는 첨부파일 필드가 없습니다.
 
-`jyhome1228-cyber.github.io`
+다음 자료는 이메일로 받습니다.
 
-나중에 독립 도메인을 연결하면 해당 도메인도 추가합니다.
+- AI / PDF 디자인 파일
+- 전개도
+- 제품 이미지
+- 참고 패키지
+- 기타 제작 참고자료
 
-## 4. Cloud Storage
-첨부파일을 Firebase에 직접 올리려면 Firebase 프로젝트가 **Blaze 요금제**여야 합니다.
+이메일: `whales84@naver.com`
 
-Storage → Get started로 기본 버킷을 만든 뒤 저장소의 `storage.rules` 내용을 Rules 탭에 붙여넣고 게시합니다.
-
-Storage를 아직 활성화하지 않아도 견적/샘플/제작문의 본문은 Firestore에 저장되도록 구현되어 있습니다. 첨부가 실패한 경우에는 `whales84@naver.com`으로 파일을 받는 방식으로 운영할 수 있습니다.
-
-## 5. 현재 웹앱 연결
+## 4. 현재 웹앱 연결
 Firebase 설정은 `assets/js/firebase-client.js`에 적용되어 있습니다.
 
-- Firestore: 견적 / 샘플 / 제작문의
-- Storage: 10MB 이하 첨부파일
-- Authentication: 관리자 로그인
-- Admin: `admin.html`
+- Firestore 저장: 사용
+- Firebase Storage: 사용 안 함
+- Firebase Authentication: 사용 안 함
+- 공개 Admin 로그인: 없음
 
-## 6. 배포 전 체크
-- Firestore Rules 게시
-- Authentication Email/Password 활성화
-- 관리자 계정 생성
-- `admins/{uid}` 문서 생성
-- Authorized domains 추가
-- Storage 사용 시 Blaze + Storage Rules 게시
+## 5. 체크 순서
+1. Firestore Database 생성
+2. `firestore.rules` 게시
+3. 견적내기 테스트 접수
+4. 샘플제작 테스트 접수
+5. 제작문의 테스트 접수
+6. Firebase Console에서 `quotes`, `samples`, `inquiries` 생성 여부 확인
 
-## 보안 추가 권장
-실서비스 오픈 후에는 Firebase App Check를 추가해 자동화된 비정상 요청을 줄이는 것을 권장합니다.
+## 추후 중앙 관리자 조회가 필요할 때
+실제 고객 접수 목록을 `admin.html`에서 중앙 조회하려면 관리자 인증 또는 별도 서버 권한 처리가 필요합니다. 그 단계에서 Firebase Authentication을 추가하면 현재 관리자 UI를 그대로 활용할 수 있습니다.
