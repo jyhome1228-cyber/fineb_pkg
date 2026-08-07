@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   ensureStyle('assets/css/enhance.css');
   ensureStyle('assets/css/system-ui.css');
   ensureStyle('assets/css/forms.css');
+  ensureStyle('assets/css/factory.css');
 
   const toggle=document.querySelector('.menu-toggle');
   const nav=document.querySelector('.nav');
