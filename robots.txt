@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+Sitemap: https://jyhome1228-cyber.github.io/fineb_pkg/sitemap.xml
