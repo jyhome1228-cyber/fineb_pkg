@@ -1,57 +1,153 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>견적내기 | FINE.B</title><link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>견적내기 | FINE.B</title>
+  <meta name="description" content="원하는 박스 형태부터 종이, 인쇄, 코팅·후가공, 톰슨·접착까지 실제 생산 공정 순서대로 제작 사양을 정리합니다.">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<header class="header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"></a><button class="menu-toggle">☰</button><nav class="nav"><a href="index.html#about">ABOUT</a><a href="index.html#production">PRODUCTION</a><a href="index.html#works">WORKS</a><a href="index.html#guide">GUIDE</a><a href="index.html#faq">SUPPORT</a><a href="inquiry.html">제작문의</a><a class="quote-btn" href="quote.html">견적내기 →</a></nav></div></header>
-<main>
-<section class="page-hero"><div class="container"><span class="eyebrow">FINE.B SMART QUOTE</span><h1>제작 사양으로<br>견적 요청하기</h1><p class="section-desc">금액을 자동 표시하지 않습니다. 제품 구조부터 소재·평량·인쇄·후가공을 선택하면 선택한 사양 그대로 FINE.B에 견적 요청할 수 있습니다.</p></div></section>
-<section class="section" style="padding-top:54px"><div class="container quote-layout">
-  <div class="quote-main">
-    <div class="step-nav"><div class="step-pill active" data-pill="1">01 제품선택</div><div class="step-pill" data-pill="2">02 제품정보</div><div class="step-pill" data-pill="3">03 소재·인쇄</div><div class="step-pill" data-pill="4">04 제작옵션</div><div class="step-pill" data-pill="5">05 요청정보</div></div>
-
-    <section class="quote-step active" data-step="1">
-      <div class="field-block"><div class="field-title">제작할 제품을 선택해주세요 <span class="required">필수</span></div>
-        <div class="choice-row" id="categoryTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px"></div>
-        <div class="option-grid" id="productGrid"></div>
-      </div>
-      <div class="step-actions"><span></span><button class="btn-primary next-step" type="button">다음 단계 →</button></div>
-    </section>
-
-    <section class="quote-step" data-step="2">
-      <div class="field-block"><div class="field-title">제작 수량 <span class="required">필수</span></div><div class="qty-grid" id="qtyGrid"></div></div>
-      <div class="field-block"><div class="field-title">제품 사이즈 <span class="required">필수</span></div><div class="dimension-grid"><div class="input-wrap"><label>가로 W (mm)</label><input id="width" inputmode="numeric" placeholder="예: 100"></div><div class="input-wrap"><label>세로 D (mm)</label><input id="depth" inputmode="numeric" placeholder="예: 80"></div><div class="input-wrap"><label>높이 H (mm)</label><input id="height" inputmode="numeric" placeholder="예: 150"></div></div></div>
-      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
-    </section>
-
-    <section class="quote-step" data-step="3">
-      <div class="field-block"><div class="field-title">종이 · 소재 선택</div><p class="muted">종이를 선택하면 해당 종이에서 선택 가능한 평량만 표시됩니다.</p><div class="paper-grid" id="paperGrid"></div></div>
-      <div class="field-block"><div class="field-title">평량 GSM</div><div class="choice-row" id="gsmGrid" style="display:flex;gap:10px;flex-wrap:wrap"></div></div>
-      <div class="field-block"><div class="field-title">인쇄</div><div class="option-grid" id="printGrid"></div></div>
-      <div class="field-block"><div class="field-title">코팅</div><div class="option-grid" id="coatingGrid"></div></div>
-      <div class="field-block"><div class="field-title">후가공 <span class="muted" style="font-size:13px">복수선택 가능</span></div><div class="option-grid" id="finishGrid"></div></div>
-      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
-    </section>
-
-    <section class="quote-step" data-step="4">
-      <div class="field-block"><div class="field-title">샘플 제작</div><div class="option-grid" id="sampleGrid"></div></div>
-      <div class="field-block" id="insertBlock"><div class="field-title">내부 구성 · 패드</div><div class="option-grid" id="insertGrid"></div></div>
-      <div class="field-block"><div class="field-title">납품 방식</div><div class="option-grid" id="deliveryGrid"></div></div>
-      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
-    </section>
-
-    <section class="quote-step" data-step="5">
-      <div class="field-block"><div class="field-title">담당자 정보</div><div class="form-grid"><div class="input-wrap"><label>회사 / 브랜드명</label><input id="company"></div><div class="input-wrap"><label>담당자명 *</label><input id="name"></div><div class="input-wrap"><label>연락처 *</label><input id="phone"></div><div class="input-wrap"><label>이메일 *</label><input id="email" type="email"></div><div class="input-wrap full"><label>요청사항</label><textarea id="message" rows="6" placeholder="참고 제품, 일정, 포장 방식 등 추가 내용을 적어주세요."></textarea></div></div></div>
-      <div class="field-block"><div class="field-title">참고파일</div><label class="upload-box">JPG · PNG · PDF · AI · ZIP 등 참고자료를 첨부해주세요.<br><input id="fileInput" type="file" multiple style="margin-top:14px"></label></div>
-      <div class="notice">현재 정적 HTML 버전에서는 요청 내용이 브라우저에서 정리되며 실제 서버 전송은 연결 전입니다. 이후 Firebase 또는 별도 관리자 DB와 연결할 수 있습니다.</div>
-      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary" id="submitQuote" type="button">이 사양으로 견적 요청하기</button></div>
-    </section>
+<header class="header">
+  <div class="container header-inner">
+    <a class="brand" href="index.html" aria-label="FINE.B 홈"><img src="assets/logo.svg" alt="FINE.B"></a>
+    <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="index.html#about">ABOUT</a>
+      <a href="index.html#production">PRODUCTION</a>
+      <a href="index.html#process">PROCESS</a>
+      <a href="index.html#works">WORKS</a>
+      <a href="index.html#guide">GUIDE</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="inquiry.html">제작문의</a>
+      <a class="quote-btn" href="quote.html">견적내기 →</a>
+    </nav>
   </div>
-  <aside class="quote-side"><span class="eyebrow">MY SPEC</span><h3>선택한 제작 사양</h3><div class="summary-list" id="summaryList"></div><div class="notice" style="margin-top:18px">예상 금액은 표시하지 않습니다.<br>최종 사양 확인 후 별도 견적을 안내합니다.</div></aside>
-</div></section>
+</header>
+
+<main>
+  <section class="page-hero quote-page-hero">
+    <div class="container page-hero-grid">
+      <div>
+        <span class="eyebrow">FINE.B PRODUCTION QUOTE</span>
+        <h1>제작 공정을 따라<br>사양을 정리합니다.</h1>
+      </div>
+      <div class="page-hero-copy">
+        <p>가격을 자동 계산하는 방식이 아닙니다. 실제 패키지가 만들어지는 순서에 맞춰 필요한 사양을 선택하면 FINE.B가 검토 후 견적을 안내합니다.</p>
+        <p class="small-note">선택 단계에서 실제 발주나 생산이 진행되지는 않습니다. 최종 견적 컨펌 후 제작이 시작됩니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-process-strip">
+    <div class="container">
+      <div class="production-track" id="productionTrack">
+        <button class="track-item active" data-jump="1"><b>01</b><span>박스 형태</span><small>사양 확정</small></button>
+        <button class="track-item" data-jump="2"><b>02</b><span>종이 선택</span><small>종이 발주</small></button>
+        <button class="track-item" data-jump="3"><b>03</b><span>인쇄</span><small>PRINT</small></button>
+        <button class="track-item" data-jump="4"><b>04</b><span>코팅 · 후가공</span><small>FINISHING</small></button>
+        <button class="track-item" data-jump="5"><b>05</b><span>톰슨 · 접착</span><small>CONVERTING</small></button>
+        <button class="track-item" data-jump="6"><b>06</b><span>견적 요청</span><small>REQUEST</small></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-shell">
+    <div class="container quote-layout">
+      <div class="quote-main">
+
+        <section class="quote-step active" data-step="1">
+          <div class="step-heading"><span>STEP 01 · BOX TYPE</span><h2>원하시는 박스 형태를 선택해주세요.</h2><p>구조를 선택한 뒤 제작 수량과 완성 사이즈를 입력합니다.</p></div>
+          <div class="field-block">
+            <div class="choice-row category-tabs" id="categoryTabs"></div>
+            <div class="product-grid" id="productGrid"></div>
+          </div>
+          <div class="field-block two-field-blocks">
+            <div>
+              <div class="field-title">제작 수량 <span class="required">필수</span></div>
+              <div class="qty-grid" id="qtyGrid"></div>
+            </div>
+            <div>
+              <div class="field-title">완성 사이즈 <span class="required">필수</span></div>
+              <div class="dimension-grid">
+                <div class="input-wrap"><label>가로 W (mm)</label><input id="width" inputmode="numeric" placeholder="100"></div>
+                <div class="input-wrap"><label>폭 D (mm)</label><input id="depth" inputmode="numeric" placeholder="80"></div>
+                <div class="input-wrap"><label>높이 H (mm)</label><input id="height" inputmode="numeric" placeholder="150"></div>
+              </div>
+            </div>
+          </div>
+          <div class="process-note"><b>PRODUCTION</b><span>형태와 사이즈가 확정되면 칼선 및 제작 사양을 기준으로 다음 공정을 준비합니다.</span></div>
+          <div class="step-actions"><span></span><button class="btn-primary next-step" type="button">종이 선택으로 →</button></div>
+        </section>
+
+        <section class="quote-step" data-step="2">
+          <div class="step-heading"><span>STEP 02 · PAPER</span><h2>제품에 맞는 종이와 평량을 선택합니다.</h2><p>종이마다 생산되는 평량이 다르기 때문에 선택한 종이에서 가능한 값만 표시됩니다.</p></div>
+          <div class="field-block"><div class="paper-grid" id="paperGrid"></div></div>
+          <div class="field-block"><div class="field-title">평량 선택</div><div class="choice-row gsm-grid" id="gsmGrid"></div></div>
+          <div class="process-note"><b>PRODUCTION · 종이 발주</b><span>최종 견적과 제작 컨펌 후 확정된 규격에 맞춰 종이를 발주합니다.</span></div>
+          <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">인쇄 선택으로 →</button></div>
+        </section>
+
+        <section class="quote-step" data-step="3">
+          <div class="step-heading"><span>STEP 03 · PRINT</span><h2>인쇄 방식을 선택합니다.</h2><p>일반 패키지는 옵셋 인쇄를 중심으로 진행하며 소재와 표현에 따라 UV·실크·수지판 인쇄 등을 검토할 수 있습니다.</p></div>
+          <div class="field-block"><div class="field-title">인쇄 방식</div><div class="option-grid compact-options" id="printMethodGrid"></div></div>
+          <div class="field-block"><div class="field-title">인쇄 색상</div><div class="option-grid compact-options" id="printColorGrid"></div></div>
+          <div class="field-block"><div class="field-title">인쇄 면</div><div class="option-grid compact-options" id="printSideGrid"></div></div>
+          <div class="process-note"><b>PRODUCTION · 인쇄</b><span>확정된 데이터와 종이 사양에 맞춰 본 생산 인쇄를 진행합니다.</span></div>
+          <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">후가공 선택으로 →</button></div>
+        </section>
+
+        <section class="quote-step" data-step="4">
+          <div class="step-heading"><span>STEP 04 · COATING & FINISHING</span><h2>코팅과 박 · 후가공을 선택합니다.</h2><p>사양과 재질에 따라 코팅 공정이 없을 수 있으며, 박·형압·부분에폭시 등의 후가공은 필요한 항목만 선택합니다.</p></div>
+          <div class="field-block"><div class="field-title">코팅</div><div class="option-grid compact-options" id="coatingGrid"></div></div>
+          <div class="field-block"><div class="field-title">박 · 특수 후가공 <span class="field-hint">복수선택 가능</span></div><div class="option-grid compact-options" id="finishGrid"></div></div>
+          <div class="process-note"><b>PRODUCTION · 코팅 / 후가공</b><span>인쇄 후 라미네이팅과 박, 형압, 부분에폭시 등 선택한 공정을 순차적으로 진행합니다.</span></div>
+          <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">톰슨 · 접착으로 →</button></div>
+        </section>
+
+        <section class="quote-step" data-step="5">
+          <div class="step-heading"><span>STEP 05 · THOMSON & ASSEMBLY</span><h2>박스 형태로 가공하고 완성합니다.</h2><p>톰슨(도무송)은 전개도 모양에 맞춰 종이를 타발하는 공정입니다. 접착형은 이후 접착을 진행하고 조립식 구조는 접착 없이 납품될 수 있습니다.</p></div>
+          <div class="process-preview">
+            <div class="process-preview-card"><span>01</span><b>톰슨 · 타발</b><p>칼선과 목형에 맞춰 전개도 형태로 가공</p></div>
+            <div class="process-preview-card"><span>02</span><b>접착 · 조립</b><p id="assemblyDescription">선택한 박스 구조에 맞춰 접착 또는 조립</p></div>
+            <div class="process-preview-card"><span>03</span><b>기타 가공</b><p>양면테이프, 패드 부착 등 필요한 수작업</p></div>
+            <div class="process-preview-card"><span>04</span><b>포장 · 납품</b><p>검수 후 박스포장, 완포장, 파렛트 등 현장에 맞게 진행</p></div>
+          </div>
+          <div class="field-block"><div class="field-title">샘플 제작</div><div class="option-grid compact-options" id="sampleGrid"></div></div>
+          <div class="field-block" id="insertBlock"><div class="field-title">내부 구성 · 패드</div><div class="option-grid compact-options" id="insertGrid"></div></div>
+          <div class="field-block"><div class="field-title">희망 납품 방식</div><div class="option-grid compact-options" id="deliveryGrid"></div></div>
+          <div class="process-note"><b>PRODUCTION · 톰슨 → 접착 → 가공 → 포장 → 납품</b><span>실제 생산은 최종 견적 및 일정 협의 후 진행됩니다.</span></div>
+          <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">견적 요청으로 →</button></div>
+        </section>
+
+        <section class="quote-step" data-step="6">
+          <div class="step-heading"><span>STEP 06 · REQUEST</span><h2>선택하신 제작 사양을 보내주세요.</h2><p>담당자가 사양과 첨부자료를 확인한 뒤 제작 가능 여부와 세부 견적을 안내합니다.</p></div>
+          <div class="field-block"><div class="field-title">담당자 정보</div><div class="form-grid">
+            <div class="input-wrap"><label>회사 / 브랜드명</label><input id="company"></div>
+            <div class="input-wrap"><label>담당자명 *</label><input id="name"></div>
+            <div class="input-wrap"><label>연락처 *</label><input id="phone"></div>
+            <div class="input-wrap"><label>이메일 *</label><input id="email" type="email"></div>
+            <div class="input-wrap full"><label>요청사항</label><textarea id="message" rows="6" placeholder="희망 일정, 참고 제품, 납품 현장 상황 등 추가 내용을 적어주세요."></textarea></div>
+          </div></div>
+          <div class="field-block"><div class="field-title">참고파일</div><label class="upload-box">제품 사진 · 참고 패키지 · 도면 · 디자인 자료 등을 첨부해주세요.<br><input id="fileInput" type="file" multiple></label></div>
+          <div class="notice">현재는 화면 및 견적 사양 구성 단계입니다. 실제 문의 저장·파일 업로드는 다음 단계에서 관리자 시스템과 연결합니다.</div>
+          <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary" id="submitQuote" type="button">이 사양으로 견적 요청하기</button></div>
+        </section>
+      </div>
+
+      <aside class="quote-side">
+        <span class="eyebrow">YOUR PRODUCTION SPEC</span>
+        <h3>선택한 제작 사양</h3>
+        <div class="mini-process" id="miniProcess"></div>
+        <div class="summary-list" id="summaryList"></div>
+        <div class="notice quote-notice">금액은 표시하지 않습니다.<br>최종 사양 확인 후 별도 견적을 안내합니다.</div>
+      </aside>
+    </div>
+  </section>
 </main>
-<footer class="footer"><div class="container"><div class="footer-grid"><div><a class="brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"></a></div><div><h4>SUPPORT</h4><p><a href="inquiry.html">제작문의</a><br><a href="index.html#faq">FAQ</a></p></div><div><h4>QUOTE</h4><p>500 / 1,000 / 2,000 / 3,000 / 5,000 / 10,000개</p></div></div><div class="footer-bottom">© 2026 FINE.B.</div></div></footer>
-<script src="assets/js/main.js"></script><script src="assets/js/quote.js"></script>
-</body></html>
+
+<footer class="footer"><div class="container"><div class="footer-grid"><div><a class="brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"></a><p>PACKAGE DEVELOPMENT & PRODUCTION</p></div><div><h4>SUPPORT</h4><p><a href="inquiry.html">제작문의</a><br><a href="index.html#faq">FAQ</a></p></div><div><h4>QUOTE</h4><p>500 · 1,000 · 2,000 · 3,000 · 5,000 · 10,000개 / 직접입력</p></div></div><div class="footer-bottom">© 2026 FINE.B. All rights reserved.</div></div></footer>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/quote.js"></script>
+</body>
+</html>
