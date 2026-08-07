@@ -1,0 +1,50 @@
+name: Finalize Kakao preview for Pages
+
+on:
+  workflow_run:
+    workflows: ["Deploy static site to Pages"]
+    types: [completed]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-final-preview"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Build exact FINE.B Kakao preview
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y librsvg2-bin
+          sed -e 's/#45526c/#ffffff/gI' \
+              -e 's/#7f879a/#ffffff/gI' \
+              -e 's/#231815/#ffffff/gI' \
+              -e 's/#0a2240/#ffffff/gI' \
+              assets/logo.svg > assets/logo-white.svg
+          rsvg-convert -w 1200 -h 630 assets/kakao-preview.svg -o assets/og-preview.png
+          python scripts/inject-seo.py
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
