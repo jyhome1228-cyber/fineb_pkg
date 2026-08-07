@@ -1,0 +1,29 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    function allowedType() {
+      return request.resource.contentType.matches('image/.*')
+        || request.resource.contentType == 'application/pdf'
+        || request.resource.contentType == 'application/zip'
+        || request.resource.contentType == 'application/x-zip-compressed'
+        || request.resource.contentType == 'application/postscript'
+        || request.resource.contentType == 'application/octet-stream';
+    }
+
+    match /requests/{type}/{requestId}/{fileName} {
+      allow create: if type in ['quote', 'sample', 'inquiry']
+        && request.resource.size <= 10 * 1024 * 1024
+        && allowedType();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
