@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>견적내기 | FINE.B</title><link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<header class="header"><div class="container header-inner"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"></a><button class="menu-toggle">☰</button><nav class="nav"><a href="index.html#about">ABOUT</a><a href="index.html#production">PRODUCTION</a><a href="index.html#works">WORKS</a><a href="index.html#guide">GUIDE</a><a href="index.html#faq">SUPPORT</a><a href="inquiry.html">제작문의</a><a class="quote-btn" href="quote.html">견적내기 →</a></nav></div></header>
+<main>
+<section class="page-hero"><div class="container"><span class="eyebrow">FINE.B SMART QUOTE</span><h1>제작 사양으로<br>견적 요청하기</h1><p class="section-desc">금액을 자동 표시하지 않습니다. 제품 구조부터 소재·평량·인쇄·후가공을 선택하면 선택한 사양 그대로 FINE.B에 견적 요청할 수 있습니다.</p></div></section>
+<section class="section" style="padding-top:54px"><div class="container quote-layout">
+  <div class="quote-main">
+    <div class="step-nav"><div class="step-pill active" data-pill="1">01 제품선택</div><div class="step-pill" data-pill="2">02 제품정보</div><div class="step-pill" data-pill="3">03 소재·인쇄</div><div class="step-pill" data-pill="4">04 제작옵션</div><div class="step-pill" data-pill="5">05 요청정보</div></div>
+
+    <section class="quote-step active" data-step="1">
+      <div class="field-block"><div class="field-title">제작할 제품을 선택해주세요 <span class="required">필수</span></div>
+        <div class="choice-row" id="categoryTabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px"></div>
+        <div class="option-grid" id="productGrid"></div>
+      </div>
+      <div class="step-actions"><span></span><button class="btn-primary next-step" type="button">다음 단계 →</button></div>
+    </section>
+
+    <section class="quote-step" data-step="2">
+      <div class="field-block"><div class="field-title">제작 수량 <span class="required">필수</span></div><div class="qty-grid" id="qtyGrid"></div></div>
+      <div class="field-block"><div class="field-title">제품 사이즈 <span class="required">필수</span></div><div class="dimension-grid"><div class="input-wrap"><label>가로 W (mm)</label><input id="width" inputmode="numeric" placeholder="예: 100"></div><div class="input-wrap"><label>세로 D (mm)</label><input id="depth" inputmode="numeric" placeholder="예: 80"></div><div class="input-wrap"><label>높이 H (mm)</label><input id="height" inputmode="numeric" placeholder="예: 150"></div></div></div>
+      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
+    </section>
+
+    <section class="quote-step" data-step="3">
+      <div class="field-block"><div class="field-title">종이 · 소재 선택</div><p class="muted">종이를 선택하면 해당 종이에서 선택 가능한 평량만 표시됩니다.</p><div class="paper-grid" id="paperGrid"></div></div>
+      <div class="field-block"><div class="field-title">평량 GSM</div><div class="choice-row" id="gsmGrid" style="display:flex;gap:10px;flex-wrap:wrap"></div></div>
+      <div class="field-block"><div class="field-title">인쇄</div><div class="option-grid" id="printGrid"></div></div>
+      <div class="field-block"><div class="field-title">코팅</div><div class="option-grid" id="coatingGrid"></div></div>
+      <div class="field-block"><div class="field-title">후가공 <span class="muted" style="font-size:13px">복수선택 가능</span></div><div class="option-grid" id="finishGrid"></div></div>
+      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
+    </section>
+
+    <section class="quote-step" data-step="4">
+      <div class="field-block"><div class="field-title">샘플 제작</div><div class="option-grid" id="sampleGrid"></div></div>
+      <div class="field-block" id="insertBlock"><div class="field-title">내부 구성 · 패드</div><div class="option-grid" id="insertGrid"></div></div>
+      <div class="field-block"><div class="field-title">납품 방식</div><div class="option-grid" id="deliveryGrid"></div></div>
+      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary next-step">다음 단계 →</button></div>
+    </section>
+
+    <section class="quote-step" data-step="5">
+      <div class="field-block"><div class="field-title">담당자 정보</div><div class="form-grid"><div class="input-wrap"><label>회사 / 브랜드명</label><input id="company"></div><div class="input-wrap"><label>담당자명 *</label><input id="name"></div><div class="input-wrap"><label>연락처 *</label><input id="phone"></div><div class="input-wrap"><label>이메일 *</label><input id="email" type="email"></div><div class="input-wrap full"><label>요청사항</label><textarea id="message" rows="6" placeholder="참고 제품, 일정, 포장 방식 등 추가 내용을 적어주세요."></textarea></div></div></div>
+      <div class="field-block"><div class="field-title">참고파일</div><label class="upload-box">JPG · PNG · PDF · AI · ZIP 등 참고자료를 첨부해주세요.<br><input id="fileInput" type="file" multiple style="margin-top:14px"></label></div>
+      <div class="notice">현재 정적 HTML 버전에서는 요청 내용이 브라우저에서 정리되며 실제 서버 전송은 연결 전입니다. 이후 Firebase 또는 별도 관리자 DB와 연결할 수 있습니다.</div>
+      <div class="step-actions"><button class="btn-secondary prev-step">← 이전</button><button class="btn-primary" id="submitQuote" type="button">이 사양으로 견적 요청하기</button></div>
+    </section>
+  </div>
+  <aside class="quote-side"><span class="eyebrow">MY SPEC</span><h3>선택한 제작 사양</h3><div class="summary-list" id="summaryList"></div><div class="notice" style="margin-top:18px">예상 금액은 표시하지 않습니다.<br>최종 사양 확인 후 별도 견적을 안내합니다.</div></aside>
+</div></section>
+</main>
+<footer class="footer"><div class="container"><div class="footer-grid"><div><a class="brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"></a></div><div><h4>SUPPORT</h4><p><a href="inquiry.html">제작문의</a><br><a href="index.html#faq">FAQ</a></p></div><div><h4>QUOTE</h4><p>500 / 1,000 / 2,000 / 3,000 / 5,000 / 10,000개</p></div></div><div class="footer-bottom">© 2026 FINE.B.</div></div></footer>
+<script src="assets/js/main.js"></script><script src="assets/js/quote.js"></script>
+</body></html>
