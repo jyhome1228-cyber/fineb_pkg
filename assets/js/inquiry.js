@@ -1,19 +1,12 @@
-const DEFAULT_INQUIRIES=[
-  {status:'답변완료',type:'패키지 제작',title:'화장품 단상자 제작 문의',name:'김**',date:'2026.08.07'},
-  {status:'답변완료',type:'싸바리 제작',title:'싸바리 1,000개 문의',name:'박**',date:'2026.08.06'},
-  {status:'접수',type:'쇼핑백',title:'쇼핑백 제작 문의',name:'이**',date:'2026.08.06'}
-];
+const firebasePromise=import('./firebase-client.js').catch(()=>null);
+const LOCAL_KEY='fineb_inquiry_requests';
+
 function maskName(name){if(!name)return '***';return name.length<2?'*':name[0]+'**';}
-function today(){const d=new Date();return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;}
-function load(){try{return JSON.parse(localStorage.getItem('fineb_inquiries'))||DEFAULT_INQUIRIES;}catch(e){return DEFAULT_INQUIRIES;}}
-function save(rows){localStorage.setItem('fineb_inquiries',JSON.stringify(rows));}
-function render(){const rows=load();document.querySelector('#boardList').innerHTML=rows.map(r=>`<div class="board-row"><span class="status">${r.status}</span><div><strong>${r.title}</strong><div class="muted" style="font-size:12px">${r.type}</div></div><span>${r.name}</span><span class="muted">${r.date}</span></div>`).join('');}
-document.addEventListener('DOMContentLoaded',()=>{
-  render();
-  document.querySelector('#inquiryForm').addEventListener('submit',e=>{
-    e.preventDefault();
-    const row={status:'접수',type:document.querySelector('#inqType').value,title:document.querySelector('#inqTitle').value.trim(),name:maskName(document.querySelector('#inqName').value.trim()),date:today()};
-    const rows=load();rows.unshift(row);save(rows);render();e.target.reset();
-    alert('문의가 임시 등록되었습니다. 현재는 프론트엔드 1차 버전으로 실제 서버 전송 전 단계입니다.');
-  });
-});
+function fmtDate(v){const d=new Date(v);return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;}
+function loadLocal(){try{return JSON.parse(localStorage.getItem(LOCAL_KEY)||'[]')}catch{return []}}
+function saveLocal(payload){const list=loadLocal();list.unshift(payload);localStorage.setItem(LOCAL_KEY,JSON.stringify(list.slice(0,100)));}
+function renderBoard(){const wrap=document.querySelector('#boardList');if(!wrap)return;const rows=loadLocal().slice(0,8);if(!rows.length){wrap.innerHTML='<div class="notice">접수된 제작문의는 기본 비공개로 관리됩니다. 이 브라우저에서 접수한 문의가 있으면 접수 상태만 표시됩니다.</div>';return}wrap.innerHTML=rows.map(r=>`<div class="board-row"><span class="status">${r.status||'신규'}</span><div><strong>${r.spec?.title||'제작 문의'}</strong><div class="muted" style="font-size:12px">${r.spec?.inquiryType||'-'}</div></div><span>${maskName(r.name)}</span><span class="muted">${fmtDate(r.createdAtClient)}</span></div>`).join('');}
+
+async function submitInquiry(e){e.preventDefault();const form=e.currentTarget;const btn=form.querySelector('button[type="submit"]');if(btn.dataset.busy==='1')return;const type=document.querySelector('#inqType').value;const qty=document.querySelector('#inqQty').value;const company=document.querySelector('#inqCompany').value.trim();const name=document.querySelector('#inqName').value.trim();const phone=document.querySelector('#inqPhone').value.trim();const email=document.querySelector('#inqEmail').value.trim();const title=document.querySelector('#inqTitle').value.trim();const message=document.querySelector('#inqMessage').value.trim();if(!type||!name||!phone||!email||!title||!message){alert('필수 항목을 입력해주세요.');return}if(!document.querySelector('#privacyInquiry')?.checked){alert('개인정보 수집 및 이용에 동의해주세요.');return}const files=[...document.querySelector('#inqFiles').files];const payload={id:'I-'+Date.now(),type:'inquiry',status:'신규',createdAtClient:new Date().toISOString(),company,name,phone,email,message,privacyAgreed:true,spec:{inquiryType:type,qty,title}};btn.dataset.busy='1';const old=btn.textContent;btn.textContent='접수 중...';btn.disabled=true;try{const fb=await firebasePromise;if(!fb)throw new Error('FIREBASE_MODULE');const saved=await fb.savePublicRequest('inquiry',payload,files);saveLocal({...saved,files:(saved.files||[]).map(f=>({name:f.name,size:f.size,url:f.url}))});alert('제작 문의가 정상 접수되었습니다.');form.reset();renderBoard();}catch(err){saveLocal({...payload,files:files.map(f=>({name:f.name,size:f.size}))});console.warn('Firebase inquiry fallback:',err);alert('문의 내용을 브라우저에 임시 저장했습니다. Firebase 서비스 활성화 후에는 중앙 관리자에서 바로 확인됩니다.');form.reset();renderBoard();}finally{btn.dataset.busy='0';btn.textContent=old;btn.disabled=false;}}
+
+document.addEventListener('DOMContentLoaded',()=>{renderBoard();document.querySelector('#inquiryForm')?.addEventListener('submit',submitInquiry);});
