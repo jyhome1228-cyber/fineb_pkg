@@ -30,6 +30,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(deliveryDesc)deliveryDesc.innerHTML='포장과 운송 방식은 납품 장소와 현장 조건에 따라 달라집니다.<br>견적 문의 시 아래 내용을 함께 알려주시면 더 정확하게 준비할 수 있습니다.';
   }
 
+  const guideSections=[...document.querySelectorAll('.guide-clean-section')];
+  const guideLinks=[...document.querySelectorAll('.guide-index a')];
+  if(guideSections.length&&guideLinks.length){
+    const setActive=id=>guideLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${id}`));
+    const observer=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible)setActive(visible.target.id);},{rootMargin:'-25% 0px -60% 0px',threshold:[0,.1,.25,.5]});
+    guideSections.forEach(section=>observer.observe(section));
+    guideLinks.forEach(link=>link.addEventListener('click',()=>setActive(link.getAttribute('href').slice(1))));
+  }
+
   function privacyBlock(id){const wrap=document.createElement('div');wrap.className='privacy-consent';wrap.innerHTML=`<label class="privacy-check"><input type="checkbox" id="${id}"><span><strong>[필수] 개인정보 수집 및 이용에 동의합니다.</strong><small>견적·샘플·제작문의 상담 및 회신을 위해 담당자명, 연락처, 이메일, 회사/브랜드명과 요청내용을 수집합니다.</small></span></label><details><summary>개인정보 수집 및 이용 안내</summary><div>수집 목적: 제작 상담, 견적 안내, 샘플 제작 및 문의 회신<br>수집 항목: 회사/브랜드명, 담당자명, 연락처, 이메일, 제작 사양, 문의내용<br>보유 기간: 상담 및 제작 업무 종료 후 내부 정책에 따라 보관 후 파기<br>동의를 거부할 수 있으나, 필수 정보 수집에 동의하지 않으면 온라인 문의 접수가 어렵습니다.</div></details>`;return wrap;}
   const quoteAction=document.querySelector('#submitQuote')?.closest('.step-actions');if(quoteAction&&!document.querySelector('#privacyQuote'))quoteAction.insertAdjacentElement('beforebegin',privacyBlock('privacyQuote'));
   const sampleAction=document.querySelector('#submitSample')?.closest('.step-actions');if(sampleAction&&!document.querySelector('#privacySample'))sampleAction.insertAdjacentElement('beforebegin',privacyBlock('privacySample'));
