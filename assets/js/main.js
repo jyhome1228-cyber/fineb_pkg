@@ -1,10 +1,14 @@
 document.addEventListener('DOMContentLoaded',()=>{
-  if(!document.querySelector('link[href="assets/css/refinement.css"]')){
-    const refinement=document.createElement('link');
-    refinement.rel='stylesheet';
-    refinement.href='assets/css/refinement.css';
-    document.head.appendChild(refinement);
-  }
+  const ensureStyle=href=>{
+    if(!document.querySelector(`link[href="${href}"]`)){
+      const link=document.createElement('link');
+      link.rel='stylesheet';
+      link.href=href;
+      document.head.appendChild(link);
+    }
+  };
+  ensureStyle('assets/css/refinement.css');
+  ensureStyle('assets/css/enhance.css');
 
   const toggle=document.querySelector('.menu-toggle');
   const nav=document.querySelector('.nav');
