@@ -14,6 +14,22 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.nav a').forEach(link=>{const href=(link.getAttribute('href')||'').split('#')[0];const found=menuLabels.find(([path])=>href.endsWith(path));if(found)link.textContent=found[1];});
   document.querySelectorAll('.faq-q').forEach(btn=>btn.addEventListener('click',()=>btn.closest('.faq-item').classList.toggle('open')));
 
+  if(document.querySelector('.factory-gallery')){
+    ensureStyle('assets/css/factory-carousel.css');
+    const script=document.createElement('script');script.src='assets/js/factory-carousel.js';document.body.appendChild(script);
+  }
+
+  if(document.querySelector('.process-interactive')){
+    ensureStyle('assets/css/process-clean.css');
+    document.querySelectorAll('.process-icon').forEach(el=>el.remove());
+    const heroTitle=document.querySelector('.page-hero h1');
+    const heroCopy=document.querySelector('.page-hero .page-hero-copy p');
+    if(heroTitle)heroTitle.innerHTML='패키지가 완성되는<br>제작 흐름.';
+    if(heroCopy)heroCopy.innerHTML='사양을 정리한 뒤 인쇄·코팅·후가공·톰슨·접착·가공·포장과 납품까지 이어집니다.<br>각 단계에서 필요한 확인사항을 놓치지 않도록 파인비가 제작 전 과정을 꼼꼼하게 함께합니다.';
+    const deliveryDesc=document.querySelector('.process-interactive + .section .section-desc');
+    if(deliveryDesc)deliveryDesc.innerHTML='포장과 운송 방식은 납품 장소와 현장 조건에 따라 달라집니다.<br>견적 문의 시 아래 내용을 함께 알려주시면 더 정확하게 준비할 수 있습니다.';
+  }
+
   function privacyBlock(id){const wrap=document.createElement('div');wrap.className='privacy-consent';wrap.innerHTML=`<label class="privacy-check"><input type="checkbox" id="${id}"><span><strong>[필수] 개인정보 수집 및 이용에 동의합니다.</strong><small>견적·샘플·제작문의 상담 및 회신을 위해 담당자명, 연락처, 이메일, 회사/브랜드명과 요청내용을 수집합니다.</small></span></label><details><summary>개인정보 수집 및 이용 안내</summary><div>수집 목적: 제작 상담, 견적 안내, 샘플 제작 및 문의 회신<br>수집 항목: 회사/브랜드명, 담당자명, 연락처, 이메일, 제작 사양, 문의내용<br>보유 기간: 상담 및 제작 업무 종료 후 내부 정책에 따라 보관 후 파기<br>동의를 거부할 수 있으나, 필수 정보 수집에 동의하지 않으면 온라인 문의 접수가 어렵습니다.</div></details>`;return wrap;}
   const quoteAction=document.querySelector('#submitQuote')?.closest('.step-actions');if(quoteAction&&!document.querySelector('#privacyQuote'))quoteAction.insertAdjacentElement('beforebegin',privacyBlock('privacyQuote'));
   const sampleAction=document.querySelector('#submitSample')?.closest('.step-actions');if(sampleAction&&!document.querySelector('#privacySample'))sampleAction.insertAdjacentElement('beforebegin',privacyBlock('privacySample'));
