@@ -33,7 +33,7 @@ async function uploadRequestFiles(type, requestId, files=[]) {
     const path = `requests/${type}/${requestId}/${Date.now()}-${safeName(file.name)}`;
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, file, { contentType: file.type || 'application/octet-stream' });
-    uploaded.push({ name: file.name, size: file.size, type: file.type || '', path });
+    uploaded.push({ name: file.name, size: file.size, type: file.type || '', path, uploaded: true });
   }
   return uploaded;
 }
@@ -42,7 +42,25 @@ export async function savePublicRequest(type, payload, files=[]) {
   const collectionName = COLLECTIONS[type];
   if (!collectionName) throw new Error('UNKNOWN_REQUEST_TYPE');
   const id = payload.id || `${type.toUpperCase().slice(0,1)}-${Date.now()}`;
-  const uploadedFiles = await uploadRequestFiles(type, id, files);
+  let uploadedFiles = [];
+  let uploadWarning = '';
+  const requestedFiles = [...files].filter(Boolean);
+
+  if (requestedFiles.length) {
+    try {
+      uploadedFiles = await uploadRequestFiles(type, id, requestedFiles);
+    } catch (error) {
+      console.warn('Storage upload failed:', error);
+      uploadWarning = error?.code || error?.message || 'STORAGE_UPLOAD_FAILED';
+      uploadedFiles = requestedFiles.map(file => ({
+        name: file.name,
+        size: file.size,
+        type: file.type || '',
+        uploaded: false
+      }));
+    }
+  }
+
   const data = {
     ...payload,
     id,
@@ -50,7 +68,8 @@ export async function savePublicRequest(type, payload, files=[]) {
     status: '신규',
     createdAtClient: payload.createdAtClient || new Date().toISOString(),
     updatedAtClient: new Date().toISOString(),
-    files: uploadedFiles
+    files: uploadedFiles,
+    uploadWarning
   };
   await setDoc(doc(db, collectionName, id), data);
   return data;
