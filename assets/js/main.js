@@ -6,6 +6,36 @@ document.addEventListener('DOMContentLoaded',()=>{
   ensureStyle('assets/css/forms.css');
   ensureStyle('assets/css/factory.css');
 
+  // Homepage visual refresh: user-supplied production imagery only
+  const homeHero=document.querySelector('.hero-main .hero-grid');
+  const oldHeroVisual=homeHero?.querySelector('.hero-factory');
+  if(homeHero&&oldHeroVisual){
+    const style=document.createElement('style');
+    style.textContent=`
+      .hero-main .hero-grid{grid-template-columns:.86fr 1.14fr;gap:72px;align-items:center}
+      .hero-main .hero-copy{max-width:610px;line-height:1.85}
+      .hero-media-cluster{height:468px;display:grid;grid-template-columns:1.5fr .72fr;grid-template-rows:1fr 1fr;gap:12px}
+      .hero-media-card{position:relative;overflow:hidden;border:1px solid #e1e6eb;border-radius:18px;background:#eef2f5 center/cover no-repeat}
+      .hero-media-main{grid-row:1/3;background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/c5acf880c9b79.png');background-position:center}
+      .hero-media-sub01{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/57fc60e1f2986.png')}
+      .hero-media-sub02{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/188b61c233e04.png')}
+      .hero-media-main:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(10,34,64,.28));pointer-events:none}
+      .hero-media-label{position:absolute;left:18px;bottom:16px;z-index:2;padding:7px 10px;border-radius:999px;background:rgba(10,34,64,.66);color:#fff;font-size:9.5px;letter-spacing:.12em;font-weight:700;backdrop-filter:blur(8px)}
+      .home-support-photo{min-height:340px;border-radius:20px;border:1px solid #e1e6eb;background:#eef2f5 url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/2a4304cf7c2f3.png') center/cover no-repeat;overflow:hidden}
+      @media(max-width:1050px){.hero-main .hero-grid{grid-template-columns:1fr;gap:42px}.hero-media-cluster{height:430px}}
+      @media(max-width:680px){.hero-media-cluster{height:470px;grid-template-columns:1fr 1fr;grid-template-rows:2fr 1fr}.hero-media-main{grid-column:1/3;grid-row:1}.hero-media-sub01{grid-column:1}.hero-media-sub02{grid-column:2}.hero-media-card{border-radius:14px}.hero-main .hero-copy br{display:none}}
+    `;
+    document.head.appendChild(style);
+    const cluster=document.createElement('div');
+    cluster.className='hero-media-cluster';
+    cluster.innerHTML=`<div class="hero-media-card hero-media-main"><span class="hero-media-label">FINE.B / PACKAGE PRODUCTION</span></div><div class="hero-media-card hero-media-sub01"></div><div class="hero-media-card hero-media-sub02"></div>`;
+    oldHeroVisual.replaceWith(cluster);
+    const heroCopy=homeHero.querySelector('.hero-copy');
+    if(heroCopy)heroCopy.innerHTML='패키지가 익숙하지 않아도 괜찮습니다.<br>구조 상담부터 인쇄·후가공·양산과 납품까지 필요한 과정을 함께 정리합니다.';
+    const sampleVisual=document.querySelector('.sample-layout .factory-photo');
+    if(sampleVisual){sampleVisual.className='home-support-photo';sampleVisual.innerHTML='';}
+  }
+
   const toggle=document.querySelector('.menu-toggle');
   const nav=document.querySelector('.nav');
   if(toggle&&nav)toggle.addEventListener('click',()=>nav.classList.toggle('open'));
