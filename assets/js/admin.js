@@ -1,8 +1,4 @@
 import {
-  ADMIN_EMAIL,
-  observeAdminAuth,
-  signInAdmin,
-  signOutAdmin,
   fetchAdminRequests,
   updateAdminRequest,
   importLegacyRequestIfMissing
@@ -13,9 +9,10 @@ const LOCAL_KEYS = {
   sample: 'fineb_sample_requests',
   inquiry: 'fineb_inquiry_requests'
 };
-const MIGRATION_KEY = 'fineb_firestore_admin_migration_v2';
+const MIGRATION_KEY = 'fineb_firestore_admin_migration_v3_loginless';
 const STATUSES = ['신규', '확인중', '진행중', '견적완료', '완료', '보류'];
 const TYPES = ['quote', 'sample', 'inquiry'];
+
 const adminState = {
   type: 'quote',
   status: 'all',
@@ -74,40 +71,10 @@ function setSyncState(text, state = 'ok') {
   el.dataset.state = state;
 }
 
-function showLogin(message = '') {
-  const login = $('#adminLogin');
-  const app = $('#adminApp');
-  if (login) login.hidden = false;
-  if (app) app.hidden = true;
-  const msg = $('#adminLoginMessage');
-  if (msg) msg.textContent = message;
-}
-
-function showAdmin(user) {
-  const login = $('#adminLogin');
-  const app = $('#adminApp');
-  if (login) login.hidden = true;
-  if (app) app.hidden = false;
-  const email = $('#adminAccountEmail');
-  if (email) email.textContent = user?.email || ADMIN_EMAIL;
-}
-
-function authErrorMessage(error) {
-  const code = error?.code || '';
-  if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
-    return '이메일 또는 비밀번호가 맞지 않습니다.';
-  }
-  if (code === 'auth/too-many-requests') return '로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.';
-  if (code === 'auth/operation-not-allowed') return 'Firebase Authentication에서 이메일/비밀번호 로그인을 활성화해주세요.';
-  if (code === 'auth/unauthorized-domain') return 'Firebase Authentication 승인 도메인에 현재 사이트 주소를 추가해주세요.';
-  if (code === 'admin/email-not-allowed') return '허용된 관리자 이메일이 아닙니다.';
-  return '관리자 로그인에 실패했습니다. Firebase Authentication 설정을 확인해주세요.';
-}
-
 function firestoreErrorMessage(error) {
   const code = error?.code || '';
-  if (code === 'permission-denied') return 'Firestore 보안 규칙이 아직 반영되지 않았습니다. rules 배포 상태를 확인해주세요.';
-  if (code === 'unavailable') return '네트워크 연결이 불안정합니다. 연결 후 새로고침해주세요.';
+  if (code === 'permission-denied') return 'Firestore Rules가 아직 반영되지 않았습니다. 새 rules를 게시해주세요.';
+  if (code === 'unavailable') return '네트워크 연결이 불안정합니다. 연결 후 다시 시도해주세요.';
   if (code === 'failed-precondition') return 'Firestore 조회 설정을 확인해주세요.';
   return 'Firestore 데이터를 불러오지 못했습니다.';
 }
@@ -130,13 +97,13 @@ async function migrateLegacyLocalOnce() {
   for (const type of TYPES) {
     const list = loadLegacyList(type).slice(0, 300);
     for (const item of list) {
-      if (!item?.id) continue;
+      if (!item?.id || item.privacyAgreed !== true) continue;
       try {
         const created = await importLegacyRequestIfMissing(type, item);
         if (created) migrated += 1;
       } catch (error) {
         failed += 1;
-        console.warn('Legacy request migration failed:', type, item?.id, error);
+        console.warn('Legacy migration failed:', type, item.id, error);
       }
     }
   }
@@ -173,7 +140,7 @@ async function loadAll() {
     setSyncState('Firestore 연결 오류', 'error');
     const wrap = $('#requestList');
     if (wrap) {
-      wrap.innerHTML = `<div class="empty-state">${esc(firestoreErrorMessage(error))}<br><small>브라우저 localStorage가 아닌 Firestore가 원본 데이터입니다.</small></div>`;
+      wrap.innerHTML = `<div class="empty-state">${esc(firestoreErrorMessage(error))}<br><small>Firestore Rules 게시 후 새로고침해주세요.</small></div>`;
     }
   } finally {
     adminState.loading = false;
@@ -207,6 +174,7 @@ function renderWorkflowCounts() {
     완료: 'flowDone',
     보류: 'flowHold'
   };
+
   Object.entries(ids).forEach(([status, id]) => {
     const el = $('#' + id);
     if (el) el.textContent = countStatus(list, status);
@@ -217,22 +185,9 @@ function renderWorkflowCounts() {
 function searchableText(r) {
   const s = r.spec || {};
   return [
-    r.id,
-    r.company,
-    r.name,
-    r.phone,
-    r.email,
-    r.message,
-    s.product,
-    s.title,
-    s.inquiryType,
-    s.qty,
-    s.paper,
-    s.size,
-    s.printMethod,
-    s.printColor,
-    s.finish,
-    s.finishes
+    r.id, r.company, r.name, r.phone, r.email, r.message,
+    s.product, s.title, s.inquiryType, s.qty, s.paper, s.size,
+    s.printMethod, s.printColor, s.finish, s.finishes
   ].flat().filter(Boolean).join(' ').toLowerCase();
 }
 
@@ -290,43 +245,27 @@ function detailFields(r) {
   const s = r.spec || {};
   if (r.type === 'quote') {
     return [
-      ['제품', s.product],
-      ['수량', s.qty],
-      ['사이즈', s.size],
-      ['종이', s.paper],
-      ['평량', s.gsm ? s.gsm + 'gsm' : ''],
-      ['인쇄 방식', s.printMethod],
-      ['인쇄 색상', s.printColor],
-      ['인쇄 면', s.printSide],
-      ['코팅', s.coating],
-      ['후가공', s.finishes],
-      ['내부 구성', s.insert]
+      ['제품', s.product], ['수량', s.qty], ['사이즈', s.size], ['종이', s.paper],
+      ['평량', s.gsm ? s.gsm + 'gsm' : ''], ['인쇄 방식', s.printMethod],
+      ['인쇄 색상', s.printColor], ['인쇄 면', s.printSide], ['코팅', s.coating],
+      ['후가공', s.finishes], ['내부 구성', s.insert]
     ];
   }
   if (r.type === 'sample') {
     return [
-      ['제품', s.product],
-      ['수량', s.qty],
-      ['사이즈', s.size],
-      ['종이', s.paper],
-      ['평량', s.gsm ? s.gsm + 'gsm' : ''],
-      ['인쇄', s.print],
-      ['후가공', s.finish]
+      ['제품', s.product], ['수량', s.qty], ['사이즈', s.size], ['종이', s.paper],
+      ['평량', s.gsm ? s.gsm + 'gsm' : ''], ['인쇄', s.print], ['후가공', s.finish]
     ];
   }
-  return [
-    ['문의 유형', s.inquiryType],
-    ['예상 수량', s.qty],
-    ['문의 제목', s.title]
-  ];
+  return [['문의 유형', s.inquiryType], ['예상 수량', s.qty], ['문의 제목', s.title]];
 }
 
 async function setRequestStatus(id, status) {
   if (!STATUSES.includes(status)) return;
   const item = (adminState.data[adminState.type] || []).find((x) => x.id === id);
-  if (!item || item.status === status) return;
+  if (!item || requestStatus(item) === status) return;
 
-  const previous = item.status || '신규';
+  const previous = requestStatus(item);
   setSyncState('상태 저장 중…', 'loading');
 
   try {
@@ -378,7 +317,7 @@ function renderDetail() {
   <div class="detail-section"><h3>요청사항</h3><div class="detail-message">${esc(r.message)}</div></div>
   <div class="detail-section"><h3>파일 안내</h3><div class="detail-message">디자인·도면·참고이미지는 <a href="mailto:whales84@naver.com">whales84@naver.com</a> 으로 수신합니다.</div></div>
   <div class="detail-section status-section">
-    <div class="status-section-head"><div><h3>처리 상태</h3><p>변경 내용은 Firestore에 즉시 저장됩니다.</p></div></div>
+    <div class="status-section-head"><div><h3>처리 상태</h3><p>상태 변경은 Firestore에 즉시 저장됩니다.</p></div></div>
     <div class="status-actions">${STATUSES.map((v) => `<button type="button" class="status-action ${status === v ? 'active' : ''}" data-set-status="${v}"><b>${v}</b><span>${statusDescription(v)}</span></button>`).join('')}</div>
   </div>`;
 
@@ -390,12 +329,8 @@ function renderDetail() {
 
 function statusDescription(status) {
   return ({
-    신규: '미확인',
-    확인중: '내용 확인',
-    진행중: '상담·견적 작업',
-    견적완료: '견적 전달',
-    완료: '처리 종료',
-    보류: '추가 확인 대기'
+    신규: '미확인', 확인중: '내용 확인', 진행중: '상담·견적 작업',
+    견적완료: '견적 전달', 완료: '처리 종료', 보류: '추가 확인 대기'
   })[status] || '';
 }
 
@@ -407,7 +342,7 @@ function printRequest(r) {
   if (!win) return;
 
   win.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>${esc(title)}</title><style>
-  @page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#15191f;margin:0;font-size:11px}.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0A2240;padding-bottom:18px;margin-bottom:22px}.brand{font-size:25px;font-weight:800;color:#0A2240}.type{font-size:10px;letter-spacing:.12em;color:#74808c}.title{font-size:23px;margin:5px 0}.meta{color:#74808c}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef3f7;color:#0A2240;font-weight:700}.section{margin:22px 0}.section h3{font-size:11px;color:#0A2240;border-bottom:1px solid #dfe5eb;padding-bottom:8px;margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-left:1px solid #e1e6eb;border-top:1px solid #e1e6eb}.grid.two{grid-template-columns:repeat(2,1fr)}.cell{min-height:58px;padding:10px 12px;border-right:1px solid #e1e6eb;border-bottom:1px solid #e1e6eb}.cell span{display:block;color:#89939d;font-size:9px;margin-bottom:5px}.cell b{font-size:11px;word-break:break-word}.message{padding:14px;background:#f6f8fa;line-height:1.7;white-space:pre-wrap}.foot{margin-top:30px;padding-top:12px;border-top:1px solid #dfe5eb;color:#78838f;line-height:1.7}.no-print{position:fixed;right:20px;top:20px;background:#0A2240;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}@media print{.no-print{display:none}}
+    @page{size:A4;margin:14mm}*{box-sizing:border-box}body{font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#15191f;margin:0;font-size:11px}.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0A2240;padding-bottom:18px;margin-bottom:22px}.brand{font-size:25px;font-weight:800;color:#0A2240}.type{font-size:10px;letter-spacing:.12em;color:#74808c}.title{font-size:23px;margin:5px 0}.meta{color:#74808c}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef3f7;color:#0A2240;font-weight:700}.section{margin:22px 0}.section h3{font-size:11px;color:#0A2240;border-bottom:1px solid #dfe5eb;padding-bottom:8px;margin:0 0 10px}.grid{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid #e1e6eb;border-top:1px solid #e1e6eb}.grid.two{grid-template-columns:repeat(2,1fr)}.cell{min-height:58px;padding:10px 12px;border-right:1px solid #e1e6eb;border-bottom:1px solid #e1e6eb}.cell span{display:block;color:#89939d;font-size:9px;margin-bottom:5px}.cell b{font-size:11px;word-break:break-word}.message{padding:14px;background:#f6f8fa;line-height:1.7;white-space:pre-wrap}.foot{margin-top:30px;padding-top:12px;border-top:1px solid #dfe5eb;color:#78838f;line-height:1.7}.no-print{position:fixed;right:20px;top:20px;background:#0A2240;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}@media print{.no-print{display:none}}
   </style></head><body><button class="no-print" onclick="window.print()">PDF로 저장</button><div class="top"><div><div class="brand">FINE.B</div><div>PACKAGE DEVELOPMENT & PRODUCTION</div></div><div class="type">${labelType(r.type)} · ${esc(r.id)}</div></div><div><span class="badge">${esc(requestStatus(r))}</span><h1 class="title">${esc(requestTitle(r))}</h1><div class="meta">접수일 ${fmtDate(r.createdAtClient)}</div></div><div class="section"><h3>고객 정보</h3><div class="grid two"><div class="cell"><span>회사 / 브랜드</span><b>${esc(r.company)}</b></div><div class="cell"><span>담당자</span><b>${esc(r.name)}</b></div><div class="cell"><span>연락처</span><b>${esc(r.phone)}</b></div><div class="cell"><span>이메일</span><b>${esc(r.email)}</b></div></div></div><div class="section"><h3>${r.type === 'inquiry' ? '문의 정보' : '제작 사양'}</h3><div class="grid">${rows}</div></div><div class="section"><h3>요청사항</h3><div class="message">${esc(r.message)}</div></div><div class="foot">FINE.B 파인비 · 대표전화 010-4758-7049<br>파일 및 제작 문의 whales84@naver.com</div><script>window.onload=()=>setTimeout(()=>window.print(),300)<\/script></body></html>`);
   win.document.close();
 }
@@ -433,64 +368,27 @@ function setStatusFilter(status) {
 }
 
 function bindAdminUI() {
-  $$('[data-type]').forEach((b) => {
-    b.onclick = () => setType(b.dataset.type);
-  });
-  $$('[data-status]').forEach((b) => {
-    b.onclick = () => setStatusFilter(b.dataset.status);
-  });
-  $$('[data-guide-status]').forEach((b) => {
-    b.onclick = () => setStatusFilter(b.dataset.guideStatus);
-  });
+  $$('[data-type]').forEach((b) => { b.onclick = () => setType(b.dataset.type); });
+  $$('[data-status]').forEach((b) => { b.onclick = () => setStatusFilter(b.dataset.status); });
+  $$('[data-guide-status]').forEach((b) => { b.onclick = () => setStatusFilter(b.dataset.guideStatus); });
+
   $('#adminSearch')?.addEventListener('input', (e) => {
     adminState.query = e.target.value;
     adminState.selected = null;
     renderList();
   });
+
   $('#clearSearch').onclick = () => {
     adminState.query = '';
     $('#adminSearch').value = '';
     renderList();
   };
+
   $('#refreshAdmin').onclick = () => loadAll();
-  $('#adminLogout').onclick = () => signOutAdmin();
 }
 
-function bindLoginUI() {
-  const form = $('#adminLoginForm');
-  form?.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const email = $('#adminEmail').value.trim();
-    const password = $('#adminPassword').value;
-    const button = $('#adminLoginButton');
-    const message = $('#adminLoginMessage');
-
-    button.disabled = true;
-    button.textContent = '로그인 중…';
-    message.textContent = '';
-
-    try {
-      await signInAdmin(email, password);
-      $('#adminPassword').value = '';
-    } catch (error) {
-      console.error(error);
-      message.textContent = authErrorMessage(error);
-    } finally {
-      button.disabled = false;
-      button.textContent = '관리자 로그인';
-    }
-  });
-}
-
-async function handleAuthenticatedUser(user) {
-  const email = String(user?.email || '').toLowerCase();
-  if (email !== ADMIN_EMAIL) {
-    await signOutAdmin();
-    showLogin('허용되지 않은 관리자 계정입니다.');
-    return;
-  }
-
-  showAdmin(user);
+document.addEventListener('DOMContentLoaded', async () => {
+  bindAdminUI();
   setSyncState('기존 데이터 확인 중…', 'loading');
 
   try {
@@ -499,20 +397,6 @@ async function handleAuthenticatedUser(user) {
     if (migrated > 0) setSyncState(`Firestore 연결됨 · 기존 ${migrated}건 복구`, 'ok');
   } catch (error) {
     console.error(error);
-    setSyncState('Firestore 연결 오류', 'error');
+    await loadAll();
   }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  bindAdminUI();
-  bindLoginUI();
-  $('#adminEmail').value = ADMIN_EMAIL;
-
-  observeAdminAuth((user) => {
-    if (!user) {
-      showLogin();
-      return;
-    }
-    handleAuthenticatedUser(user);
-  });
 });
