@@ -1,0 +1,65 @@
+/* FINE.B user-supplied box structure & corrugated material images */
+
+/* Product cards: use supplied real structure images where available */
+.product-option[data-product="paper-tuck"] .product-thumb,
+.product-option[data-product="paper-cross"] .product-thumb,
+.product-option[data-product="paper-glue"] .product-thumb,
+.product-option[data-product="paper-y"] .product-thumb,
+.product-option[data-product="paper-y1"] .product-thumb,
+.product-option[data-product="paper-y2"] .product-thumb,
+.product-option[data-product="paper-sleeve"] .product-thumb,
+.product-option[data-product="paper-g"] .product-thumb,
+.product-option[data-product="corr-g"] .product-thumb,
+.product-option[data-product="corr-handle"] .product-thumb,
+.product-option[data-product="corr-shipping"] .product-thumb,
+.product-option[data-product="corr-laminated"] .product-thumb,
+.product-option[data-product="bag-basic"] .product-thumb,
+.product-option[data-product="bag-triangle"] .product-thumb{
+  background-color:#f7f8fa!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+}
+.product-option[data-product="paper-tuck"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/668c55f22f821.png')!important}
+.product-option[data-product="paper-cross"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/098046b0056ad.png')!important}
+.product-option[data-product="paper-glue"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/c6ab3e7c0aa20.png')!important}
+.product-option[data-product="paper-y"] .product-thumb,
+.product-option[data-product="paper-y1"] .product-thumb,
+.product-option[data-product="paper-y2"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/2ccc9754ea3cd.png')!important}
+.product-option[data-product="paper-sleeve"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/94ddd3e73bf3e.png')!important}
+.product-option[data-product="paper-g"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/3a10f6dcfd2a5.png')!important}
+.product-option[data-product="corr-g"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/b03666eb79147.png')!important}
+.product-option[data-product="corr-handle"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/531e21c87f97a.png')!important}
+.product-option[data-product="corr-shipping"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/29ee294a2cb88.png')!important}
+.product-option[data-product="corr-laminated"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/54164dd9f879e.png')!important}
+.product-option[data-product="bag-basic"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/312adcf3f017f.png')!important}
+.product-option[data-product="bag-triangle"] .product-thumb{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/c989503a4f0d1.png')!important}
+.product-option[data-product="paper-tuck"] .product-thumb-icon,
+.product-option[data-product="paper-cross"] .product-thumb-icon,
+.product-option[data-product="paper-glue"] .product-thumb-icon,
+.product-option[data-product="paper-y"] .product-thumb-icon,
+.product-option[data-product="paper-y1"] .product-thumb-icon,
+.product-option[data-product="paper-y2"] .product-thumb-icon,
+.product-option[data-product="paper-sleeve"] .product-thumb-icon,
+.product-option[data-product="paper-g"] .product-thumb-icon,
+.product-option[data-product="corr-g"] .product-thumb-icon,
+.product-option[data-product="corr-handle"] .product-thumb-icon,
+.product-option[data-product="corr-shipping"] .product-thumb-icon,
+.product-option[data-product="corr-laminated"] .product-thumb-icon,
+.product-option[data-product="bag-basic"] .product-thumb-icon,
+.product-option[data-product="bag-triangle"] .product-thumb-icon{display:none!important}
+
+/* Corrugated material cards */
+.paper-card[data-paper="b"] .paper-swatch,
+.paper-card[data-paper="b-lam"] .paper-swatch,
+.paper-card[data-paper="e"] .paper-swatch,
+.paper-card[data-paper="e-lam"] .paper-swatch{
+  background-color:#f7f8fa!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+}
+.paper-card[data-paper="b"] .paper-swatch{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/c6f20dc238b01.png')!important}
+.paper-card[data-paper="b-lam"] .paper-swatch{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/0722a616e3a9b.png')!important}
+.paper-card[data-paper="e"] .paper-swatch{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/9b1156af15217.png')!important}
+.paper-card[data-paper="e-lam"] .paper-swatch{background-image:url('https://cdn.imweb.me/upload/S2023030963558ef55ba8e/833f1c9aa1826.png')!important}
