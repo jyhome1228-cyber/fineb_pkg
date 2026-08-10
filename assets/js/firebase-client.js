@@ -9,12 +9,6 @@ import {
   getDocs,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut
-} from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBhTNbNhvaUAnYKkHuqqQUzlwzDcW7vKSA',
@@ -25,17 +19,16 @@ const firebaseConfig = {
   appId: '1:1085966915967:web:f28c8ac1eaa27da78fe24a'
 };
 
-export const ADMIN_EMAIL = 'whales84@naver.com';
-
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export const auth = getAuth(app);
 
 const COLLECTIONS = {
   quote: 'quotes',
   sample: 'samples',
   inquiry: 'inquiries'
 };
+
+const VALID_STATUSES = ['신규', '확인중', '진행중', '견적완료', '완료', '보류'];
 
 function collectionNameFor(type) {
   const collectionName = COLLECTIONS[type];
@@ -71,24 +64,6 @@ export async function savePublicRequest(type, payload) {
   return data;
 }
 
-export function observeAdminAuth(callback) {
-  return onAuthStateChanged(auth, callback);
-}
-
-export async function signInAdmin(email, password) {
-  const normalizedEmail = String(email || '').trim().toLowerCase();
-  if (normalizedEmail !== ADMIN_EMAIL) {
-    const error = new Error('ADMIN_EMAIL_NOT_ALLOWED');
-    error.code = 'admin/email-not-allowed';
-    throw error;
-  }
-  return signInWithEmailAndPassword(auth, normalizedEmail, password);
-}
-
-export async function signOutAdmin() {
-  return signOut(auth);
-}
-
 export async function fetchAdminRequests(type) {
   const collectionName = collectionNameFor(type);
   const snapshot = await getDocs(collection(db, collectionName));
@@ -99,15 +74,16 @@ export async function fetchAdminRequests(type) {
 
 export async function updateAdminRequest(type, id, patch = {}) {
   const collectionName = collectionNameFor(type);
+  const status = patch.status;
+  if (!VALID_STATUSES.includes(status)) throw new Error('INVALID_STATUS');
+
   const safePatch = {
-    ...patch,
+    status,
+    statusUpdatedAt: patch.statusUpdatedAt || new Date().toISOString(),
     updatedAtClient: new Date().toISOString(),
     updatedAt: serverTimestamp()
   };
-  delete safePatch.id;
-  delete safePatch.type;
-  delete safePatch.createdAt;
-  delete safePatch.createdAtClient;
+
   await updateDoc(doc(db, collectionName, id), safePatch);
   return safePatch;
 }
@@ -119,12 +95,24 @@ export async function importLegacyRequestIfMissing(type, payload) {
   const snapshot = await getDoc(ref);
   if (snapshot.exists()) return false;
 
-  await setDoc(ref, {
+  const originalStatus = VALID_STATUSES.includes(data.status) ? data.status : '신규';
+  const migrated = {
     ...data,
+    status: '신규',
+    privacyAgreed: data.privacyAgreed === true,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     migratedFromLocalStorage: true,
     migratedAtClient: new Date().toISOString()
-  });
+  };
+
+  await setDoc(ref, migrated);
+
+  if (originalStatus !== '신규') {
+    await updateAdminRequest(type, data.id, {
+      status: originalStatus,
+      statusUpdatedAt: data.statusUpdatedAt || new Date().toISOString()
+    });
+  }
   return true;
 }
