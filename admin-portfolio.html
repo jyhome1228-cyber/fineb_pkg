@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FINE.B Portfolio Admin</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="assets/css/admin-portfolio.css">
+</head>
+<body>
+  <div class="portfolio-admin-shell">
+    <aside class="portfolio-admin-side">
+      <a class="portfolio-admin-brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"><p>PRODUCTION ADMIN</p></a>
+      <nav class="portfolio-admin-nav">
+        <a href="admin.html">문의 관리</a>
+        <a class="active" href="admin-portfolio.html">포트폴리오 관리</a>
+        <a href="works.html">포트폴리오 보기 ↗</a>
+      </nav>
+      <div class="portfolio-admin-meta">FINE.B Portfolio CMS<br><span>Firestore + Firebase Storage</span></div>
+    </aside>
+
+    <main class="portfolio-admin-main">
+      <div class="pa-top">
+        <div>
+          <small>FINE.B PORTFOLIO ADMIN</small>
+          <h1>포트폴리오 관리</h1>
+          <p>이미지를 등록하면 Firebase Storage에 저장되고 포트폴리오 페이지에 자동으로 추가됩니다.<br>대표 이미지는 카드에서 5:4 비율로 자동 크롭되어 표시됩니다.</p>
+        </div>
+        <div class="pa-actions">
+          <span class="pa-sync" id="portfolioSync" data-state="loading">현황 불러오는 중…</span>
+          <button class="pa-btn" id="refreshPortfolio" type="button">새로고침</button>
+          <a class="pa-btn primary" href="works.html" target="_blank" rel="noopener">포트폴리오 보기 ↗</a>
+        </div>
+      </div>
+
+      <section class="pa-stats">
+        <article class="pa-stat"><span>전체 포트폴리오</span><strong id="statPortfolioAll">0</strong></article>
+        <article class="pa-stat"><span>기존 등록</span><strong id="statPortfolioLegacy">0</strong></article>
+        <article class="pa-stat"><span>CMS 등록</span><strong id="statPortfolioCms">0</strong></article>
+        <article class="pa-stat"><span>전체 이미지</span><strong id="statPortfolioImages">0</strong></article>
+      </section>
+
+      <section class="pa-layout">
+        <div class="pa-panel">
+          <div class="pa-panel-head">
+            <div><small>NEW PROJECT</small><h2>새 포트폴리오 등록</h2><p>첫 번째 이미지가 대표 이미지가 됩니다.</p></div>
+          </div>
+          <form class="pa-form" id="portfolioForm">
+            <div class="pa-form-grid">
+              <div class="pa-field">
+                <label for="portfolioCat">카테고리 *</label>
+                <select id="portfolioCat" required>
+                  <option value="paper">단상자</option>
+                  <option value="gift">선물박스</option>
+                  <option value="rigid">싸바리</option>
+                  <option value="special">슬리브·특수구조</option>
+                </select>
+              </div>
+              <div class="pa-field">
+                <label for="portfolioTitle">프로젝트명 *</label>
+                <input id="portfolioTitle" maxlength="100" required placeholder="예: 프리미엄 선물 패키지">
+              </div>
+              <div class="pa-field">
+                <label for="portfolioType">제작 유형</label>
+                <input id="portfolioType" placeholder="예: 단상자 · 패키지">
+              </div>
+              <div class="pa-field">
+                <label for="portfolioUsage">용도</label>
+                <input id="portfolioUsage" placeholder="예: 식품 · 선물 패키지">
+              </div>
+              <div class="pa-field full">
+                <label for="portfolioFeature">특징 / 카드 하단 문구</label>
+                <input id="portfolioFeature" placeholder="예: 금박 · 형압 · 제작 이미지 참고">
+              </div>
+              <div class="pa-field full">
+                <label for="portfolioDesc">상세 설명</label>
+                <textarea id="portfolioDesc" placeholder="상세 팝업에 표시할 제작 설명을 입력해주세요."></textarea>
+                <span class="pa-help">비워두면 프로젝트명 기준으로 기본 설명이 자동 입력됩니다.</span>
+              </div>
+
+              <div class="pa-upload">
+                <div class="pa-dropzone" id="portfolioDropzone">
+                  <input id="portfolioImages" type="file" accept="image/*" multiple>
+                  <div><strong>이미지를 여기에 끌어놓거나 클릭해서 선택</strong><span>최대 20장 · 이미지 1장당 15MB 이하 · JPG / PNG / WEBP 권장</span></div>
+                </div>
+                <div class="pa-preview" id="portfolioPreview"></div>
+                <div class="pa-upload-status" id="portfolioUploadStatus">이미지를 선택해주세요.<div class="pa-progress"><div class="pa-progress-bar" id="portfolioProgressBar"></div></div></div>
+              </div>
+            </div>
+            <div class="pa-warning">대표 이미지는 첫 번째 이미지입니다. 미리보기의 <b>대표로 설정</b> 버튼을 누르면 순서가 맨 앞으로 이동합니다. 실제 파일은 원본 비율로 저장되고, 포트폴리오 카드에서만 5:4로 자동 크롭됩니다.</div>
+            <div class="pa-submit-row"><button class="pa-btn primary" id="portfolioSubmit" type="submit">포트폴리오 등록하기</button></div>
+          </form>
+        </div>
+
+        <div class="pa-panel">
+          <div class="pa-panel-head">
+            <div><small>CURRENT PORTFOLIO</small><h2>현재 업로드 현황</h2><p>기존 포트폴리오와 어드민에서 새로 등록한 CMS 포트폴리오를 함께 표시합니다.</p></div>
+            <div class="pa-list-tools"><input id="portfolioSearch" type="search" placeholder="프로젝트명 검색"></div>
+          </div>
+          <div class="pa-list" id="portfolioAdminList"><div class="pa-empty">포트폴리오를 불러오는 중입니다.</div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="assets/js/portfolio-admin.js"></script>
+</body>
+</html>
