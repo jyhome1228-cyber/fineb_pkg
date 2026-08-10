@@ -19,13 +19,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         display:inline-flex!important;
         align-items:center!important;
         justify-content:center!important;
-        width:116px!important;
-        height:44px!important;
-        min-height:44px!important;
-        padding:0 16px!important;
+        width:108px!important;
+        height:40px!important;
+        min-height:40px!important;
+        padding:0 14px!important;
         border-radius:999px!important;
         box-sizing:border-box!important;
-        font-size:13.5px!important;
+        font-size:13px!important;
         font-weight:650!important;
         line-height:1!important;
         letter-spacing:-.01em!important;
@@ -63,7 +63,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       @media(max-width:900px){
         .nav a[href$="sample.html"],.nav a[href$="quote.html"]{
           width:100%!important;
-          height:44px!important;
+          height:40px!important;
+          min-height:40px!important;
           border-radius:12px!important;
         }
       }
