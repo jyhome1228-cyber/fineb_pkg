@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   ensureStyle('assets/css/forms.css');
   ensureStyle('assets/css/factory.css');
   if(!document.querySelector('script[src="assets/js/contact-paper-ui.js"]')){const uiScript=document.createElement('script');uiScript.src='assets/js/contact-paper-ui.js';document.body.appendChild(uiScript);}
+  if(!document.querySelector('script[src="assets/js/seo-meta.js"]')){const seoScript=document.createElement('script');seoScript.src='assets/js/seo-meta.js';document.body.appendChild(seoScript);}
 
   // Homepage visual refresh: user-supplied production imagery only
   const homeHero=document.querySelector('.hero-main .hero-grid');
