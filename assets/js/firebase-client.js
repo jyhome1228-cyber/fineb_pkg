@@ -7,8 +7,6 @@ import {
   updateDoc,
   collection,
   getDocs,
-  query,
-  orderBy,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 import {
@@ -93,9 +91,10 @@ export async function signOutAdmin() {
 
 export async function fetchAdminRequests(type) {
   const collectionName = collectionNameFor(type);
-  const q = query(collection(db, collectionName), orderBy('createdAtClient', 'desc'));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+  const snapshot = await getDocs(collection(db, collectionName));
+  return snapshot.docs
+    .map((item) => ({ id: item.id, ...item.data() }))
+    .sort((a, b) => new Date(b.createdAtClient || 0) - new Date(a.createdAtClient || 0));
 }
 
 export async function updateAdminRequest(type, id, patch = {}) {
