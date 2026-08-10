@@ -35,6 +35,21 @@ service cloud.firestore {
         ]);
     }
 
+    function validPortfolioCreate() {
+      return request.resource.data.id is string
+        && request.resource.data.id.size() > 3
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 100
+        && request.resource.data.cat in ['paper', 'gift', 'rigid', 'special']
+        && request.resource.data.images is list
+        && request.resource.data.images.size() > 0
+        && request.resource.data.images.size() <= 20
+        && request.resource.data.published == true
+        && request.resource.data.source == 'cms'
+        && request.resource.data.createdAtClient is string;
+    }
+
     match /quotes/{requestId} {
       allow create: if validPublicRequest('quote');
       allow read: if true;
@@ -54,6 +69,12 @@ service cloud.firestore {
       allow read: if true;
       allow update: if statusOnlyUpdate();
       allow delete: if false;
+    }
+
+    match /portfolio/{projectId} {
+      allow read: if true;
+      allow create: if validPortfolioCreate();
+      allow update, delete: if false;
     }
 
     match /{document=**} {
