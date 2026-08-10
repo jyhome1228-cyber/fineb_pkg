@@ -59,19 +59,22 @@
     $('#viewLarge')?.addEventListener('click',()=>setView('large'));
   });
 
-  /* 기존 admin.js의 새 창 about:blank PDF 핸들러를 캡처 단계에서 차단 */
+  /* 구형 전역 admin.js에서만 안정형 인쇄를 가로챕니다.
+     모듈형 admin.js에서는 선택 데이터가 전역에 노출되지 않으므로
+     이벤트를 막지 않고 admin.js의 기본 PDF 저장 기능을 그대로 사용합니다. */
   document.addEventListener('click',e=>{
     const btn=e.target.closest?.('#pdfRequest');
     if(!btn)return;
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
     let r=null;
     try{
       if(typeof findSelected==='function')r=findSelected();
       else if(typeof adminState!=='undefined')r=(adminState.data[adminState.type]||[]).find(x=>x.id===adminState.selected)||null;
     }catch{}
-    if(r)stablePrint(r);
+    if(!r)return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    stablePrint(r);
   },true);
 
   window.addEventListener('afterprint',cleanupPrint);
