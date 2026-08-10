@@ -9,6 +9,68 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(location.pathname.endsWith('/works.html')||location.pathname.endsWith('works.html')) document.title='포트폴리오 | FINE.B';
   if(location.pathname.endsWith('/guide.html')||location.pathname.endsWith('guide.html')) document.title='주문제작가이드 | FINE.B';
 
+  // Header action buttons: same size / hierarchy
+  if(!document.querySelector('#fineb-header-action-style')){
+    const style=document.createElement('style');
+    style.id='fineb-header-action-style';
+    style.textContent=`
+      .nav a[href$="sample.html"],
+      .nav a[href$="quote.html"]{
+        display:inline-flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        width:116px!important;
+        height:44px!important;
+        min-height:44px!important;
+        padding:0 16px!important;
+        border-radius:999px!important;
+        box-sizing:border-box!important;
+        font-size:13.5px!important;
+        font-weight:650!important;
+        line-height:1!important;
+        letter-spacing:-.01em!important;
+        white-space:nowrap!important;
+      }
+      .nav a[href$="sample.html"]{
+        order:90!important;
+        margin-left:3px!important;
+        border:1px solid #c8d1dc!important;
+        background:#fff!important;
+        color:#0A2240!important;
+        box-shadow:none!important;
+      }
+      .nav a[href$="sample.html"]:after,
+      .nav a[href$="quote.html"]:after{display:none!important}
+      .nav a[href$="sample.html"]:hover{
+        border-color:#0A2240!important;
+        background:#f4f7fa!important;
+      }
+      .nav a[href$="sample.html"].active{
+        border-color:#0A2240!important;
+        background:#eef3f7!important;
+        color:#0A2240!important;
+      }
+      .nav a[href$="quote.html"]{
+        order:91!important;
+        margin-left:-10px!important;
+        border:1px solid #0A2240!important;
+        background:#0A2240!important;
+        color:#fff!important;
+      }
+      @media(max-width:1100px){
+        .nav a[href$="sample.html"],.nav a[href$="quote.html"]{margin-left:0!important}
+      }
+      @media(max-width:900px){
+        .nav a[href$="sample.html"],.nav a[href$="quote.html"]{
+          width:100%!important;
+          height:44px!important;
+          border-radius:12px!important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   // Interactive production process
   const processButtons=[...document.querySelectorAll('[data-process-target]')];
   const processPanels=[...document.querySelectorAll('[data-process-panel]')];
