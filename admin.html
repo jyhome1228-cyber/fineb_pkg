@@ -1,1 +1,124 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FINE.B Admin</title><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="assets/css/admin.css"><link rel="stylesheet" href="assets/css/admin-accessibility.css"></head><body><div class="admin-shell" id="adminApp"><aside class="admin-side"><a class="admin-brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"><p>PRODUCTION ADMIN</p></a><nav class="admin-nav"><button class="active" data-type="quote"><span>견적문의</span><b id="navQuoteCount">0</b></button><button data-type="sample"><span>샘플문의</span><b id="navSampleCount">0</b></button><button data-type="inquiry"><span>제작문의</span><b id="navInquiryCount">0</b></button><a href="index.html" class="admin-site-link">사이트 보기 ↗</a></nav><div class="admin-meta">FINE.B Admin<br><span>현재 브라우저 접수내역 기준</span></div></aside><main class="admin-main"><div class="admin-top"><div><small>FINE.B PRODUCTION ADMIN</small><h1>문의 관리</h1><p>문의 내용을 확인하고 상태를 변경해 진행 상황을 관리합니다.</p></div><div class="admin-actions"><button class="admin-btn" id="refreshAdmin">새로고침</button></div></div><section class="admin-stats"><article class="admin-stat"><span>전체 요청</span><strong id="statAll">0</strong></article><article class="admin-stat"><span>신규</span><strong id="statNew">0</strong></article><article class="admin-stat"><span>확인중</span><strong id="statCheck">0</strong></article><article class="admin-stat"><span>진행중</span><strong id="statProgress">0</strong></article><article class="admin-stat"><span>견적완료</span><strong id="statQuoted">0</strong></article><article class="admin-stat"><span>완료</span><strong id="statDone">0</strong></article></section><section class="admin-workflow"><div class="workflow-head"><div><small>STATUS WORKFLOW</small><h2>문의 처리 단계</h2></div><p><b>신규</b> 접수 → <b>확인중</b> 내용 확인 → <b>진행중</b> 상담·견적 작업 → <b>견적완료</b> 견적 전달 → <b>완료</b> 처리 종료<br><span>추가 확인이나 회신 대기가 필요한 건은 ‘보류’로 관리합니다.</span></p></div><div class="workflow-cards"><button data-guide-status="신규"><b>신규</b><span>아직 확인하지 않은 접수</span><em id="flowNew">0</em></button><button data-guide-status="확인중"><b>확인중</b><span>내용과 제작 조건 확인</span><em id="flowCheck">0</em></button><button data-guide-status="진행중"><b>진행중</b><span>상담·견적 작업 진행</span><em id="flowProgress">0</em></button><button data-guide-status="견적완료"><b>견적완료</b><span>견적 안내까지 전달</span><em id="flowQuoted">0</em></button><button data-guide-status="완료"><b>완료</b><span>후속 처리까지 종료</span><em id="flowDone">0</em></button><button data-guide-status="보류"><b>보류</b><span>정보·회신 추가 대기</span><em id="flowHold">0</em></button></div></section><section class="admin-content"><div class="admin-list-wrap"><div class="admin-list-head"><div><h2 id="listTitle">견적문의</h2><span class="list-count" id="listCount">0건</span></div><div class="admin-filter"><button class="active" data-status="all">전체</button><button data-status="신규">신규</button><button data-status="확인중">확인중</button><button data-status="진행중">진행중</button><button data-status="견적완료">견적완료</button><button data-status="완료">완료</button><button data-status="보류">보류</button></div></div><div class="admin-search"><input id="adminSearch" type="search" placeholder="회사명, 담당자, 연락처, 제품명 검색"><button id="clearSearch" type="button">초기화</button></div><div class="request-list" id="requestList"></div></div><aside class="admin-detail" id="requestDetail"><div class="detail-empty">왼쪽 요청을 선택하면<br>상세 내용이 표시됩니다.</div></aside></section></main></div><div class="view-size-control" aria-label="화면 글자 크기"><button type="button" id="viewNormal" class="active">작게보기</button><button type="button" id="viewLarge">크게보기</button></div><div id="pdfPrintRoot" class="pdf-print-root" aria-hidden="true"></div><script src="assets/js/admin.js"></script><script src="assets/js/admin-accessibility.js"></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FINE.B Admin</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/admin-accessibility.css">
+  <style>
+    [hidden]{display:none!important}
+    .admin-login-screen{min-height:100vh;display:grid;place-items:center;background:#f3f5f7;padding:24px;font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#15191f}
+    .admin-login-card{width:min(440px,100%);background:#fff;border:1px solid #dfe5eb;border-radius:18px;padding:34px;box-shadow:0 18px 50px rgba(15,31,48,.08)}
+    .admin-login-brand img{display:block;width:122px;height:auto;margin-bottom:22px}.admin-login-brand small{display:block;color:#7b8792;font-size:11px;letter-spacing:.12em;margin-bottom:8px}.admin-login-card h1{margin:0 0 8px;font-size:28px;letter-spacing:-.04em}.admin-login-card>p{margin:0 0 26px;color:#6f7a84;line-height:1.65;font-size:14px}
+    .admin-login-form{display:grid;gap:14px}.admin-login-field{display:grid;gap:7px}.admin-login-field label{font-size:12px;font-weight:700;color:#44515d}.admin-login-field input{width:100%;height:48px;border:1px solid #d7dee5;border-radius:10px;padding:0 13px;font:inherit;background:#fff;outline:none}.admin-login-field input:focus{border-color:#0A2240;box-shadow:0 0 0 3px rgba(10,34,64,.08)}.admin-login-field input[readonly]{background:#f6f8fa;color:#66727d}
+    .admin-login-button{height:50px;border:0;border-radius:10px;background:#0A2240;color:#fff;font:inherit;font-weight:700;cursor:pointer;margin-top:4px}.admin-login-button:disabled{opacity:.55;cursor:wait}.admin-login-message{min-height:20px;margin:0!important;color:#b43b35!important;font-size:12px!important}.admin-login-help{margin-top:20px;padding-top:18px;border-top:1px solid #edf0f3;color:#8a949d;font-size:11px;line-height:1.65}
+    .admin-account-box{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.admin-account-email{font-size:11px;color:#71808d}.cloud-sync-state{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #dfe5eb;border-radius:999px;background:#fff;font-size:11px;font-weight:700;color:#45606f}.cloud-sync-state:before{content:"";width:7px;height:7px;border-radius:50%;background:#2f8f59}.cloud-sync-state[data-state="loading"]:before{background:#c3912f}.cloud-sync-state[data-state="error"]:before{background:#c6534f}.admin-meta .cloud-note{display:block;margin-top:8px;color:#8a949d;font-size:10px;line-height:1.45}
+    @media(max-width:760px){.admin-login-card{padding:26px 22px;border-radius:14px}.admin-login-card h1{font-size:24px}.admin-account-box{justify-content:flex-start}.cloud-sync-state{max-width:100%}}
+  </style>
+</head>
+<body>
+  <section class="admin-login-screen" id="adminLogin">
+    <div class="admin-login-card">
+      <a class="admin-login-brand" href="index.html">
+        <img src="assets/logo.svg" alt="FINE.B">
+        <small>PRODUCTION ADMIN</small>
+      </a>
+      <h1>관리자 로그인</h1>
+      <p>견적·샘플·제작문의는 Firestore에서 통합 관리됩니다. 등록된 관리자 계정으로 로그인해주세요.</p>
+      <form class="admin-login-form" id="adminLoginForm">
+        <div class="admin-login-field">
+          <label for="adminEmail">관리자 이메일</label>
+          <input id="adminEmail" type="email" autocomplete="username" readonly>
+        </div>
+        <div class="admin-login-field">
+          <label for="adminPassword">비밀번호</label>
+          <input id="adminPassword" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="admin-login-button" id="adminLoginButton" type="submit">관리자 로그인</button>
+        <p class="admin-login-message" id="adminLoginMessage"></p>
+      </form>
+      <div class="admin-login-help">Firebase Authentication에 등록된 관리자 계정만 접근할 수 있습니다. 로그인 후 모든 문의는 현재 브라우저가 아니라 Firestore 원본 데이터 기준으로 표시됩니다.</div>
+    </div>
+  </section>
+
+  <div class="admin-shell" id="adminApp" hidden>
+    <aside class="admin-side">
+      <a class="admin-brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"><p>PRODUCTION ADMIN</p></a>
+      <nav class="admin-nav">
+        <button class="active" data-type="quote"><span>견적문의</span><b id="navQuoteCount">0</b></button>
+        <button data-type="sample"><span>샘플문의</span><b id="navSampleCount">0</b></button>
+        <button data-type="inquiry"><span>제작문의</span><b id="navInquiryCount">0</b></button>
+        <a href="index.html" class="admin-site-link">사이트 보기 ↗</a>
+      </nav>
+      <div class="admin-meta">FINE.B Admin<span class="cloud-note">Firestore 중앙 저장소 기준<br>기기·브라우저가 바뀌어도 동일한 데이터를 표시합니다.</span></div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="admin-top">
+        <div>
+          <small>FINE.B PRODUCTION ADMIN</small>
+          <h1>문의 관리</h1>
+          <p>Firestore에 저장된 문의를 확인하고 상태를 변경해 진행 상황을 관리합니다.</p>
+        </div>
+        <div class="admin-actions admin-account-box">
+          <span class="cloud-sync-state" id="cloudSyncState" data-state="loading">Firestore 연결 확인 중…</span>
+          <span class="admin-account-email" id="adminAccountEmail"></span>
+          <button class="admin-btn" id="refreshAdmin" type="button">새로고침</button>
+          <button class="admin-btn" id="adminLogout" type="button">로그아웃</button>
+        </div>
+      </div>
+
+      <section class="admin-stats">
+        <article class="admin-stat"><span>전체 요청</span><strong id="statAll">0</strong></article>
+        <article class="admin-stat"><span>신규</span><strong id="statNew">0</strong></article>
+        <article class="admin-stat"><span>확인중</span><strong id="statCheck">0</strong></article>
+        <article class="admin-stat"><span>진행중</span><strong id="statProgress">0</strong></article>
+        <article class="admin-stat"><span>견적완료</span><strong id="statQuoted">0</strong></article>
+        <article class="admin-stat"><span>완료</span><strong id="statDone">0</strong></article>
+      </section>
+
+      <section class="admin-workflow">
+        <div class="workflow-head">
+          <div><small>STATUS WORKFLOW</small><h2>문의 처리 단계</h2></div>
+          <p><b>신규</b> 접수 → <b>확인중</b> 내용 확인 → <b>진행중</b> 상담·견적 작업 → <b>견적완료</b> 견적 전달 → <b>완료</b> 처리 종료<br><span>추가 확인이나 회신 대기가 필요한 건은 ‘보류’로 관리합니다.</span></p>
+        </div>
+        <div class="workflow-cards">
+          <button data-guide-status="신규"><b>신규</b><span>아직 확인하지 않은 접수</span><em id="flowNew">0</em></button>
+          <button data-guide-status="확인중"><b>확인중</b><span>내용과 제작 조건 확인</span><em id="flowCheck">0</em></button>
+          <button data-guide-status="진행중"><b>진행중</b><span>상담·견적 작업 진행</span><em id="flowProgress">0</em></button>
+          <button data-guide-status="견적완료"><b>견적완료</b><span>견적 안내까지 전달</span><em id="flowQuoted">0</em></button>
+          <button data-guide-status="완료"><b>완료</b><span>후속 처리까지 종료</span><em id="flowDone">0</em></button>
+          <button data-guide-status="보류"><b>보류</b><span>정보·회신 추가 대기</span><em id="flowHold">0</em></button>
+        </div>
+      </section>
+
+      <section class="admin-content">
+        <div class="admin-list-wrap">
+          <div class="admin-list-head">
+            <div><h2 id="listTitle">견적문의</h2><span class="list-count" id="listCount">0건</span></div>
+            <div class="admin-filter">
+              <button class="active" data-status="all">전체</button>
+              <button data-status="신규">신규</button>
+              <button data-status="확인중">확인중</button>
+              <button data-status="진행중">진행중</button>
+              <button data-status="견적완료">견적완료</button>
+              <button data-status="완료">완료</button>
+              <button data-status="보류">보류</button>
+            </div>
+          </div>
+          <div class="admin-search"><input id="adminSearch" type="search" placeholder="회사명, 담당자, 연락처, 제품명 검색"><button id="clearSearch" type="button">초기화</button></div>
+          <div class="request-list" id="requestList"></div>
+        </div>
+        <aside class="admin-detail" id="requestDetail"><div class="detail-empty">왼쪽 요청을 선택하면<br>상세 내용이 표시됩니다.</div></aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="view-size-control" aria-label="화면 글자 크기"><button type="button" id="viewNormal" class="active">작게보기</button><button type="button" id="viewLarge">크게보기</button></div>
+  <div id="pdfPrintRoot" class="pdf-print-root" aria-hidden="true"></div>
+  <script type="module" src="assets/js/admin.js"></script>
+  <script src="assets/js/admin-accessibility.js"></script>
+</body>
+</html>
