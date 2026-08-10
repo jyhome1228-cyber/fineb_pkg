@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded',()=>{
+  // Global visible menu labels
+  const pageLabels=[['works.html','포트폴리오'],['guide.html','주문제작가이드']];
+  document.querySelectorAll('a[href]').forEach(link=>{
+    const href=(link.getAttribute('href')||'').split('#')[0];
+    const found=pageLabels.find(([path])=>href.endsWith(path));
+    if(found)link.textContent=found[1];
+  });
+  if(location.pathname.endsWith('/works.html')||location.pathname.endsWith('works.html')) document.title='포트폴리오 | FINE.B';
+  if(location.pathname.endsWith('/guide.html')||location.pathname.endsWith('guide.html')) document.title='주문제작가이드 | FINE.B';
+
   // Interactive production process
   const processButtons=[...document.querySelectorAll('[data-process-target]')];
   const processPanels=[...document.querySelectorAll('[data-process-panel]')];
