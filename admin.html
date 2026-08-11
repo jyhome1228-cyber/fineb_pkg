@@ -14,7 +14,19 @@
     .cloud-sync-state[data-state="loading"]:before{background:#c3912f}
     .cloud-sync-state[data-state="error"]:before{background:#c6534f}
     .admin-meta .cloud-note{display:block;margin-top:8px;color:rgba(255,255,255,.42);font-size:10px;line-height:1.45}
-    @media(max-width:760px){.admin-account-box{justify-content:flex-start}.cloud-sync-state{max-width:100%}}
+    .visitor-panel{margin-bottom:14px;border:1px solid #dfe5ea;border-radius:18px;padding:18px;background:#fff}
+    .visitor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:13px}
+    .visitor-head small{display:block;color:#718092;font-size:10px;font-weight:700;letter-spacing:.13em}
+    .visitor-head h2{margin:4px 0 0;font-size:17px;letter-spacing:-.025em}
+    .visitor-meta{color:#7b8792;font-size:10.5px;text-align:right;line-height:1.55}
+    .visitor-meta[data-state="error"]{color:#b44d48}.visitor-meta[data-state="loading"]{color:#9a7428}
+    .visitor-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .visitor-card{position:relative;overflow:hidden;border:1px solid #e0e5ea;border-radius:15px;padding:16px 17px;background:#f8fafb}
+    .visitor-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#0A2240}
+    .visitor-card span{display:block;color:#7b8792;font-size:10.5px;font-weight:700;letter-spacing:.08em}
+    .visitor-card strong{display:block;margin-top:5px;color:#0A2240;font-size:29px;line-height:1;font-weight:760}
+    .visitor-card small{display:block;margin-top:7px;color:#929ca6;font-size:9.5px;line-height:1.45}
+    @media(max-width:760px){.admin-account-box{justify-content:flex-start}.cloud-sync-state{max-width:100%}.visitor-head{align-items:flex-start;flex-direction:column}.visitor-meta{text-align:left}.visitor-stats{grid-template-columns:1fr}.visitor-card strong{font-size:26px}}
   </style>
 </head>
 <body>
@@ -36,13 +48,25 @@
         <div>
           <small>FINE.B PRODUCTION ADMIN</small>
           <h1>문의 관리</h1>
-          <p>Firestore에 저장된 문의를 확인하고 상태를 변경해 진행 상황을 관리합니다.</p>
+          <p>Firestore에 저장된 문의와 사이트 방문 현황을 함께 관리합니다.</p>
         </div>
         <div class="admin-actions admin-account-box">
           <span class="cloud-sync-state" id="cloudSyncState" data-state="loading">Firestore 연결 확인 중…</span>
           <button class="admin-btn" id="refreshAdmin" type="button">새로고침</button>
         </div>
       </div>
+
+      <section class="visitor-panel">
+        <div class="visitor-head">
+          <div><small>SITE VISITORS</small><h2>사이트 방문자 현황</h2></div>
+          <div class="visitor-meta" id="visitorSyncState" data-state="loading">방문자 집계 연결 확인 중…</div>
+        </div>
+        <div class="visitor-stats">
+          <article class="visitor-card"><span>TODAY</span><strong id="visitorToday">0</strong><small id="visitorTodayLabel">오늘 고유 방문자</small></article>
+          <article class="visitor-card"><span>WEEKLY</span><strong id="visitorWeekly">0</strong><small id="visitorWeeklyLabel">이번 주 고유 방문자</small></article>
+          <article class="visitor-card"><span>MONTHLY</span><strong id="visitorMonthly">0</strong><small id="visitorMonthlyLabel">이번 달 고유 방문자</small></article>
+        </div>
+      </section>
 
       <section class="admin-stats">
         <article class="admin-stat"><span>전체 요청</span><strong id="statAll">0</strong></article>
