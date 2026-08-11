@@ -50,6 +50,18 @@ service cloud.firestore {
         && request.resource.data.createdAtClient is string;
     }
 
+    function validVisitCreate(visitId) {
+      return request.resource.data.visitorId is string
+        && request.resource.data.visitorId.size() >= 10
+        && request.resource.data.visitorId.size() <= 80
+        && request.resource.data.date is string
+        && request.resource.data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && visitId == request.resource.data.date + '_' + request.resource.data.visitorId
+        && request.resource.data.firstPath is string
+        && request.resource.data.firstPath.size() <= 160
+        && request.resource.data.createdAtClient is string;
+    }
+
     match /quotes/{requestId} {
       allow create: if validPublicRequest('quote');
       allow read: if true;
@@ -74,6 +86,12 @@ service cloud.firestore {
     match /portfolio/{projectId} {
       allow read: if true;
       allow create: if validPortfolioCreate();
+      allow update, delete: if false;
+    }
+
+    match /visits/{visitId} {
+      allow read: if true;
+      allow create: if validVisitCreate(visitId);
       allow update, delete: if false;
     }
 
