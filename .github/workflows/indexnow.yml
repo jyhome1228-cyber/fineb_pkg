@@ -1,0 +1,69 @@
+name: IndexNow Notify
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - 'assets/**'
+      - 'sitemap.xml'
+      - 'robots.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+      INDEXNOW_KEY_LOCATION: ${{ secrets.INDEXNOW_KEY_LOCATION }}
+    steps:
+      - name: Check configuration
+        run: |
+          if [ -z "$INDEXNOW_KEY" ] || [ -z "$INDEXNOW_KEY_LOCATION" ]; then
+            echo "IndexNow is not configured yet. Add INDEXNOW_KEY and INDEXNOW_KEY_LOCATION secrets to enable submission."
+          else
+            echo "IndexNow secrets detected. Submission will run after a short Pages deployment delay."
+          fi
+
+      - name: Wait for GitHub Pages deployment
+        if: ${{ env.INDEXNOW_KEY != '' && env.INDEXNOW_KEY_LOCATION != '' }}
+        run: sleep 90
+
+      - name: Submit public URLs to Naver IndexNow
+        if: ${{ env.INDEXNOW_KEY != '' && env.INDEXNOW_KEY_LOCATION != '' }}
+        shell: bash
+        run: |
+          payload=$(jq -n \
+            --arg host "finebpkg.com" \
+            --arg key "$INDEXNOW_KEY" \
+            --arg keyLocation "$INDEXNOW_KEY_LOCATION" \
+            --argjson urlList '[
+              "https://finebpkg.com/",
+              "https://finebpkg.com/about.html",
+              "https://finebpkg.com/production.html",
+              "https://finebpkg.com/process.html",
+              "https://finebpkg.com/works.html",
+              "https://finebpkg.com/guide.html",
+              "https://finebpkg.com/sample.html",
+              "https://finebpkg.com/faq.html",
+              "https://finebpkg.com/inquiry.html",
+              "https://finebpkg.com/quote.html"
+            ]' \
+            '{host:$host,key:$key,keyLocation:$keyLocation,urlList:$urlList}')
+
+          http_code=$(curl --silent --show-error --output /tmp/indexnow-response.txt \
+            --write-out "%{http_code}" \
+            --request POST "https://searchadvisor.naver.com/indexnow" \
+            --header "Content-Type: application/json; charset=utf-8" \
+            --data "$payload")
+
+          echo "Naver IndexNow HTTP status: $http_code"
+          cat /tmp/indexnow-response.txt || true
+
+          case "$http_code" in
+            200|202) exit 0 ;;
+            *) echo "IndexNow submission failed. Verify the hosted key file and INDEXNOW_KEY_LOCATION."; exit 1 ;;
+          esac
