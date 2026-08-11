@@ -5,6 +5,8 @@
   const LOGO=BASE+'assets/logo.svg';
   const path=(location.pathname.split('/').pop()||'index.html').toLowerCase();
 
+  if(path==='404.html'||path.startsWith('admin')) return;
+
   const pages={
     'index.html':{
       title:'패키지 제작·칼라박스 제작 | FINE.B 파인비',
