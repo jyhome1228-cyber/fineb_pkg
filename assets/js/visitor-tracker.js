@@ -36,7 +36,7 @@ async function track() {
   if (document.visibilityState === 'prerender') return;
   const visitorId = getVisitorId();
   const date = getKoreaDate();
-  const path = `${location.pathname || '/'}${location.search || ''}`;
+  const path = location.pathname || '/';
   try {
     await recordDailyVisitor({ visitorId, date, path });
   } catch (error) {
