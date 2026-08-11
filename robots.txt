@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /admin-portfolio.html
+Disallow: /admin-trash.html
 
 Sitemap: https://finebpkg.com/sitemap.xml
