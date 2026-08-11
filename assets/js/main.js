@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   ensureStyle('assets/css/factory.css');
   if(!document.querySelector('script[src="assets/js/contact-paper-ui.js"]')){const uiScript=document.createElement('script');uiScript.src='assets/js/contact-paper-ui.js';document.body.appendChild(uiScript);}
   if(!document.querySelector('script[src="assets/js/seo-meta.js"]')){const seoScript=document.createElement('script');seoScript.src='assets/js/seo-meta.js';document.body.appendChild(seoScript);}
+  if(!document.querySelector('script[src="assets/js/visitor-tracker.js"]')){const visitorScript=document.createElement('script');visitorScript.type='module';visitorScript.src='assets/js/visitor-tracker.js';document.body.appendChild(visitorScript);}
 
   // Homepage visual refresh: user-supplied production imagery only
   const homeHero=document.querySelector('.hero-main .hero-grid');
