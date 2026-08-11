@@ -35,6 +35,18 @@ service cloud.firestore {
         ]);
     }
 
+    function trashOnlyUpdate() {
+      return request.resource.data.deleted is bool
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'deleted',
+          'deletedAtClient',
+          'deletedFromStatus',
+          'restoredAtClient',
+          'updatedAtClient',
+          'updatedAt'
+        ]);
+    }
+
     function validPortfolioCreate() {
       return request.resource.data.id is string
         && request.resource.data.id.size() > 3
@@ -65,21 +77,21 @@ service cloud.firestore {
     match /quotes/{requestId} {
       allow create: if validPublicRequest('quote');
       allow read: if true;
-      allow update: if statusOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
       allow delete: if false;
     }
 
     match /samples/{requestId} {
       allow create: if validPublicRequest('sample');
       allow read: if true;
-      allow update: if statusOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
       allow delete: if false;
     }
 
     match /inquiries/{requestId} {
       allow create: if validPublicRequest('inquiry');
       allow read: if true;
-      allow update: if statusOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
       allow delete: if false;
     }
 
