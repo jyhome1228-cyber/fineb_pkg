@@ -7,6 +7,8 @@ import {
   updateDoc,
   collection,
   getDocs,
+  query,
+  where,
   serverTimestamp
 } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 import {
@@ -192,4 +194,66 @@ export async function fetchPortfolioProjects() {
     .map((item) => ({ id: item.id, ...item.data(), source: 'cms' }))
     .filter((item) => item.published !== false)
     .sort((a, b) => new Date(b.createdAtClient || 0) - new Date(a.createdAtClient || 0));
+}
+
+export async function recordDailyVisitor({ visitorId, date, path = '/' } = {}) {
+  const safeVisitorId = String(visitorId || '').trim();
+  const safeDate = String(date || '').trim();
+  const safePath = String(path || '/').slice(0, 160);
+  if (!safeVisitorId || !/^\d{4}-\d{2}-\d{2}$/.test(safeDate)) throw new Error('VISITOR_INPUT');
+
+  const visitId = `${safeDate}_${safeVisitorId}`;
+  const ref = doc(db, 'visits', visitId);
+  const existing = await getDoc(ref);
+  if (existing.exists()) return false;
+
+  await setDoc(ref, {
+    visitorId: safeVisitorId,
+    date: safeDate,
+    firstPath: safePath,
+    createdAtClient: new Date().toISOString(),
+    createdAt: serverTimestamp()
+  });
+  return true;
+}
+
+export async function fetchVisitorStats({ today, weekStart, monthStart } = {}) {
+  const safeToday = String(today || '').trim();
+  const safeWeekStart = String(weekStart || '').trim();
+  const safeMonthStart = String(monthStart || '').trim();
+  if (![safeToday, safeWeekStart, safeMonthStart].every((v) => /^\d{4}-\d{2}-\d{2}$/.test(v))) {
+    throw new Error('VISITOR_STATS_DATE');
+  }
+
+  const rangeStart = safeWeekStart < safeMonthStart ? safeWeekStart : safeMonthStart;
+  const visitQuery = query(
+    collection(db, 'visits'),
+    where('date', '>=', rangeStart),
+    where('date', '<=', safeToday)
+  );
+  const snapshot = await getDocs(visitQuery);
+  const rows = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }));
+
+  const todayVisitors = new Set();
+  const weekVisitors = new Set();
+  const monthVisitors = new Set();
+
+  rows.forEach((row) => {
+    const id = String(row.visitorId || '').trim();
+    const date = String(row.date || '').trim();
+    if (!id || !date) return;
+    if (date === safeToday) todayVisitors.add(id);
+    if (date >= safeWeekStart && date <= safeToday) weekVisitors.add(id);
+    if (date >= safeMonthStart && date <= safeToday) monthVisitors.add(id);
+  });
+
+  return {
+    today: todayVisitors.size,
+    weekly: weekVisitors.size,
+    monthly: monthVisitors.size,
+    records: rows.length,
+    todayDate: safeToday,
+    weekStart: safeWeekStart,
+    monthStart: safeMonthStart
+  };
 }
