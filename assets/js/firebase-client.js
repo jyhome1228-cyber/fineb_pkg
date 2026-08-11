@@ -74,12 +74,28 @@ export async function savePublicRequest(type, payload) {
   return data;
 }
 
-export async function fetchAdminRequests(type) {
+export async function fetchAdminRequests(type, options = {}) {
   const collectionName = collectionNameFor(type);
   const snapshot = await getDocs(collection(db, collectionName));
-  return snapshot.docs
-    .map((item) => ({ id: item.id, ...item.data() }))
-    .sort((a, b) => new Date(b.createdAtClient || 0) - new Date(a.createdAtClient || 0));
+  let rows = snapshot.docs
+    .map((item) => ({ id: item.id, ...item.data() }));
+
+  if (options.onlyDeleted === true) {
+    rows = rows.filter((item) => item.deleted === true);
+  } else if (options.includeDeleted !== true) {
+    rows = rows.filter((item) => item.deleted !== true);
+  }
+
+  return rows.sort((a, b) => new Date(b.createdAtClient || 0) - new Date(a.createdAtClient || 0));
+}
+
+export async function fetchTrashRequests() {
+  const groups = await Promise.all(
+    Object.keys(COLLECTIONS).map((type) => fetchAdminRequests(type, { onlyDeleted: true }))
+  );
+  return groups
+    .flat()
+    .sort((a, b) => new Date(b.deletedAtClient || b.updatedAtClient || 0) - new Date(a.deletedAtClient || a.updatedAtClient || 0));
 }
 
 export async function updateAdminRequest(type, id, patch = {}) {
@@ -96,6 +112,34 @@ export async function updateAdminRequest(type, id, patch = {}) {
 
   await updateDoc(doc(db, collectionName, id), safePatch);
   return safePatch;
+}
+
+export async function moveRequestToTrash(type, id, currentStatus = '') {
+  const collectionName = collectionNameFor(type);
+  const now = new Date().toISOString();
+  const safeStatus = VALID_STATUSES.includes(currentStatus) ? currentStatus : '';
+  const patch = {
+    deleted: true,
+    deletedAtClient: now,
+    deletedFromStatus: safeStatus,
+    updatedAtClient: now,
+    updatedAt: serverTimestamp()
+  };
+  await updateDoc(doc(db, collectionName, id), patch);
+  return patch;
+}
+
+export async function restoreRequestFromTrash(type, id) {
+  const collectionName = collectionNameFor(type);
+  const now = new Date().toISOString();
+  const patch = {
+    deleted: false,
+    restoredAtClient: now,
+    updatedAtClient: now,
+    updatedAt: serverTimestamp()
+  };
+  await updateDoc(doc(db, collectionName, id), patch);
+  return patch;
 }
 
 export async function importLegacyRequestIfMissing(type, payload) {
