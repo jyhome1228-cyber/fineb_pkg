@@ -1,0 +1,19 @@
+{
+  "name": "FINE.B 파인비",
+  "short_name": "FINE.B",
+  "description": "패키지 구조 상담부터 인쇄·후가공·양산·납품까지 함께하는 패키지 제작 파트너",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#0a2240",
+  "lang": "ko-KR",
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
