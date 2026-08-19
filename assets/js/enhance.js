@@ -9,6 +9,65 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(location.pathname.endsWith('/works.html')||location.pathname.endsWith('works.html')) document.title='포트폴리오 | FINE.B';
   if(location.pathname.endsWith('/guide.html')||location.pathname.endsWith('guide.html')) document.title='주문제작가이드 | FINE.B';
 
+  // Home-only GRAD 2026 campaign strip above the header
+  const isHome=location.pathname==='/'||location.pathname===''||location.pathname.endsWith('/index.html');
+  if(isHome&&!document.querySelector('.grad-top-banner')){
+    const header=document.querySelector('.header');
+    if(header){
+      const banner=document.createElement('a');
+      banner.className='grad-top-banner';
+      banner.href='grad2026.html';
+      banner.setAttribute('aria-label','2026 디자인 전공 학생 졸업전시 샘플 제작 혜택 보기');
+      banner.innerHTML='<span class="grad-top-badge">GRAD 2026</span><span class="grad-top-copy grad-top-copy-desktop">졸업전시 준비 중이라면? 디자인 전공 학생 샘플 제작 혜택</span><span class="grad-top-copy grad-top-copy-mobile">디자인 전공 학생 샘플 제작 혜택</span><span class="grad-top-arrow">자세히 보기 →</span>';
+      header.before(banner);
+      if(!document.querySelector('#fineb-grad-banner-style')){
+        const gradStyle=document.createElement('style');
+        gradStyle.id='fineb-grad-banner-style';
+        gradStyle.textContent=`
+          .grad-top-banner{
+            min-height:42px;
+            padding:0 24px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:12px;
+            background:#0A2240;
+            color:#fff;
+            border-bottom:1px solid rgba(255,255,255,.12);
+            font-size:12.5px;
+            line-height:1.2;
+            letter-spacing:-.01em;
+          }
+          .grad-top-badge{
+            display:inline-flex;
+            align-items:center;
+            min-height:24px;
+            padding:0 9px;
+            border-radius:999px;
+            background:#dfeaff;
+            color:#0A2240;
+            font-size:9.5px;
+            font-weight:800;
+            letter-spacing:.1em;
+          }
+          .grad-top-copy{font-weight:650}
+          .grad-top-copy-mobile{display:none}
+          .grad-top-arrow{font-size:11px;color:#b9c8da;font-weight:600}
+          .grad-top-banner:hover .grad-top-arrow{color:#fff}
+          @media(max-width:720px){
+            .grad-top-banner{min-height:40px;padding:0 14px;gap:8px;justify-content:space-between}
+            .grad-top-copy-desktop{display:none}
+            .grad-top-copy-mobile{display:inline;font-size:11.5px}
+            .grad-top-badge{font-size:8.5px;padding:0 7px;min-height:22px}
+            .grad-top-arrow{font-size:0}
+            .grad-top-arrow:after{content:'→';font-size:14px}
+          }
+        `;
+        document.head.appendChild(gradStyle);
+      }
+    }
+  }
+
   // Header action buttons: same size / hierarchy
   if(!document.querySelector('#fineb-header-action-style')){
     const style=document.createElement('style');
