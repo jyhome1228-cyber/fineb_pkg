@@ -52,6 +52,13 @@
       pageType:'WebPage',
       service:'소량 패키지 인쇄 샘플 제작'
     },
+    'grad2026.html':{
+      title:'2026 디자인 전공 학생 졸업전시 샘플 제작 혜택 | FINE.B',
+      description:'전국 디자인 전공 학생을 위한 FINE.B 졸업전시 패키지 샘플 제작 혜택. 전국 무료배송, 1:1 제작 상담, 기본 코팅과 샘플기 가공, 친구 할인과 단체 추가 증정 혜택을 확인하세요.',
+      label:'FINE.B GRAD 2026',
+      pageType:'WebPage',
+      service:'디자인 전공 학생 졸업전시 패키지 샘플 제작 지원'
+    },
     'faq.html':{
       title:'패키지 제작 FAQ | 제작기간·최소수량·샘플 | FINE.B',
       description:'패키지 제작기간, 최소 제작수량, 디자인, 샘플 제작, 교정 인쇄, 박·에폭시 후가공과 제작 공정 등 자주 묻는 내용을 확인하세요.',
@@ -117,6 +124,7 @@
   setLink('link[rel="canonical"]',{rel:'canonical',href:canonical});
   setLink('link[rel="icon"]',{rel:'icon',href:'assets/favicon.svg',type:'image/svg+xml'});
   setLink('link[rel="manifest"]',{rel:'manifest',href:'site.webmanifest'});
+  setLink('link[href="assets/css/grad-campaign.css"]',{rel:'stylesheet',href:'assets/css/grad-campaign.css'});
 
   const organization={
     '@type':'Organization',
@@ -201,4 +209,75 @@
   schema.type='application/ld+json';
   schema.textContent=JSON.stringify({'@context':'https://schema.org','@graph':graph});
   document.head.appendChild(schema);
+
+  // Global GRAD 2026 strip: same on all public pages.
+  const localDateKey=()=>{
+    const d=new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  const setupGradBanner=()=>{
+    document.querySelectorAll('.grad-top-banner').forEach(el=>el.remove());
+    if(localStorage.getItem('fineb_grad_hide_date')===localDateKey())return;
+    if(sessionStorage.getItem('fineb_grad_closed')==='1')return;
+    const header=document.querySelector('.header');
+    if(!header)return;
+    const banner=document.createElement('div');
+    banner.className='grad-top-banner global-grad-banner';
+    banner.innerHTML=`<div class="grad-global-inner"><a class="grad-global-main" href="grad2026.html"><span class="grad-global-badge">GRAD 2026</span><span class="grad-global-copy">졸업전시 준비 중이라면? 디자인 전공 학생 샘플 제작 혜택</span><span class="grad-global-link">자세히 보기 →</span></a><div class="grad-global-controls"><button type="button" class="grad-hide-today">오늘 하루 보지 않음</button><button type="button" class="grad-close-banner" aria-label="배너 닫기">×</button></div></div>`;
+    header.before(banner);
+    banner.querySelector('.grad-hide-today')?.addEventListener('click',()=>{
+      localStorage.setItem('fineb_grad_hide_date',localDateKey());
+      banner.remove();
+    });
+    banner.querySelector('.grad-close-banner')?.addEventListener('click',()=>{
+      sessionStorage.setItem('fineb_grad_closed','1');
+      banner.remove();
+    });
+  };
+
+  // Graduation page: supplied imagery replaces the old illustration and stats.
+  const setupGradPageImages=()=>{
+    if(path!=='grad2026.html')return;
+    const images=[
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/64b9f47bbf333.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/bcd0b52b872e1.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/780d1b4aa8583.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/fe7a48acbec3e.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/533389dec6ac5.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/aeaaa8e35ac9b.png',
+      'https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/f93208260309f.png'
+    ];
+    const hero=document.querySelector('.grad-exhibition-image');
+    document.querySelector('.grad-hero-stats')?.remove();
+    if(hero){
+      const mainImages=images.slice(0,3);
+      hero.innerHTML=`<div class="grad-carousel">${mainImages.map((src,i)=>`<div class="grad-carousel-slide ${i===0?'is-active':''}"><img src="${src}" alt="디자인 졸업전시 패키지 이미지 ${i+1}" ${i===0?'fetchpriority="high"':'loading="lazy"'}></div>`).join('')}<div class="grad-carousel-dots">${mainImages.map((_,i)=>`<button type="button" class="grad-carousel-dot ${i===0?'is-active':''}" aria-label="${i+1}번째 이미지 보기"></button>`).join('')}</div></div>`;
+      const slides=[...hero.querySelectorAll('.grad-carousel-slide')];
+      const dots=[...hero.querySelectorAll('.grad-carousel-dot')];
+      let index=0;
+      let timer;
+      const show=i=>{
+        index=(i+slides.length)%slides.length;
+        slides.forEach((slide,n)=>slide.classList.toggle('is-active',n===index));
+        dots.forEach((dot,n)=>dot.classList.toggle('is-active',n===index));
+      };
+      const start=()=>{clearInterval(timer);timer=setInterval(()=>show(index+1),4200);};
+      dots.forEach((dot,i)=>dot.addEventListener('click',()=>{show(i);start();}));
+      start();
+    }
+
+    document.querySelector('.grad-photo-gallery-section')?.remove();
+    const strip=document.querySelector('.grad-strip');
+    if(strip){
+      const shuffled=[...images];
+      for(let i=shuffled.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];}
+      const section=document.createElement('section');
+      section.className='grad-photo-gallery-section';
+      section.innerHTML=`<div class="container"><div class="grad-photo-grid">${shuffled.map((src,i)=>`<div class="grad-photo-item"><img src="${src}" alt="졸업전시 패키지 비주얼 ${i+1}" loading="lazy"></div>`).join('')}</div></div>`;
+      strip.after(section);
+    }
+  };
+
+  setupGradBanner();
+  setupGradPageImages();
 })();
