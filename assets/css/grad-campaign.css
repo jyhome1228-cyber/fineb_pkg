@@ -11,6 +11,17 @@
 .grad-hide-today:hover,.grad-close-banner:hover{color:#fff}
 .grad-close-banner{font-size:18px;line-height:1;padding:2px 4px}
 
+/* Keep the supplied gallery directly after HOW TO APPLY */
+.grad-page main{display:flex;flex-direction:column}
+.grad-page .grad-hero{order:1}
+.grad-page .grad-strip{order:2}
+.grad-page .grad-benefit-section{order:3}
+.grad-page .grad-section.dark{order:4}
+.grad-page .grad-section.soft{order:5}
+.grad-page .grad-photo-gallery-section{order:6}
+.grad-page .grad-scope{order:7}
+.grad-page .grad-final{order:8}
+
 /* GRAD 2026 hero image carousel */
 .grad-page .grad-hero-grid{align-items:center}
 .grad-page .grad-hero-media{min-width:0}
@@ -24,11 +35,17 @@
 .grad-carousel-dot.is-active{background:#fff}
 .grad-page .grad-hero-stats{display:none!important}
 
-/* Seven supplied graduation visuals, deliberately non-clickable */
-.grad-photo-gallery-section{padding:54px 0 68px;background:#fff}
-.grad-photo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.grad-photo-item{overflow:hidden;border:1px solid #e1e6ec;border-radius:14px;background:#f3f6f9;min-width:0;cursor:default}
+/* Seven supplied visuals: 3 visible, rolling left/right, non-clickable */
+.grad-photo-gallery-section{padding:30px 0 74px;background:#f6f8fb;overflow:hidden}
+.grad-photo-gallery-section .container{overflow:hidden}
+.grad-photo-grid{display:flex;gap:14px;width:calc((100% + 28px) * 7 / 3);animation:gradGalleryRoll 22s cubic-bezier(.45,0,.2,1) infinite alternate;will-change:transform}
+.grad-photo-grid:hover{animation-play-state:paused}
+.grad-photo-item{flex:0 0 calc((100% - 84px)/7);overflow:hidden;border:1px solid #e1e6ec;border-radius:14px;background:#f3f6f9;min-width:0;cursor:default}
 .grad-photo-item img{display:block;width:100%;height:100%;aspect-ratio:1.2/1;object-fit:cover;pointer-events:none;user-select:none;-webkit-user-drag:none}
+@keyframes gradGalleryRoll{
+  0%,8%{transform:translateX(0)}
+  92%,100%{transform:translateX(calc(-4 * ((100% + 28px)/7)))}
+}
 
 @media(max-width:900px){
   .grad-top-banner.global-grad-banner{padding:0 12px}
@@ -38,7 +55,13 @@
   .grad-global-link{display:none}
   .grad-hide-today{font-size:0;padding:4px}
   .grad-hide-today:after{content:'오늘 그만 보기';font-size:9.5px}
-  .grad-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grad-photo-gallery-section{padding:26px 0 58px}
+  .grad-photo-grid{gap:12px;width:calc((100% + 12px) * 7 / 2);animation-duration:20s}
+  .grad-photo-item{flex-basis:calc((100% - 72px)/7)}
+  @keyframes gradGalleryRoll{
+    0%,8%{transform:translateX(0)}
+    92%,100%{transform:translateX(calc(-5 * ((100% + 12px)/7)))}
+  }
 }
 @media(max-width:620px){
   .grad-top-banner.global-grad-banner{min-height:40px}
@@ -46,8 +69,12 @@
   .grad-global-copy{font-size:10.5px}
   .grad-global-controls{gap:2px}
   .grad-hide-today:after{content:'오늘 닫기'}
-  .grad-photo-gallery-section{padding:38px 0 48px}
-  .grad-photo-grid{grid-template-columns:1fr;gap:10px}
-  .grad-photo-item{border-radius:11px}
+  .grad-photo-gallery-section{padding:22px 0 46px}
+  .grad-photo-grid{gap:10px;width:calc((100% + 10px) * 7);animation-duration:24s}
+  .grad-photo-item{flex-basis:calc((100% - 60px)/7);border-radius:11px}
+  @keyframes gradGalleryRoll{
+    0%,8%{transform:translateX(0)}
+    92%,100%{transform:translateX(calc(-6 * ((100% + 10px)/7)))}
+  }
   .grad-page .grad-exhibition-image{border-radius:12px}
 }
