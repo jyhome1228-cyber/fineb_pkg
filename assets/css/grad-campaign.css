@@ -35,6 +35,12 @@
 .grad-carousel-dot.is-active{background:#fff}
 .grad-page .grad-hero-stats{display:none!important}
 
+/* Friend / group visual assets */
+.grad-page .grad-deal{position:relative;overflow:hidden;padding-right:190px}
+.grad-page .grad-deal>div,.grad-page .grad-deal>.deal-badge{position:relative;z-index:2}
+.grad-deal-asset{position:absolute;right:24px;bottom:24px;width:145px;height:128px;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.18))}
+.grad-deal-asset img{display:block;width:100%;height:100%;object-fit:contain}
+
 /* Seven supplied visuals: 3 visible, rolling left/right, non-clickable */
 .grad-photo-gallery-section{padding:30px 0 74px;background:#f6f8fb;overflow:hidden}
 .grad-photo-gallery-section .container{overflow:hidden}
@@ -47,6 +53,25 @@
   92%,100%{transform:translateX(calc(-4 * ((100% + 28px)/7)))}
 }
 
+/* Homepage limited-time popup */
+body.grad-popup-open{overflow:hidden}
+.grad-event-popup{position:fixed;inset:0;z-index:5000;display:grid;place-items:center;padding:24px;background:rgba(4,17,34,.7);backdrop-filter:blur(6px)}
+.grad-event-popup-card{position:relative;width:min(92vw,760px);overflow:hidden;border-radius:22px;background:#fff;box-shadow:0 28px 90px rgba(0,0,0,.34);display:grid;grid-template-columns:1.08fr .92fr;min-height:430px}
+.grad-event-popup-visual{position:relative;min-height:430px;background:#e9eef5;overflow:hidden}
+.grad-event-popup-visual img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s ease}
+.grad-event-popup-card:hover .grad-event-popup-visual img{transform:scale(1.015)}
+.grad-event-popup-content{padding:38px 36px 32px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;color:#171a1f}
+.grad-event-popup-period{font-size:10px;letter-spacing:.16em;font-weight:750;color:#7a8796;margin-bottom:14px}
+.grad-event-popup-badge{display:inline-flex;padding:7px 11px;border-radius:999px;background:#e4edfa;color:#0a2240;font-size:9px;font-weight:800;letter-spacing:.12em;margin-bottom:19px}
+.grad-event-popup-content h2{font-size:clamp(27px,3.1vw,39px);line-height:1.18;letter-spacing:-.05em;margin:0 0 17px;font-weight:680;color:#0a2240}
+.grad-event-popup-content p{font-size:13.5px;line-height:1.9;color:#606a75;margin:0;max-width:330px}
+.grad-event-popup-cta{display:inline-flex;align-items:center;gap:8px;margin-top:25px;padding:11px 17px;border-radius:999px;background:#0a2240;color:#fff;font-size:12.5px;font-weight:700}
+.grad-event-popup-meta{margin-top:18px;font-size:10.5px;color:#8a949f;line-height:1.7}
+.grad-event-popup-close{position:absolute;top:14px;right:14px;z-index:4;width:34px;height:34px;border:0;border-radius:999px;background:rgba(10,34,64,.88);color:#fff;font-size:21px;line-height:1;cursor:pointer;display:grid;place-items:center}
+.grad-event-popup-today{position:absolute;left:14px;bottom:14px;z-index:4;border:0;border-radius:999px;background:rgba(10,34,64,.78);color:#fff;padding:8px 11px;font-size:10px;cursor:pointer;backdrop-filter:blur(8px)}
+.grad-event-popup-link{position:absolute;inset:0;z-index:3;border:0;background:transparent;cursor:pointer;font-size:0}
+.grad-event-popup-close,.grad-event-popup-today{z-index:5}
+
 @media(max-width:900px){
   .grad-top-banner.global-grad-banner{padding:0 12px}
   .grad-global-inner{width:100%;grid-template-columns:1fr auto;gap:8px}
@@ -58,10 +83,20 @@
   .grad-photo-gallery-section{padding:26px 0 58px}
   .grad-photo-grid{gap:12px;width:calc((100% + 12px) * 7 / 2);animation-duration:20s}
   .grad-photo-item{flex-basis:calc((100% - 72px)/7)}
+  .grad-page .grad-deal{padding-right:145px}
+  .grad-deal-asset{right:14px;bottom:20px;width:118px;height:106px}
   @keyframes gradGalleryRoll{
     0%,8%{transform:translateX(0)}
     92%,100%{transform:translateX(calc(-5 * ((100% + 12px)/7)))}
   }
+}
+@media(max-width:720px){
+  .grad-event-popup-card{grid-template-columns:1fr;width:min(92vw,520px);min-height:auto}
+  .grad-event-popup-visual{min-height:230px}
+  .grad-event-popup-content{padding:28px 24px 30px}
+  .grad-event-popup-content h2{font-size:28px}
+  .grad-event-popup-content p{max-width:none}
+  .grad-event-popup-today{top:14px;bottom:auto;left:14px}
 }
 @media(max-width:620px){
   .grad-top-banner.global-grad-banner{min-height:40px}
@@ -72,6 +107,8 @@
   .grad-photo-gallery-section{padding:22px 0 46px}
   .grad-photo-grid{gap:10px;width:calc((100% + 10px) * 7);animation-duration:24s}
   .grad-photo-item{flex-basis:calc((100% - 60px)/7);border-radius:11px}
+  .grad-page .grad-deal{padding-right:96px}
+  .grad-deal-asset{right:8px;bottom:16px;width:82px;height:76px;opacity:.9}
   @keyframes gradGalleryRoll{
     0%,8%{transform:translateX(0)}
     92%,100%{transform:translateX(calc(-6 * ((100% + 10px)/7)))}
