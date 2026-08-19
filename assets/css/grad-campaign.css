@@ -126,3 +126,58 @@ body.grad-popup-open{overflow:hidden}
   }
   .grad-page .grad-exhibition-image{border-radius:12px}
 }
+
+/* FIX: keep deal icons on the card's right side, independent from text/button flow */
+.grad-page .grad-deal{
+  position:relative!important;
+  display:block!important;
+  min-height:310px!important;
+  padding:30px 230px 30px 30px!important;
+  overflow:hidden!important;
+}
+.grad-page .grad-deal>div:first-child{
+  position:relative!important;
+  z-index:2!important;
+  max-width:520px!important;
+  min-height:190px!important;
+}
+.grad-page .grad-deal>.deal-badge{
+  position:absolute!important;
+  left:30px!important;
+  bottom:30px!important;
+  z-index:3!important;
+  margin:0!important;
+}
+.grad-page .grad-deal>.grad-deal-asset{
+  position:absolute!important;
+  left:auto!important;
+  right:42px!important;
+  top:50%!important;
+  bottom:auto!important;
+  width:160px!important;
+  height:160px!important;
+  margin:0!important;
+  transform:translateY(-50%)!important;
+  z-index:1!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  pointer-events:none!important;
+}
+.grad-page .grad-deal>.grad-deal-asset img{
+  width:100%!important;
+  height:100%!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  display:block!important;
+}
+@media(max-width:900px){
+  .grad-page .grad-deal{padding-right:170px!important}
+  .grad-page .grad-deal>.grad-deal-asset{right:24px!important;width:128px!important;height:128px!important}
+}
+@media(max-width:620px){
+  .grad-page .grad-deal{min-height:270px!important;padding:24px 112px 24px 20px!important}
+  .grad-page .grad-deal>div:first-child{min-height:175px!important}
+  .grad-page .grad-deal>.deal-badge{left:20px!important;bottom:24px!important}
+  .grad-page .grad-deal>.grad-deal-asset{right:14px!important;width:82px!important;height:82px!important}
+}
