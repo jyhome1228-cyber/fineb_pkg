@@ -19,7 +19,7 @@
 .grad-page .grad-section.dark{order:4}
 .grad-page .grad-section.soft{order:5}
 .grad-page .grad-photo-gallery-section{order:6}
-.grad-page .grad-scope{order:7}
+.grad-page main > .grad-section:not(.grad-benefit-section):not(.dark):not(.soft){order:7}
 .grad-page .grad-final{order:8}
 
 /* GRAD 2026 hero image carousel */
