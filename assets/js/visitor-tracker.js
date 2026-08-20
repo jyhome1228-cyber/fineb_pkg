@@ -1,4 +1,5 @@
 import { recordDailyVisitor } from './firebase-client.js';
+import './grad-patch.js';
 
 const VISITOR_KEY = 'fineb_visitor_id_v1';
 
