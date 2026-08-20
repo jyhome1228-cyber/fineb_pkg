@@ -9,9 +9,10 @@
 
   const refinePopup=()=>{
     const popup=document.querySelector('.grad-event-popup');
-    if(!popup)return;
+    if(!popup)return false;
     const content=popup.querySelector('.grad-event-popup-content');
-    if(!content)return;
+    if(!content)return false;
+    if(content.dataset.gradPatchApplied==='1')return true;
 
     const period=content.querySelector('.grad-event-popup-period');
     const oldEvent=content.querySelector('.grad-event-popup-event');
@@ -36,6 +37,8 @@
     const copy=content.querySelector('p');
     if(copy)copy.textContent='전국 디자인 전공 학생 대상. 무료배송, 1:1 상담, 친구 10% 할인과 5인 이상 단체 샘플 추가 증정 혜택을 확인해보세요.';
     content.querySelector('.grad-event-popup-meta')?.remove();
+    content.dataset.gradPatchApplied='1';
+    return true;
   };
 
   const insertPriceGuide=()=>{
@@ -83,6 +86,12 @@
   };
 
   ensurePatchStyle();
-  refinePopup();
   insertPriceGuide();
+  if(!refinePopup()){
+    const observer=new MutationObserver(()=>{
+      if(refinePopup())observer.disconnect();
+    });
+    observer.observe(document.body,{childList:true,subtree:true});
+    setTimeout(()=>observer.disconnect(),5000);
+  }
 })();
