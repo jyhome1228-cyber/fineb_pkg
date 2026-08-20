@@ -15,7 +15,7 @@
     'works.html':{title:'패키지 제작사례·박스 포트폴리오 | FINE.B',description:'단상자, 칼라박스, 선물박스, 싸바리, 슬리브와 특수구조 패키지 등 FINE.B의 실제 제작 사례와 패키지 완성 결과를 확인하세요.',label:'포트폴리오',pageType:'CollectionPage'},
     'guide.html':{title:'박스 주문제작 가이드 | 종이·인쇄·후가공 | FINE.B',description:'박스 구조부터 로얄아이보리·아이보리·CCP·특수지와 평량, 옵셋·별색·UV 인쇄, 코팅, 금박·형압·에폭시 후가공, 사이즈와 납품 기준까지 정리했습니다.',label:'주문제작가이드',pageType:'WebPage'},
     'sample.html':{title:'패키지 샘플 제작·소량 박스 인쇄 | FINE.B',description:'종이박스, 단상자, 골판지박스와 쇼핑백을 1·2·3·5·10·20개 단위로 소량 인쇄 샘플 제작해 구조와 디자인을 양산 전에 확인할 수 있습니다.',label:'샘플제작',pageType:'WebPage',service:'소량 패키지 인쇄 샘플 제작'},
-    'grad2026.html':{title:'2026 디자인 전공 학생 졸업전시 샘플 제작 혜택 | FINE.B',description:'전국 디자인 전공 학생을 위한 FINE.B 졸업전시 패키지 샘플 제작 혜택. 전국 무료배송, 1:1 제작 상담, 기본 코팅과 샘플기 가공, 친구 할인과 단체 추가 증정 혜택을 확인하세요.',label:'FINE.B GRAD 2026',pageType:'WebPage',service:'디자인 전공 학생 졸업전시 패키지 샘플 제작 지원'},
+    'grad2026.html':{title:'2026 디자인 전공 학생 졸업전시 샘플 제작 혜택 | FINE.B',description:'전국 디자인 전공 학생을 위한 FINE.B 졸업전시 패키지 샘플 제작 혜택. 전국 무료배송, 1:1 제작 상담, 기본 코팅과 샘플기 가공, 친구 할인과 단체 추가 증정 혜택을 확인하세요.',keywords:'졸업전시, 졸업작품, 졸전, 디자인과 졸업전시, 미대 졸업전시, 시각디자인 졸업전시, 패키지디자인 졸업전시, 산업디자인 졸업전시, 디자인 전공 학생, 대학생 패키지 제작, 졸업작품 패키지, 졸전 패키지, 패키지 샘플 제작, 단상자 샘플, 박스 샘플 제작, 소량 패키지 제작, 학생 패키지 샘플, 패키지 목업 제작, 졸업전시 샘플 제작, 파인비, FINE.B',label:'FINE.B GRAD 2026',pageType:'WebPage',service:'디자인 전공 학생 졸업전시 패키지 샘플 제작 지원'},
     'faq.html':{title:'패키지 제작 FAQ | 제작기간·최소수량·샘플 | FINE.B',description:'패키지 제작기간, 최소 제작수량, 디자인, 샘플 제작, 교정 인쇄, 박·에폭시 후가공과 제작 공정 등 자주 묻는 내용을 확인하세요.',label:'자주묻는질문',pageType:'FAQPage'},
     'inquiry.html':{title:'패키지·박스 제작문의 | 맞춤 제작 상담 FINE.B',description:'구조나 소재를 정확히 몰라도 제품 용도, 예상 수량과 일정만으로 상담할 수 있습니다. 단상자·칼라박스·싸바리·골판지·쇼핑백·인쇄물 맞춤 제작을 문의하세요.',label:'제작문의',pageType:'ContactPage'},
     'quote.html':{title:'패키지·칼라박스 제작 견적 | FINE.B 파인비',description:'박스 형태, 제작 수량, 완성 사이즈, 종이·평량, 인쇄, 코팅과 후가공 사양을 순서대로 선택해 단상자·골판지·싸바리·쇼핑백 제작 견적을 요청하세요.',label:'견적내기',pageType:'WebPage'}
@@ -28,6 +28,7 @@
 
   document.title=data.title;
   document.head.querySelector('meta[name="keywords"]')?.remove();
+  if(data.keywords)setMeta('meta[name="keywords"]',{name:'keywords',content:data.keywords});
   document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el=>el.remove());
   setMeta('meta[name="description"]',{name:'description',content:data.description});
   setMeta('meta[name="robots"]',{name:'robots',content:'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'});
@@ -83,16 +84,14 @@
 
   const setupGradHomepagePopup=()=>{
     if(path!=='index.html'||!campaignActive())return;
-    if(sessionStorage.getItem('fineb_grad_popup_seen')==='1')return;
-    if(localStorage.getItem('fineb_grad_popup_hide_date')===localDateKey())return;
-    sessionStorage.setItem('fineb_grad_popup_seen','1');
+    if(localStorage.getItem('fineb_grad_popup_hide_date_v2')===localDateKey())return;
     const popup=document.createElement('div');popup.className='grad-event-popup';popup.setAttribute('role','dialog');popup.setAttribute('aria-modal','true');popup.setAttribute('aria-label','대학교 졸업작품 샘플 제작 이벤트');
     popup.innerHTML=`<div class="grad-event-popup-card"><div class="grad-event-popup-visual"><img src="https://cdn.imweb.me/upload/S20251008dcc1c9d70e3ac/64b9f47bbf333.png" alt="디자인 졸업전시 패키지 전시 모습"></div><div class="grad-event-popup-content"><span class="grad-event-popup-period">2026.08 — 09</span><div><span class="grad-event-popup-event">EVENT!</span><span class="grad-event-popup-badge">FINE.B GRAD 2026</span></div><h2>대학교 졸업작품<br>준비하는 학생을 위한<br>샘플 제작 이벤트!</h2><p>전국 디자인 전공 학생이라면 무료배송부터 1:1 상담, 친구 할인과 단체 추가 증정 혜택까지 확인해보세요.</p><span class="grad-event-popup-cta">이벤트 자세히 보기 →</span></div><button type="button" class="grad-event-popup-link" aria-label="대학교 졸업작품 샘플 제작 이벤트 자세히 보기"></button><button type="button" class="grad-event-popup-today">오늘 하루 보지 않음</button><button type="button" class="grad-event-popup-close" aria-label="팝업 닫기">×</button></div>`;
     document.body.appendChild(popup);document.body.classList.add('grad-popup-open');
     const close=()=>{popup.remove();document.body.classList.remove('grad-popup-open');};
     popup.querySelector('.grad-event-popup-link')?.addEventListener('click',()=>{location.href='grad2026.html';});
     popup.querySelector('.grad-event-popup-close')?.addEventListener('click',close);
-    popup.querySelector('.grad-event-popup-today')?.addEventListener('click',()=>{localStorage.setItem('fineb_grad_popup_hide_date',localDateKey());close();});
+    popup.querySelector('.grad-event-popup-today')?.addEventListener('click',()=>{localStorage.setItem('fineb_grad_popup_hide_date_v2',localDateKey());close();});
     popup.addEventListener('click',e=>{if(e.target===popup)close();});
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.contains(popup))close();},{once:true});
   };
