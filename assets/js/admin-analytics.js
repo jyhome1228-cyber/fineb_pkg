@@ -62,16 +62,45 @@ function formatDate(row) {
   }).format(date);
 }
 
+function shortDateLabel(key) {
+  const parts = String(key || '').split('-');
+  if (parts.length !== 3) return clean(key);
+  const date = new Date(`${key}T12:00:00+09:00`);
+  const week = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', weekday: 'short' }).format(date);
+  return { main: `${Number(parts[1])}.${Number(parts[2])}`, sub: week };
+}
+
+function hasAttribution(row) {
+  return Boolean(
+    String(row.source || '').trim() ||
+    String(row.medium || '').trim() ||
+    String(row.referrerHost || '').trim() ||
+    String(row.referrerUrl || '').trim() ||
+    String(row.landingPath || '').trim() ||
+    String(row.device || '').trim()
+  );
+}
+
 function normalizeSource(row) {
-  const source = clean(row.source, 'Direct');
-  if (source === '-') return 'Direct';
-  return source;
+  if (!hasAttribution(row)) return '기존 데이터';
+  const source = String(row.source || '').trim();
+  return source || 'Direct';
 }
 
 function isOrganic(row) {
+  if (!hasAttribution(row)) return false;
   const medium = String(row.medium || '').toLowerCase();
   if (medium === 'organic') return true;
   return ['Google', 'Naver', 'Bing', 'Daum'].includes(normalizeSource(row));
+}
+
+function isDirect(row) {
+  return hasAttribution(row) && normalizeSource(row) === 'Direct';
+}
+
+function isExternal(row) {
+  if (!hasAttribution(row) || isOrganic(row) || isDirect(row)) return false;
+  return true;
 }
 
 function countBy(rows, getter) {
@@ -98,17 +127,64 @@ async function fetchTraffic() {
     .sort((a, b) => String(b.createdAtClient || b.date || '').localeCompare(String(a.createdAtClient || a.date || '')));
 }
 
+function dailySourceLabel(row) {
+  const source = normalizeSource(row);
+  if (source === '기존 데이터' || source === 'Direct') return source;
+  const host = String(row.referrerHost || '').trim();
+  if (!host) return source;
+  const normalizedHost = host.replace(/^www\./, '');
+  const normalizedSource = source.toLowerCase();
+  if (normalizedSource === normalizedHost.toLowerCase()) return source;
+  if (normalizedSource.includes('naver') && normalizedHost.includes('naver.com')) return `${source} · ${normalizedHost}`;
+  if (normalizedSource.includes('google') && normalizedHost.includes('google.')) return source;
+  if (normalizedSource.includes('instagram') && normalizedHost.includes('instagram.com')) return source;
+  if (normalizedSource.includes('facebook') && normalizedHost.includes('facebook.com')) return source;
+  return `${source} · ${normalizedHost}`;
+}
+
+function renderDailySources(rows) {
+  const target = $('#dailySourceRows');
+  if (!target) return;
+
+  const days = Array.from({ length: 14 }, (_, index) => dateDaysAgo(index));
+  target.innerHTML = days.map((dateKey) => {
+    const dayRows = rows.filter((row) => String(row.date || '') === dateKey);
+    const organic = dayRows.filter(isOrganic).length;
+    const direct = dayRows.filter(isDirect).length;
+    const external = dayRows.filter(isExternal).length;
+    const sourceCounts = countBy(dayRows, dailySourceLabel);
+    const dateLabel = shortDateLabel(dateKey);
+
+    const chips = sourceCounts.length
+      ? sourceCounts.slice(0, 7).map(([source, count]) => {
+          const legacy = source === '기존 데이터' ? ' legacy' : '';
+          return `<span class="daily-source-chip${legacy}">${escapeHtml(source)} <b>${count}</b></span>`;
+        }).join('')
+      : '<span class="daily-zero">유입 없음</span>';
+
+    return `<tr>
+      <td class="daily-date"><strong>${escapeHtml(dateLabel.main)}</strong><span>${escapeHtml(dateLabel.sub)}</span></td>
+      <td><strong>${dayRows.length.toLocaleString('ko-KR')}</strong></td>
+      <td>${organic.toLocaleString('ko-KR')}</td>
+      <td>${direct.toLocaleString('ko-KR')}</td>
+      <td>${external.toLocaleString('ko-KR')}</td>
+      <td><div class="daily-source-list">${chips}</div></td>
+    </tr>`;
+  }).join('');
+}
+
 function renderTraffic(rows) {
   const today = kstDateKey();
   const monthStart = dateDaysAgo(29);
   const todayRows = rows.filter((row) => row.date === today);
   const monthRows = rows.filter((row) => String(row.date || '') >= monthStart);
-  const organicRows = monthRows.filter(isOrganic);
-  const organicShare = monthRows.length ? Math.round((organicRows.length / monthRows.length) * 100) : 0;
+  const attributedMonthRows = monthRows.filter(hasAttribution);
+  const organicRows = attributedMonthRows.filter(isOrganic);
+  const organicShare = attributedMonthRows.length ? Math.round((organicRows.length / attributedMonthRows.length) * 100) : null;
 
   $('#statToday').textContent = todayRows.length.toLocaleString('ko-KR');
   $('#statMonth').textContent = monthRows.length.toLocaleString('ko-KR');
-  $('#statOrganic').textContent = `${organicShare}%`;
+  $('#statOrganic').textContent = organicShare === null ? '-' : `${organicShare}%`;
 
   const landingCounts = countBy(rows, (row) => shortPath(row.landingPath || row.firstPath || '/'));
   const topLanding = landingCounts[0];
@@ -132,6 +208,8 @@ function renderTraffic(rows) {
       }).join('')
     : '<tr><td colspan="3" class="empty-analytics">아직 랜딩페이지 데이터가 없습니다.</td></tr>';
 
+  renderDailySources(rows);
+
   $('#recentRows').innerHTML = rows.length
     ? rows.slice(0, 80).map((row) => {
         const source = normalizeSource(row);
@@ -141,15 +219,21 @@ function renderTraffic(rows) {
         if (!keyword && campaign) keyword = campaign;
         if (!keyword && organic) keyword = '검색엔진 비공개';
         if (!keyword) keyword = '-';
-        const referrer = clean(row.referrerUrl || row.referrerHost || row.referrer, source === 'Direct' ? '직접 접속 / 북마크' : '-');
+        const fallbackReferrer = source === 'Direct'
+          ? '직접 접속 / 북마크'
+          : source === '기존 데이터'
+            ? '출처 수집 전 기록'
+            : '-';
+        const referrer = clean(row.referrerUrl || row.referrerHost || row.referrer, fallbackReferrer);
         const landing = shortPath(row.landingPath || row.firstPath || '/');
+        const medium = source === '기존 데이터' ? 'legacy' : clean(row.medium, source === 'Direct' ? 'direct' : 'referral');
         return `<tr>
           <td>${escapeHtml(formatDate(row))}</td>
-          <td><strong>${escapeHtml(source)}</strong><br><span class="muted">${escapeHtml(clean(row.medium, source === 'Direct' ? 'direct' : 'referral'))}</span></td>
+          <td><strong>${escapeHtml(source)}</strong><br><span class="muted">${escapeHtml(medium)}</span></td>
           <td><span class="keyword">${escapeHtml(keyword)}</span></td>
           <td><span class="url" title="${escapeHtml(landing)}">${escapeHtml(landing)}</span></td>
           <td><span class="url" title="${escapeHtml(referrer)}">${escapeHtml(referrer)}</span></td>
-          <td>${escapeHtml(clean(row.device, '기존 데이터'))}</td>
+          <td>${escapeHtml(clean(row.device, source === '기존 데이터' ? '기존 데이터' : '-'))}</td>
         </tr>`;
       }).join('')
     : '<tr><td colspan="6" class="empty-analytics">아직 유입 기록이 없습니다.</td></tr>';
@@ -205,7 +289,7 @@ async function auditMeta() {
       const combined = `${title} ${description}`.toLowerCase();
       const keywordHits = target.keywords.map((keyword) => ({ keyword, hit: combined.includes(keyword.toLowerCase()) }));
       const normalizedPath = target.path === 'index.html' ? 'index.html' : target.path;
-      const inSitemap = sitemapSet.has(normalizedPath) || (target.path === 'index.html' && (sitemapUrls.some((u) => /^https?:\/\/[^/]+\/?$/i.test(u))));
+      const inSitemap = sitemapSet.has(normalizedPath) || (target.path === 'index.html' && sitemapUrls.some((u) => /^https?:\/\/[^/]+\/?$/i.test(u)));
       const indexable = !/noindex/i.test(robots || '');
       const checks = [Boolean(title), Boolean(description), Boolean(canonical), indexable, Boolean(ogTitle), Boolean(ogDescription), Boolean(ogImage), inSitemap];
       const score = checks.filter(Boolean).length;
@@ -230,17 +314,21 @@ async function auditMeta() {
     if (item.error) {
       return `<tr><td><strong>${escapeHtml(item.label)}</strong><br><span class="muted">/${escapeHtml(item.path)}</span></td><td>${statusChip('불러오기 실패', 'bad')}</td><td colspan="4" class="muted">${escapeHtml(item.error)}</td></tr>`;
     }
+
     let stateType = 'ok';
     let stateText = '정상';
     if (item.score < 6) { stateType = 'bad'; stateText = '보강 필요'; }
     else if (item.score < 8 || item.keywordMiss) { stateType = 'warn'; stateText = '점검'; }
+
     const tech = [
       item.canonical ? statusChip('Canonical', 'ok') : statusChip('Canonical 없음', 'bad'),
       item.indexable ? statusChip('Index', 'ok') : statusChip('Noindex', 'bad'),
       item.ogTitle && item.ogDescription && item.ogImage ? statusChip('OG', 'ok') : statusChip('OG 점검', 'warn'),
       item.inSitemap ? statusChip('Sitemap', 'ok') : statusChip('Sitemap 없음', 'warn')
     ].join(' ');
+
     const keywordHtml = `<div class="keyword-list">${item.keywordHits.map((kw) => `<span class="keyword-dot ${kw.hit ? 'hit' : 'miss'}">${kw.hit ? '✓' : '·'} ${escapeHtml(kw.keyword)}</span>`).join('')}</div>`;
+
     return `<tr>
       <td><strong>${escapeHtml(item.label)}</strong><br><span class="muted">/${escapeHtml(item.path === 'index.html' ? '' : item.path)}</span></td>
       <td>${statusChip(stateText, stateType)}<br><span class="muted">${item.score}/8</span></td>
@@ -252,6 +340,15 @@ async function auditMeta() {
   }).join('');
 
   return { sitemapOk, robotsOk, results };
+}
+
+function initLogToggle() {
+  const details = $('#recentTrafficDetails');
+  const label = details?.querySelector('.log-toggle');
+  if (!details || !label) return;
+  const sync = () => { label.textContent = details.open ? '상세 로그 접기' : '상세 로그 보기'; };
+  details.addEventListener('toggle', sync);
+  sync();
 }
 
 async function load() {
@@ -268,6 +365,7 @@ async function load() {
     console.error('Traffic analytics failed:', error);
     $('#sourceBars').innerHTML = '<div class="empty-analytics">Firestore 유입 데이터를 불러오지 못했습니다.</div>';
     $('#landingRows').innerHTML = '<tr><td colspan="3" class="empty-analytics">Firestore 연결을 확인해주세요.</td></tr>';
+    $('#dailySourceRows').innerHTML = '<tr><td colspan="6" class="empty-analytics">Firestore 연결을 확인해주세요.</td></tr>';
     $('#recentRows').innerHTML = '<tr><td colspan="6" class="empty-analytics">Firestore 연결을 확인해주세요.</td></tr>';
   }
 
@@ -285,5 +383,6 @@ async function load() {
   else setState(`최근 90일 유입 ${rows.length.toLocaleString('ko-KR')}건 · 메타 점검 완료`, 'ok');
 }
 
+initLogToggle();
 $('#refreshAnalytics')?.addEventListener('click', load);
 load();
