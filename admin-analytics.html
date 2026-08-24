@@ -15,11 +15,13 @@
     .analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.analytics-panel{min-width:0;border:1px solid var(--ana-line);border-radius:18px;background:#fff;overflow:hidden}.analytics-panel.full{grid-column:1/-1}.analytics-panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:18px 19px 14px;border-bottom:1px solid #edf0f2}.analytics-panel-head small{display:block;color:#7c8996;font-size:9.5px;font-weight:750;letter-spacing:.13em}.analytics-panel-head h2{margin:4px 0 0;color:#16283d;font-size:17px;letter-spacing:-.025em}.analytics-panel-head p{margin:0;max-width:520px;color:#7d8894;font-size:10px;line-height:1.55;text-align:right}
     .analytics-table-wrap{overflow:auto}.analytics-table{width:100%;border-collapse:collapse;font-size:10.5px}.analytics-table th{padding:10px 13px;background:#f8fafb;color:#6d7a87;font-size:9.5px;text-align:left;white-space:nowrap;border-bottom:1px solid #e9edf0}.analytics-table td{padding:11px 13px;color:#334556;border-bottom:1px solid #eef1f3;vertical-align:top}.analytics-table tbody tr:last-child td{border-bottom:0}.analytics-table strong{color:#142b44;font-size:10.5px}.analytics-table .muted{color:#8a959f}.analytics-table .url{display:block;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#63788a}.analytics-table .keyword{display:inline-flex;padding:4px 7px;border-radius:999px;background:#f0f4f7;color:#43586a;font-size:9.5px;font-weight:700;white-space:nowrap}
     .source-bars{padding:12px 18px 17px}.source-row{display:grid;grid-template-columns:minmax(90px,1fr) 2fr 54px;align-items:center;gap:12px;padding:8px 0}.source-name{min-width:0;color:#34495b;font-size:10.5px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.source-track{height:7px;border-radius:999px;background:#edf1f4;overflow:hidden}.source-fill{height:100%;border-radius:999px;background:var(--ana-navy)}.source-value{text-align:right;color:#647382;font-size:10px;font-weight:750}
+    .daily-source-list{display:flex;flex-wrap:wrap;gap:5px;min-width:280px}.daily-source-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 7px;border:1px solid #e2e7eb;border-radius:999px;background:#f7f9fa;color:#405568;font-size:9px;font-weight:700;white-space:nowrap}.daily-source-chip b{color:#17334f;font-size:9px}.daily-source-chip.legacy{background:#f3f3f3;color:#8a8f94}.daily-zero{color:#a0a8af}.daily-date strong{display:block}.daily-date span{display:block;margin-top:3px;color:#9aa3ab;font-size:9px}
+    .analytics-log{padding:0}.analytics-log>summary{list-style:none;cursor:pointer;user-select:none}.analytics-log>summary::-webkit-details-marker{display:none}.analytics-log .analytics-panel-head{border-bottom:0}.analytics-log[open] .analytics-panel-head{border-bottom:1px solid #edf0f2}.log-toggle{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid #dfe5ea;border-radius:999px;background:#f8fafb;color:#4e6071;font-size:9.5px;font-weight:750;white-space:nowrap}.log-toggle:after{content:'⌄';font-size:13px;line-height:1;transition:transform .18s ease}.analytics-log[open] .log-toggle:after{transform:rotate(180deg)}
     .meta-overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:14px 18px;border-bottom:1px solid #edf0f2}.meta-mini{padding:13px 14px;border:1px solid #e4e9ed;border-radius:13px;background:#f8fafb}.meta-mini span{display:block;color:#7b8894;font-size:9px;font-weight:750;letter-spacing:.08em}.meta-mini strong{display:block;margin-top:5px;color:#1b344e;font-size:13px}.status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:750;white-space:nowrap}.status-chip.ok{background:#ebf5ef;color:var(--ana-green)}.status-chip.warn{background:#fbf4e6;color:var(--ana-amber)}.status-chip.bad{background:#faeeee;color:var(--ana-red)}.status-chip.neutral{background:#eef2f5;color:#647382}.keyword-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}.keyword-dot{padding:3px 6px;border-radius:999px;background:#eef2f5;color:#667583;font-size:8.5px}.keyword-dot.hit{background:#eaf4ee;color:#337053}.keyword-dot.miss{background:#faeeee;color:#a24c49}.meta-title{max-width:310px;font-weight:700;line-height:1.45}.meta-desc{max-width:360px;color:#788694!important;font-size:9.5px;line-height:1.5}
     .engine-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:16px 18px 18px}.engine-card{padding:14px;border:1px solid #e3e8ec;border-radius:14px;background:#fff}.engine-card span{display:block;color:#7b8794;font-size:9px;font-weight:750;letter-spacing:.07em}.engine-card strong{display:block;margin-top:6px;color:#1b334d;font-size:12px;line-height:1.4}.engine-card small{display:block;margin-top:6px;color:#8a959f;font-size:9px;line-height:1.5}.engine-card a{display:inline-block;margin-top:8px;color:#0a2240;font-size:9.5px;font-weight:750;text-decoration:none}
     .empty-analytics{padding:34px 20px;color:#8b96a0;font-size:11px;text-align:center}.admin-side .analytics-link{border-color:rgba(255,255,255,.2);color:#fff;background:rgba(255,255,255,.08)}
     @media(max-width:1100px){.analytics-stats,.meta-overview,.engine-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.analytics-grid{grid-template-columns:1fr}.analytics-panel.full{grid-column:auto}}
-    @media(max-width:760px){.analytics-stats,.meta-overview,.engine-cards{grid-template-columns:1fr}.analytics-panel-head{align-items:flex-start;flex-direction:column}.analytics-panel-head p{text-align:left}.source-row{grid-template-columns:90px 1fr 42px}.analytics-stat strong{font-size:25px}}
+    @media(max-width:760px){.analytics-stats,.meta-overview,.engine-cards{grid-template-columns:1fr}.analytics-panel-head{align-items:flex-start;flex-direction:column}.analytics-panel-head p{text-align:left}.source-row{grid-template-columns:90px 1fr 42px}.analytics-stat strong{font-size:25px}.daily-source-list{min-width:230px}.log-toggle{margin-top:7px}}
   </style>
 </head>
 <body>
@@ -49,18 +51,18 @@
         </div>
       </div>
 
-      <div class="analytics-note"><b>검색어 수집 안내</b> · Google·Naver 등 검색엔진은 개인정보 보호 정책에 따라 실제 검색어를 브라우저 Referrer에 전달하지 않는 경우가 많습니다. 검색어가 전달되면 표시하고, 숨겨진 경우에는 ‘검색엔진 비공개’로 표시합니다. 정확한 검색 노출수·클릭수·검색어 순위는 Google Search Console / 네이버 서치어드바이저 API 연결이 별도로 필요합니다.</div>
+      <div class="analytics-note"><b>검색어 수집 안내</b> · Google·Naver 등 검색엔진은 개인정보 보호 정책에 따라 실제 검색어를 브라우저 Referrer에 전달하지 않는 경우가 많습니다. 검색어가 전달되면 표시하고, 숨겨진 경우에는 ‘검색엔진 비공개’로 표시합니다. 출처 수집 기능 적용 전 기록은 Direct로 추정하지 않고 ‘기존 데이터’로 별도 표시합니다.</div>
 
       <section class="analytics-stats">
         <article class="analytics-stat"><span>TODAY</span><strong id="statToday">-</strong><small>오늘 고유 방문자</small></article>
         <article class="analytics-stat"><span>30 DAYS</span><strong id="statMonth">-</strong><small>최근 30일 고유 방문 기록</small></article>
-        <article class="analytics-stat"><span>ORGANIC SEARCH</span><strong id="statOrganic">-</strong><small>검색엔진 유입 비중</small></article>
+        <article class="analytics-stat"><span>ORGANIC SEARCH</span><strong id="statOrganic">-</strong><small>출처 확인 가능 방문 중 검색 유입 비중</small></article>
         <article class="analytics-stat"><span>TOP LANDING</span><strong id="statLanding">-</strong><small id="statLandingLabel">가장 많이 시작한 페이지</small></article>
       </section>
 
       <div class="analytics-grid">
         <section class="analytics-panel">
-          <div class="analytics-panel-head"><div><small>ACQUISITION</small><h2>유입 출처</h2></div><p>최근 90일 첫 방문 기준</p></div>
+          <div class="analytics-panel-head"><div><small>ACQUISITION</small><h2>유입 출처</h2></div><p>최근 90일 첫 방문 기준 · 기존 기록 분리</p></div>
           <div class="source-bars" id="sourceBars"><div class="empty-analytics">유입 데이터를 불러오는 중입니다.</div></div>
         </section>
 
@@ -70,9 +72,14 @@
         </section>
 
         <section class="analytics-panel full">
-          <div class="analytics-panel-head"><div><small>RECENT ATTRIBUTION</small><h2>최근 유입 기록</h2></div><p>검색엔진·외부 링크·UTM과 첫 랜딩을 함께 표시합니다.</p></div>
-          <div class="analytics-table-wrap"><table class="analytics-table"><thead><tr><th>일자</th><th>출처</th><th>검색어 / 캠페인</th><th>첫 진입</th><th>유입 링크</th><th>기기</th></tr></thead><tbody id="recentRows"><tr><td colspan="6" class="empty-analytics">유입 기록을 불러오는 중입니다.</td></tr></tbody></table></div>
+          <div class="analytics-panel-head"><div><small>DAILY ACQUISITION</small><h2>일별 유입 출처</h2></div><p>최근 14일 · 매일 어떤 검색엔진·SNS·외부 사이트를 통해 들어왔는지 확인합니다.</p></div>
+          <div class="analytics-table-wrap"><table class="analytics-table"><thead><tr><th>날짜</th><th>전체</th><th>검색</th><th>직접</th><th>외부·SNS</th><th>유입 사이트</th></tr></thead><tbody id="dailySourceRows"><tr><td colspan="6" class="empty-analytics">일별 유입을 집계하는 중입니다.</td></tr></tbody></table></div>
         </section>
+
+        <details class="analytics-panel full analytics-log" id="recentTrafficDetails">
+          <summary><div class="analytics-panel-head"><div><small>RECENT ATTRIBUTION</small><h2>최근 유입 상세 로그</h2></div><span class="log-toggle">상세 로그 보기</span></div></summary>
+          <div class="analytics-table-wrap"><table class="analytics-table"><thead><tr><th>일자</th><th>출처</th><th>검색어 / 캠페인</th><th>첫 진입</th><th>유입 링크</th><th>기기</th></tr></thead><tbody id="recentRows"><tr><td colspan="6" class="empty-analytics">유입 기록을 불러오는 중입니다.</td></tr></tbody></table></div>
+        </details>
       </div>
 
       <div class="analytics-grid">
