@@ -37,8 +37,8 @@ function dateDaysAgo(days) {
 }
 
 function escapeHtml(value = '') {
-  return String(value).replace(/[&<>'"]/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  return String(value).replace(/[&<>'\"]/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '\"': '&quot;'
   }[char]));
 }
 
@@ -120,6 +120,10 @@ function selectedRows() {
     const today = kstDateKey();
     return allRows.filter((row) => row.date === today);
   }
+  if (activePeriod === 'yesterday') {
+    const yesterday = dateDaysAgo(1);
+    return allRows.filter((row) => row.date === yesterday);
+  }
   const days = Number(activePeriod) || 30;
   const start = dateDaysAgo(days - 1);
   return allRows.filter((row) => String(row.date || '') >= start);
@@ -127,6 +131,7 @@ function selectedRows() {
 
 function periodText() {
   if (activePeriod === 'today') return '오늘 기준';
+  if (activePeriod === 'yesterday') return '어제 기준';
   if (activePeriod === 'date') return `${$('#trafficDate')?.value || kstDateKey()} 기준`;
   return `최근 ${activePeriod}일 기준`;
 }
@@ -138,7 +143,7 @@ function renderRank(target, entries) {
     el.innerHTML = '<div class="rank-empty">해당 기간에 수집된 데이터가 없습니다.</div>';
     return;
   }
-  el.innerHTML = entries.slice(0, 12).map(([name, count], index) => `
+  el.innerHTML = entries.slice(0, 8).map(([name, count], index) => `
     <div class="rank-row">
       <span class="rank-no">${String(index + 1).padStart(2, '0')}</span>
       <span class="rank-name" title="${escapeHtml(name)}">${escapeHtml(name)}</span>
