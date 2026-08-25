@@ -7,7 +7,17 @@
   <meta name="robots" content="noindex,nofollow">
   <link rel="stylesheet" href="assets/css/admin.css">
   <style>
-    .crm-nav{display:flex!important;align-items:center;justify-content:space-between;margin-top:0!important;background:rgba(255,255,255,.06)}.crm-nav.active{background:rgba(255,255,255,.12);color:#fff}.crm-nav b{min-width:25px;padding:3px 7px;border-radius:999px;background:#fff;color:#0A2240;font-size:10px;text-align:center}.cloud{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #dfe5eb;border-radius:999px;background:#fff;font-size:11px;font-weight:700;color:#45606f}.cloud:before{content:"";width:7px;height:7px;border-radius:50%;background:#2f8f59}.cloud[data-state="loading"]:before{background:#c3912f}.cloud[data-state="error"]:before{background:#c6534f}.crm-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.crm-stats .admin-stat{cursor:pointer}.crm-stats .admin-stat.active{border-color:#0A2240;box-shadow:inset 3px 0 #0A2240}.type{display:inline-flex;align-items:center;justify-content:center;width:max-content;min-width:54px;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:700}.type[data-type="quote"]{background:#eaf1f8;color:#0A4a7d}.type[data-type="sample"]{background:#efeafa;color:#624993}.type[data-type="inquiry"]{background:#e8f5ef;color:#176445}.request-row{grid-template-columns:72px minmax(0,1fr) 104px}.row-meta{text-align:right}.row-meta time{display:block}.row-meta .status{margin-top:5px}.memo-dot{display:inline-block;margin-left:5px;color:#8a6500;font-size:8px}.memo-box{border:1px solid #dce3e9;border-radius:12px;padding:12px;background:#fafbfc}.memo-box textarea{width:100%;min-height:170px;resize:vertical;border:0;background:transparent;color:#28313a;font:inherit;font-size:11px;line-height:1.7;outline:none}.memo-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}.memo-actions small{color:#8b959f;font-size:9px}.history{display:grid;gap:6px}.history button{display:grid;grid-template-columns:64px minmax(0,1fr) 82px;gap:9px;align-items:center;border:1px solid #e1e6ea;border-radius:10px;padding:9px 10px;background:#fff;text-align:left;cursor:pointer}.history button:hover,.history button.active{border-color:#9fb0c1;background:#f7f9fb}.history strong{display:block;overflow:hidden;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.history small{display:block;margin-top:2px;color:#89949f;font-size:8.5px}.history time{color:#89949f;font-size:8px;text-align:right}.save-note{position:fixed;right:24px;bottom:24px;z-index:50;border-radius:10px;padding:10px 13px;background:#0A2240;color:#fff;font-size:10px;opacity:0;transform:translateY(6px);transition:.2s}.save-note.show{opacity:1;transform:none}@media(max-width:1180px){.crm-stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.crm-stats{grid-template-columns:repeat(2,1fr)}.memo-actions{align-items:stretch;flex-direction:column}.memo-actions .admin-btn{width:100%}.history button{grid-template-columns:60px minmax(0,1fr)}.history time{display:none}}
+    .crm-nav{display:flex!important;align-items:center;justify-content:space-between;margin-top:0!important;background:rgba(255,255,255,.06)}
+    .crm-nav.active{background:rgba(255,255,255,.12);color:#fff}.crm-nav b{min-width:25px;padding:3px 7px;border-radius:999px;background:#fff;color:#0A2240;font-size:10px;text-align:center}
+    .cloud{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid #dfe5eb;border-radius:999px;background:#fff;font-size:11px;font-weight:700;color:#45606f}.cloud:before{content:"";width:7px;height:7px;border-radius:50%;background:#2f8f59}.cloud[data-state="loading"]:before{background:#c3912f}.cloud[data-state="error"]:before{background:#c6534f}
+    .crm-stats{grid-template-columns:repeat(4,minmax(0,1fr))}.crm-stats .admin-stat{cursor:pointer}.crm-stats .admin-stat.active{border-color:#0A2240;box-shadow:inset 3px 0 #0A2240}
+    .type{display:inline-flex;align-items:center;justify-content:center;width:max-content;min-width:54px;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:700}.type[data-type="quote"]{background:#eaf1f8;color:#0A4a7d}.type[data-type="sample"]{background:#efeafa;color:#624993}.type[data-type="inquiry"]{background:#e8f5ef;color:#176445}
+    .request-row{grid-template-columns:72px minmax(0,1fr) 116px}.row-meta{text-align:right}.row-meta time{display:block}.row-meta .status{margin-top:5px}.inquiry-count{display:inline-block;margin-left:6px;padding:2px 6px;border-radius:999px;background:#edf1f4;color:#64717d;font-size:8px;font-weight:700}.memo-dot{display:inline-block;margin-left:5px;color:#8a6500;font-size:8px}
+    .memo-box{border:1px solid #dce3e9;border-radius:12px;padding:12px;background:#fafbfc}.memo-box textarea{width:100%;min-height:160px;resize:vertical;border:0;background:transparent;color:#28313a;font:inherit;font-size:11px;line-height:1.7;outline:none}.memo-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}.memo-actions small{color:#8b959f;font-size:9px}
+    .history{display:grid;gap:6px}.history button{display:grid;grid-template-columns:64px minmax(0,1fr) 82px;gap:9px;align-items:center;border:1px solid #e1e6ea;border-radius:10px;padding:9px 10px;background:#fff;text-align:left;cursor:pointer}.history button:hover,.history button.active{border-color:#9fb0c1;background:#f7f9fb}.history strong{display:block;overflow:hidden;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.history small{display:block;margin-top:2px;color:#89949f;font-size:8.5px}.history time{color:#89949f;font-size:8px;text-align:right}
+    .save-note{position:fixed;right:24px;bottom:24px;z-index:50;border-radius:10px;padding:10px 13px;background:#0A2240;color:#fff;font-size:10px;opacity:0;transform:translateY(6px);transition:.2s}.save-note.show{opacity:1;transform:none}
+    @media(max-width:1180px){.crm-stats{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){.crm-stats{grid-template-columns:repeat(2,1fr)}.memo-actions{align-items:stretch;flex-direction:column}.memo-actions .admin-btn{width:100%}.history button{grid-template-columns:60px minmax(0,1fr)}.history time{display:none}}
   </style>
 </head>
 <body>
@@ -21,26 +31,26 @@
         <a href="admin-portfolio.html" class="admin-site-link">포트폴리오 관리</a>
         <a href="index.html" class="admin-site-link">사이트 보기 ↗</a>
       </nav>
-      <div class="admin-meta">FINE.B Admin<br><span style="color:rgba(255,255,255,.42)">모든 문의와 상담 메모를 한 화면에서 관리합니다.</span></div>
+      <div class="admin-meta">FINE.B Admin<br><span style="color:rgba(255,255,255,.42)">동일 연락처·이메일은 한 고객으로 묶어 표시합니다.</span></div>
     </aside>
 
     <main class="admin-main">
       <div class="admin-top">
-        <div><small>FINE.B CUSTOMER MANAGEMENT</small><h1>고객관리</h1><p>견적·샘플·제작 문의를 한 번에 보고 상담 내용과 고객 이력을 기록합니다.</p></div>
+        <div><small>FINE.B CUSTOMER MANAGEMENT</small><h1>고객관리</h1><p>같은 고객의 반복 문의는 하나로 묶고, 상담 메모와 전체 문의 이력을 함께 관리합니다.</p></div>
         <div class="admin-actions" style="align-items:center"><span class="cloud" id="sync" data-state="loading">Firestore 연결 확인 중…</span><button class="admin-btn" id="refresh" type="button">새로고침</button></div>
       </div>
 
       <section class="admin-stats crm-stats">
-        <article class="admin-stat active" data-type="all"><span>전체 문의</span><strong id="cAll">0</strong></article>
-        <article class="admin-stat" data-type="quote"><span>견적문의</span><strong id="cQuote">0</strong></article>
-        <article class="admin-stat" data-type="sample"><span>샘플문의</span><strong id="cSample">0</strong></article>
-        <article class="admin-stat" data-type="inquiry"><span>제작문의</span><strong id="cInquiry">0</strong></article>
+        <article class="admin-stat active" data-type="all"><span>전체 고객</span><strong id="cAll">0</strong></article>
+        <article class="admin-stat" data-type="quote"><span>견적 고객</span><strong id="cQuote">0</strong></article>
+        <article class="admin-stat" data-type="sample"><span>샘플 고객</span><strong id="cSample">0</strong></article>
+        <article class="admin-stat" data-type="inquiry"><span>제작 고객</span><strong id="cInquiry">0</strong></article>
       </section>
 
       <section class="admin-content">
         <div class="admin-list-wrap">
           <div class="admin-list-head">
-            <div><h2>전체 고객 문의</h2><span class="list-count" id="listCount">0건</span></div>
+            <div><h2>고객 목록</h2><span class="list-count" id="listCount">0명</span></div>
             <div class="admin-filter">
               <button class="active" data-filter="all">전체</button><button data-filter="quote">견적</button><button data-filter="sample">샘플</button><button data-filter="inquiry">제작</button>
               <select id="status" style="border:1px solid #dae1e7;border-radius:999px;padding:5px 8px;background:#fff;color:#697582;font-size:9.5px"><option value="all">모든 상태</option><option>신규</option><option>확인중</option><option>진행중</option><option>견적완료</option><option>완료</option><option>보류</option></select>
@@ -49,7 +59,7 @@
           <div class="admin-search"><input id="search" type="search" placeholder="회사명, 담당자, 연락처, 이메일, 제품명 검색"><button id="clear" type="button">초기화</button></div>
           <div class="request-list" id="list"><div class="empty-state">Firestore 데이터를 불러오는 중입니다.</div></div>
         </div>
-        <aside class="admin-detail" id="detail"><div class="detail-empty">왼쪽 문의를 선택하면<br>상담 메모와 문의 이력이 표시됩니다.</div></aside>
+        <aside class="admin-detail" id="detail"><div class="detail-empty">왼쪽 고객을 선택하면<br>상담 메모와 전체 문의 이력이 표시됩니다.</div></aside>
       </section>
     </main>
   </div>
@@ -60,7 +70,7 @@
     import { doc, updateDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js';
 
     const TYPES=['quote','sample','inquiry'], COL={quote:'quotes',sample:'samples',inquiry:'inquiries'};
-    const S={rows:[],type:'all',status:'all',q:'',selected:''};
+    const S={rows:[],groups:[],type:'all',status:'all',q:'',selectedGroup:'',activeRequest:''};
     const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
     const raw=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const val=v=>v===undefined||v===null||v===''?'-':Array.isArray(v)?v.join(', '):String(v);
@@ -68,42 +78,67 @@
     const label=t=>t==='quote'?'견적문의':t==='sample'?'샘플문의':'제작문의';
     const title=r=>r.spec?.title||r.spec?.product||r.company||r.name||label(r.type);
     const status=r=>r.status||'신규';
-    const key=r=>`${r.type}:${r.id}`;
+    const reqKey=r=>`${r.type}:${r.id}`;
     const fmt=v=>{const d=new Date(v);if(!v||Number.isNaN(d.getTime()))return '-';return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
     const sync=(text,state='ok')=>{$('#sync').textContent=text;$('#sync').dataset.state=state};
+    const phoneKey=v=>String(v||'').replace(/\D/g,'');
+    const emailKey=v=>String(v||'').trim().toLowerCase();
+    const textKey=v=>String(v||'').trim().toLowerCase().replace(/\s+/g,' ');
+    const customerKey=r=>{const p=phoneKey(r.phone),e=emailKey(r.email),c=textKey(r.company),n=textKey(r.name);if(p.length>=8)return `p:${p}`;if(e&&e.includes('@'))return `e:${e}`;if(c||n)return `n:${c}|${n}`;return `r:${reqKey(r)}`};
     const searchable=r=>[r.id,r.company,r.name,r.phone,r.email,r.message,r.consultationMemo,...Object.values(r.spec||{})].flat().filter(Boolean).join(' ').toLowerCase();
-    const filtered=()=>S.rows.filter(r=>(S.type==='all'||r.type===S.type)&&(S.status==='all'||status(r)===S.status)&&(!S.q||searchable(r).includes(S.q.toLowerCase()))).sort((a,b)=>new Date(b.createdAtClient||0)-new Date(a.createdAtClient||0));
 
+    function buildGroups(){
+      const map=new Map();
+      S.rows.forEach(r=>{const k=customerKey(r);if(!map.has(k))map.set(k,{id:k,rows:[]});map.get(k).rows.push(r)});
+      S.groups=[...map.values()].map(g=>{g.rows.sort((a,b)=>new Date(b.createdAtClient||0)-new Date(a.createdAtClient||0));g.latest=g.rows[0];g.memoSource=[...g.rows].filter(x=>String(x.consultationMemo||'').trim()).sort((a,b)=>new Date(b.consultationMemoUpdatedAt||b.updatedAtClient||0)-new Date(a.consultationMemoUpdatedAt||a.updatedAtClient||0))[0]||g.latest;return g}).sort((a,b)=>new Date(b.latest.createdAtClient||0)-new Date(a.latest.createdAtClient||0));
+    }
+    function matchingRows(g){
+      const q=S.q.toLowerCase();
+      return g.rows.filter(r=>(S.type==='all'||r.type===S.type)&&(S.status==='all'||status(r)===S.status)&&(!q||searchable(r).includes(q)));
+    }
+    function filteredGroups(){return S.groups.filter(g=>matchingRows(g).length>0)}
+    function displayRequest(g){return matchingRows(g)[0]||g.latest}
     function counts(){
-      $('#cAll').textContent=S.rows.length;$('#cQuote').textContent=S.rows.filter(r=>r.type==='quote').length;$('#cSample').textContent=S.rows.filter(r=>r.type==='sample').length;$('#cInquiry').textContent=S.rows.filter(r=>r.type==='inquiry').length;$('#navCount').textContent=S.rows.length;
+      const has=(g,t)=>g.rows.some(r=>r.type===t);
+      $('#cAll').textContent=S.groups.length;$('#cQuote').textContent=S.groups.filter(g=>has(g,'quote')).length;$('#cSample').textContent=S.groups.filter(g=>has(g,'sample')).length;$('#cInquiry').textContent=S.groups.filter(g=>has(g,'inquiry')).length;$('#navCount').textContent=S.groups.length;
     }
     function fields(r){const s=r.spec||{};if(r.type==='quote')return [['제품',s.product],['수량',s.qty],['사이즈',s.size],['종이',s.paper],['평량',s.gsm?`${s.gsm}gsm`:'' ],['인쇄 방식',s.printMethod],['인쇄 색상',s.printColor],['인쇄 면',s.printSide],['코팅',s.coating],['후가공',s.finishes],['내부 구성',s.insert]];if(r.type==='sample')return [['제품',s.product],['수량',s.qty],['사이즈',s.size],['종이',s.paper],['평량',s.gsm?`${s.gsm}gsm`:'' ],['인쇄',s.print],['후가공',s.finish]];return [['문의 유형',s.inquiryType],['예상 수량',s.qty],['문의 제목',s.title]]}
-    function sameCustomer(r){const p=String(r.phone||'').replace(/\D/g,''),e=String(r.email||'').trim().toLowerCase(),c=String(r.company||'').trim().toLowerCase(),n=String(r.name||'').trim().toLowerCase();return S.rows.filter(x=>(p&&String(x.phone||'').replace(/\D/g,'')===p)||(e&&String(x.email||'').trim().toLowerCase()===e)||(!p&&!e&&c&&n&&String(x.company||'').trim().toLowerCase()===c&&String(x.name||'').trim().toLowerCase()===n)).sort((a,b)=>new Date(b.createdAtClient||0)-new Date(a.createdAtClient||0))}
+    function selectedGroup(){return S.groups.find(g=>g.id===S.selectedGroup)||null}
+    function activeRequest(g){return g?.rows.find(r=>reqKey(r)===S.activeRequest)||g?.latest||null}
 
     function renderList(){
-      const rows=filtered(),wrap=$('#list');$('#listCount').textContent=`${rows.length}건`;
-      if(!S.selected||!S.rows.some(r=>key(r)===S.selected))S.selected=rows[0]?key(rows[0]):'';
-      if(!rows.length){wrap.innerHTML='<div class="empty-state">조건에 맞는 고객 문의가 없습니다.</div>';renderDetail();return}
-      wrap.innerHTML=rows.map(r=>`<div class="request-row ${S.selected===key(r)?'active':''}" data-key="${esc(key(r))}"><span class="type" data-type="${r.type}">${label(r.type)}</span><div class="request-main"><strong>${esc(title(r))}${String(r.consultationMemo||'').trim()?'<span class="memo-dot">● 메모</span>':''}</strong><small>${esc(r.company)} · ${esc(r.name)}</small><small class="request-spec">${esc(r.phone)} · ${esc(r.email)}</small></div><div class="row-meta"><time>${fmt(r.createdAtClient).split(' ')[0]}</time><span class="status" data-status-name="${esc(status(r))}">${esc(status(r))}</span></div></div>`).join('');
-      $$('.request-row').forEach(el=>el.onclick=()=>{S.selected=el.dataset.key;renderList()});renderDetail();
+      const groups=filteredGroups(),wrap=$('#list');const inquiryTotal=groups.reduce((n,g)=>n+g.rows.length,0);$('#listCount').textContent=`${groups.length}명 · 문의 ${inquiryTotal}건`;
+      if(!groups.some(g=>g.id===S.selectedGroup)){S.selectedGroup=groups[0]?.id||'';S.activeRequest=groups[0]?.latest?reqKey(groups[0].latest):''}
+      if(!groups.length){wrap.innerHTML='<div class="empty-state">조건에 맞는 고객이 없습니다.</div>';renderDetail();return}
+      wrap.innerHTML=groups.map(g=>{const r=displayRequest(g),memo=String(g.memoSource?.consultationMemo||'').trim();return `<div class="request-row ${S.selectedGroup===g.id?'active':''}" data-group="${esc(g.id)}"><span class="type" data-type="${r.type}">${label(r.type)}</span><div class="request-main"><strong>${esc(r.company&&r.company!=='-'?r.company:r.name)}${g.rows.length>1?`<span class="inquiry-count">문의 ${g.rows.length}건</span>`:''}${memo?'<span class="memo-dot">● 메모</span>':''}</strong><small>${esc(r.name)} · 최근 ${esc(title(r))}</small><small class="request-spec">${esc(r.phone)} · ${esc(r.email)}</small></div><div class="row-meta"><time>${fmt(r.createdAtClient).split(' ')[0]}</time><span class="status" data-status-name="${esc(status(r))}">${esc(status(r))}</span></div></div>`}).join('');
+      $$('.request-row').forEach(el=>el.onclick=()=>{S.selectedGroup=el.dataset.group;const g=selectedGroup();S.activeRequest=g?.latest?reqKey(g.latest):'';renderList()});renderDetail();
     }
-    function selected(){return S.rows.find(r=>key(r)===S.selected)||null}
+
     function renderDetail(){
-      const r=selected(),wrap=$('#detail');if(!r){wrap.innerHTML='<div class="detail-empty">왼쪽 문의를 선택하면<br>상담 메모와 문의 이력이 표시됩니다.</div>';return}
-      const fs=fields(r),history=sameCustomer(r),phone=String(r.phone||'').replace(/[^0-9+]/g,''),email=String(r.email||'').trim();
-      wrap.innerHTML=`<div class="detail-head"><div class="detail-head-copy"><small>${esc(r.id)} · ${label(r.type)}</small><div class="detail-title-line"><h2>${esc(title(r))}</h2><span class="status" data-status-name="${esc(status(r))}">${esc(status(r))}</span></div><p>${fmt(r.createdAtClient)}</p></div><div class="detail-actions"><button class="admin-btn primary" id="pdf" type="button">PDF 저장</button></div></div>
-      <div class="detail-section"><h3>고객 정보</h3><div class="detail-grid customer-grid"><div class="detail-field"><span>회사 / 브랜드</span><strong>${esc(r.company)}</strong></div><div class="detail-field"><span>담당자</span><strong>${esc(r.name)}</strong></div><div class="detail-field"><span>연락처</span><strong>${phone?`<a href="tel:${raw(phone)}">${esc(r.phone)} ↗</a>`:esc(r.phone)}</strong></div><div class="detail-field"><span>이메일</span><strong>${email?`<a href="mailto:${raw(email)}">${esc(email)} ↗</a>`:esc(r.email)}</strong></div></div></div>
-      <div class="detail-section"><h3>${r.type==='inquiry'?'문의 정보':'제작 사양'}</h3><div class="detail-grid spec-grid">${fs.map(([a,b])=>`<div class="detail-field"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join('')}</div></div>
+      const g=selectedGroup(),wrap=$('#detail');if(!g){wrap.innerHTML='<div class="detail-empty">왼쪽 고객을 선택하면<br>상담 메모와 전체 문의 이력이 표시됩니다.</div>';return}
+      const r=activeRequest(g),fs=fields(r),base=g.latest,phone=String(base.phone||'').replace(/[^0-9+]/g,''),email=String(base.email||'').trim(),memo=g.memoSource?.consultationMemo||'';
+      wrap.innerHTML=`<div class="detail-head"><div class="detail-head-copy"><small>고객 문의 ${g.rows.length}건 · 현재 ${label(r.type)}</small><div class="detail-title-line"><h2>${esc(base.company&&base.company!=='-'?base.company:base.name)}</h2><span class="status" data-status-name="${esc(status(r))}">${esc(status(r))}</span></div><p>최근 문의 ${fmt(g.latest.createdAtClient)}</p></div><div class="detail-actions"><button class="admin-btn primary" id="pdf" type="button">PDF 저장</button></div></div>
+      <div class="detail-section"><h3>고객 정보</h3><div class="detail-grid customer-grid"><div class="detail-field"><span>회사 / 브랜드</span><strong>${esc(base.company)}</strong></div><div class="detail-field"><span>담당자</span><strong>${esc(base.name)}</strong></div><div class="detail-field"><span>연락처</span><strong>${phone?`<a href="tel:${raw(phone)}">${esc(base.phone)} ↗</a>`:esc(base.phone)}</strong></div><div class="detail-field"><span>이메일</span><strong>${email?`<a href="mailto:${raw(email)}">${esc(email)} ↗</a>`:esc(base.email)}</strong></div></div></div>
+      <div class="detail-section"><h3>${label(r.type)} · ${fmt(r.createdAtClient)}</h3><div class="detail-grid spec-grid">${fs.map(([a,b])=>`<div class="detail-field"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join('')}</div></div>
       <div class="detail-section"><h3>고객 요청사항</h3><div class="detail-message">${esc(r.message)}</div></div>
-      <div class="detail-section"><h3>상담 메모</h3><div class="memo-box"><textarea id="memo" maxlength="20000" placeholder="전화·카카오톡·메일 상담 내용, 확정 사양, 견적 전달 내용, 다음 연락 일정 등을 기록하세요.">${raw(r.consultationMemo||'')}</textarea><div class="memo-actions"><small>${r.consultationMemoUpdatedAt?`마지막 저장 ${fmt(r.consultationMemoUpdatedAt)}`:'아직 저장된 메모가 없습니다.'}</small><button class="admin-btn primary" id="save" type="button">메모 저장</button></div></div></div>
-      <div class="detail-section"><h3>이 고객의 문의 이력 · ${history.length}건</h3><div class="history">${history.map(x=>`<button type="button" class="${key(x)===key(r)?'active':''}" data-history="${esc(key(x))}"><span class="type" data-type="${x.type}">${label(x.type)}</span><span><strong>${esc(title(x))}</strong><small>${esc(status(x))}${String(x.consultationMemo||'').trim()?' · 메모 있음':''}</small></span><time>${fmt(x.createdAtClient).split(' ')[0]}</time></button>`).join('')}</div></div>`;
-      $('#save').onclick=()=>saveMemo(r);$('#pdf').onclick=()=>printPdf(r,$('#memo').value);$$('[data-history]').forEach(b=>b.onclick=()=>{S.selected=b.dataset.history;renderList()});
+      <div class="detail-section"><h3>고객 상담 메모</h3><div class="memo-box"><textarea id="memo" maxlength="20000" placeholder="전화·카카오톡·메일 상담 내용, 확정 사양, 견적 전달 내용, 다음 연락 일정 등을 기록하세요.">${raw(memo)}</textarea><div class="memo-actions"><small>${g.memoSource?.consultationMemoUpdatedAt?`마지막 저장 ${fmt(g.memoSource.consultationMemoUpdatedAt)}`:'아직 저장된 메모가 없습니다.'}</small><button class="admin-btn primary" id="save" type="button">메모 저장</button></div></div></div>
+      <div class="detail-section"><h3>이 고객의 문의 이력 · ${g.rows.length}건</h3><div class="history">${g.rows.map(x=>`<button type="button" class="${reqKey(x)===reqKey(r)?'active':''}" data-history="${esc(reqKey(x))}"><span class="type" data-type="${x.type}">${label(x.type)}</span><span><strong>${esc(title(x))}</strong><small>${esc(status(x))}${String(x.consultationMemo||'').trim()?' · 메모 있음':''}</small></span><time>${fmt(x.createdAtClient).split(' ')[0]}</time></button>`).join('')}</div></div>`;
+      $('#save').onclick=()=>saveMemo(g);$('#pdf').onclick=()=>printPdf(g,$('#memo').value);$$('[data-history]').forEach(b=>b.onclick=()=>{S.activeRequest=b.dataset.history;renderDetail()});
     }
-    async function saveMemo(r){const b=$('#save'),memo=$('#memo').value.trim(),now=new Date().toISOString();b.disabled=true;b.textContent='저장 중…';sync('상담 메모 저장 중…','loading');try{await updateDoc(doc(db,COL[r.type],r.id),{consultationMemo:memo,consultationMemoUpdatedAt:now,updatedAtClient:now,updatedAt:serverTimestamp()});r.consultationMemo=memo;r.consultationMemoUpdatedAt=now;sync(`Firestore 연결됨 · ${S.rows.length}건`);renderList();const t=$('#toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}catch(e){console.error(e);sync('상담 메모 저장 실패','error');alert(e?.code==='permission-denied'?'Firestore Rules에 상담 메모 저장 권한을 반영해야 합니다.':'상담 메모 저장 중 오류가 발생했습니다.');b.disabled=false;b.textContent='메모 저장'}}
-    function printPdf(r,memo){const fs=fields(r),history=sameCustomer(r),w=window.open('','_blank','width=980,height=860');if(!w){alert('팝업을 허용한 뒤 다시 시도해주세요.');return}w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>FINE.B 고객 상담 기록</title><style>*{box-sizing:border-box}body{padding:32px;font-family:Pretendard,"Noto Sans KR",sans-serif;color:#1b2530}.head{border-bottom:2px solid #0A2240;padding-bottom:16px}.head b{color:#0A2240}.head h1{margin:7px 0 4px;font-size:24px}.head p{margin:0;color:#77828d;font-size:10px}.sec{padding:18px 0;border-bottom:1px solid #e3e8ec}.sec h2{margin:0 0 10px;color:#0A2240;font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 18px}.spec{grid-template-columns:repeat(3,1fr)}.cell span{display:block;color:#85909a;font-size:9px}.cell strong{display:block;margin-top:3px;font-size:11px}.box{padding:13px;background:#f5f7f9;border-radius:8px;font-size:11px;line-height:1.7;white-space:pre-wrap}.memo{min-height:90px;border:1px solid #cad4dd;background:#fff}table{width:100%;border-collapse:collapse;font-size:9px}td,th{border-bottom:1px solid #e6eaee;padding:7px 4px;text-align:left}@media print{body{padding:16mm}.sec{break-inside:avoid}}</style></head><body><div class="head"><b>FINE.B PRODUCTION</b><h1>${esc(title(r))}</h1><p>${esc(label(r.type))} · ${esc(status(r))} · ${esc(fmt(r.createdAtClient))}</p></div><div class="sec"><h2>고객 정보</h2><div class="grid"><div class="cell"><span>회사 / 브랜드</span><strong>${esc(r.company)}</strong></div><div class="cell"><span>담당자</span><strong>${esc(r.name)}</strong></div><div class="cell"><span>연락처</span><strong>${esc(r.phone)}</strong></div><div class="cell"><span>이메일</span><strong>${esc(r.email)}</strong></div></div></div><div class="sec"><h2>문의 사양</h2><div class="grid spec">${fs.map(([a,b])=>`<div class="cell"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join('')}</div></div><div class="sec"><h2>고객 요청사항</h2><div class="box">${esc(r.message)}</div></div><div class="sec"><h2>상담 메모</h2><div class="box memo">${raw(memo)}</div></div><div class="sec"><h2>문의 이력</h2><table><thead><tr><th>구분</th><th>문의</th><th>상태</th><th>접수일</th></tr></thead><tbody>${history.map(x=>`<tr><td>${esc(label(x.type))}</td><td>${esc(title(x))}</td><td>${esc(status(x))}</td><td>${esc(fmt(x.createdAtClient))}</td></tr>`).join('')}</tbody></table></div><script>window.onload=()=>setTimeout(()=>window.print(),150)<\/script></body></html>`);w.document.close()}
-    async function load(){sync('Firestore 동기화 중…','loading');try{const groups=await Promise.all(TYPES.map(fetchAdminRequests));S.rows=groups.flat().sort((a,b)=>new Date(b.createdAtClient||0)-new Date(a.createdAtClient||0));counts();renderList();sync(`Firestore 연결됨 · ${S.rows.length}건`)}catch(e){console.error(e);sync('Firestore 연결 오류','error');$('#list').innerHTML='<div class="empty-state">Firestore 데이터를 불러오지 못했습니다.</div>'}}
-    function setType(t){S.type=TYPES.includes(t)?t:'all';S.selected='';$$('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===S.type));$$('.crm-stats .admin-stat').forEach(b=>b.classList.toggle('active',b.dataset.type===S.type));renderList()}
-    $$('[data-filter]').forEach(b=>b.onclick=()=>setType(b.dataset.filter));$$('.crm-stats .admin-stat').forEach(b=>b.onclick=()=>setType(b.dataset.type));$('#status').onchange=e=>{S.status=e.target.value;S.selected='';renderList()};$('#search').oninput=e=>{S.q=e.target.value.trim();S.selected='';renderList()};$('#clear').onclick=()=>{S.q='';$('#search').value='';S.selected='';renderList()};$('#refresh').onclick=load;load();
+
+    async function saveMemo(g){
+      const target=g.latest,b=$('#save'),memo=$('#memo').value.trim(),now=new Date().toISOString();b.disabled=true;b.textContent='저장 중…';sync('상담 메모 저장 중…','loading');
+      try{await updateDoc(doc(db,COL[target.type],target.id),{consultationMemo:memo,consultationMemoUpdatedAt:now,updatedAtClient:now,updatedAt:serverTimestamp()});target.consultationMemo=memo;target.consultationMemoUpdatedAt=now;g.memoSource=target;sync(`Firestore 연결됨 · 고객 ${S.groups.length}명 · 문의 ${S.rows.length}건`);renderList();const t=$('#toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}catch(e){console.error(e);sync('상담 메모 저장 실패','error');alert(e?.code==='permission-denied'?'Firestore Rules에 상담 메모 저장 권한을 반영해야 합니다.':'상담 메모 저장 중 오류가 발생했습니다.');b.disabled=false;b.textContent='메모 저장'}
+    }
+
+    function printPdf(g,memo){
+      const base=g.latest,w=window.open('','_blank','width=980,height=860');if(!w){alert('팝업을 허용한 뒤 다시 시도해주세요.');return}
+      w.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>FINE.B 고객 상담 기록</title><style>*{box-sizing:border-box}body{padding:32px;font-family:Pretendard,"Noto Sans KR",sans-serif;color:#1b2530}.head{border-bottom:2px solid #0A2240;padding-bottom:16px}.head b{color:#0A2240}.head h1{margin:7px 0 4px;font-size:24px}.head p{margin:0;color:#77828d;font-size:10px}.sec{padding:18px 0;border-bottom:1px solid #e3e8ec}.sec h2{margin:0 0 10px;color:#0A2240;font-size:12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 18px}.cell span{display:block;color:#85909a;font-size:9px}.cell strong{display:block;margin-top:3px;font-size:11px}.box{padding:13px;background:#f5f7f9;border-radius:8px;font-size:11px;line-height:1.7;white-space:pre-wrap}.memo{min-height:90px;border:1px solid #cad4dd;background:#fff}table{width:100%;border-collapse:collapse;font-size:9px}td,th{border-bottom:1px solid #e6eaee;padding:7px 4px;text-align:left}@media print{body{padding:16mm}.sec{break-inside:avoid}}</style></head><body><div class="head"><b>FINE.B PRODUCTION</b><h1>${esc(base.company&&base.company!=='-'?base.company:base.name)}</h1><p>${esc(base.name)} · ${esc(base.phone)} · ${esc(base.email)} · 총 문의 ${g.rows.length}건</p></div><div class="sec"><h2>고객 정보</h2><div class="grid"><div class="cell"><span>회사 / 브랜드</span><strong>${esc(base.company)}</strong></div><div class="cell"><span>담당자</span><strong>${esc(base.name)}</strong></div><div class="cell"><span>연락처</span><strong>${esc(base.phone)}</strong></div><div class="cell"><span>이메일</span><strong>${esc(base.email)}</strong></div></div></div><div class="sec"><h2>상담 메모</h2><div class="box memo">${raw(memo)}</div></div><div class="sec"><h2>전체 문의 이력</h2><table><thead><tr><th>구분</th><th>문의</th><th>상태</th><th>접수일</th></tr></thead><tbody>${g.rows.map(x=>`<tr><td>${esc(label(x.type))}</td><td>${esc(title(x))}</td><td>${esc(status(x))}</td><td>${esc(fmt(x.createdAtClient))}</td></tr>`).join('')}</tbody></table></div><script>window.onload=()=>setTimeout(()=>window.print(),150)<\/script></body></html>`);w.document.close()
+    }
+
+    async function load(){sync('Firestore 동기화 중…','loading');try{const groups=await Promise.all(TYPES.map(fetchAdminRequests));S.rows=groups.flat().sort((a,b)=>new Date(b.createdAtClient||0)-new Date(a.createdAtClient||0));buildGroups();counts();renderList();sync(`Firestore 연결됨 · 고객 ${S.groups.length}명 · 문의 ${S.rows.length}건`)}catch(e){console.error(e);sync('Firestore 연결 오류','error');$('#list').innerHTML='<div class="empty-state">Firestore 데이터를 불러오지 못했습니다.</div>'}}
+    function setType(t){S.type=TYPES.includes(t)?t:'all';S.selectedGroup='';S.activeRequest='';$$('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===S.type));$$('.crm-stats .admin-stat').forEach(b=>b.classList.toggle('active',b.dataset.type===S.type));renderList()}
+    $$('[data-filter]').forEach(b=>b.onclick=()=>setType(b.dataset.filter));$$('.crm-stats .admin-stat').forEach(b=>b.onclick=()=>setType(b.dataset.type));$('#status').onchange=e=>{S.status=e.target.value;S.selectedGroup='';S.activeRequest='';renderList()};$('#search').oninput=e=>{S.q=e.target.value.trim();S.selectedGroup='';S.activeRequest='';renderList()};$('#clear').onclick=()=>{S.q='';$('#search').value='';S.selectedGroup='';S.activeRequest='';renderList()};$('#refresh').onclick=load;load();
   </script>
 </body>
 </html>
