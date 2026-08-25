@@ -2,6 +2,20 @@
   const VIEW_KEY='fineb_admin_view_mode';
   const $=s=>document.querySelector(s);
 
+  function ensureCustomerNav(){
+    const nav=document.querySelector('.admin-nav');
+    if(!nav||nav.querySelector('a[href="admin-customers.html"]'))return;
+    const link=document.createElement('a');
+    link.href='admin-customers.html';
+    link.className='admin-site-link';
+    link.style.marginTop='2px';
+    link.style.background='rgba(255,255,255,.06)';
+    link.textContent='고객관리';
+    const analytics=nav.querySelector('a[href="admin-analytics.html"]');
+    if(analytics)nav.insertBefore(link,analytics);
+    else nav.appendChild(link);
+  }
+
   function setView(mode){
     const large=mode==='large';
     document.body.classList.toggle('view-large',large);
@@ -52,6 +66,7 @@
   }
 
   document.addEventListener('DOMContentLoaded',()=>{
+    ensureCustomerNav();
     let mode='normal';
     try{mode=localStorage.getItem(VIEW_KEY)||'normal'}catch{}
     setView(mode);
