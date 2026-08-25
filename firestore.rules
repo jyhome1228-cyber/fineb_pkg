@@ -47,6 +47,19 @@ service cloud.firestore {
         ]);
     }
 
+    function consultationMemoOnlyUpdate() {
+      return request.resource.data.consultationMemo is string
+        && request.resource.data.consultationMemo.size() <= 20000
+        && request.resource.data.consultationMemoUpdatedAt is string
+        && request.resource.data.updatedAtClient is string
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'consultationMemo',
+          'consultationMemoUpdatedAt',
+          'updatedAtClient',
+          'updatedAt'
+        ]);
+    }
+
     function validPortfolioCreate() {
       return request.resource.data.id is string
         && request.resource.data.id.size() > 3
@@ -77,21 +90,21 @@ service cloud.firestore {
     match /quotes/{requestId} {
       allow create: if validPublicRequest('quote');
       allow read: if true;
-      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate() || consultationMemoOnlyUpdate();
       allow delete: if false;
     }
 
     match /samples/{requestId} {
       allow create: if validPublicRequest('sample');
       allow read: if true;
-      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate() || consultationMemoOnlyUpdate();
       allow delete: if false;
     }
 
     match /inquiries/{requestId} {
       allow create: if validPublicRequest('inquiry');
       allow read: if true;
-      allow update: if statusOnlyUpdate() || trashOnlyUpdate();
+      allow update: if statusOnlyUpdate() || trashOnlyUpdate() || consultationMemoOnlyUpdate();
       allow delete: if false;
     }
 
