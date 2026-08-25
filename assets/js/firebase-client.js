@@ -39,6 +39,8 @@ const COLLECTIONS = {
 
 const VALID_STATUSES = ['신규', '확인중', '진행중', '견적완료', '완료', '보류'];
 const PORTFOLIO_CATEGORIES = ['paper', 'gift', 'rigid', 'special'];
+const PUBLIC_REQUEST_DEDUPE_WINDOW_MS = 10 * 60 * 1000;
+const publicRequestInflight = new Map();
 
 function collectionNameFor(type) {
   const collectionName = COLLECTIONS[type];
@@ -62,16 +64,143 @@ function normalizeRequest(type, payload = {}) {
   return data;
 }
 
+function compactText(value) {
+  return String(value ?? '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function stableValue(value) {
+  if (Array.isArray(value)) return value.map(stableValue);
+  if (value && typeof value === 'object') {
+    return Object.keys(value).sort().reduce((acc, key) => {
+      acc[key] = stableValue(value[key]);
+      return acc;
+    }, {});
+  }
+  return typeof value === 'string' ? compactText(value) : (value ?? '');
+}
+
+function hashText(input) {
+  let h1 = 2166136261;
+  let h2 = 5381;
+  for (let i = 0; i < input.length; i += 1) {
+    const code = input.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 16777619);
+    h2 = Math.imul(h2, 33) ^ code;
+  }
+  return `${(h1 >>> 0).toString(36)}${(h2 >>> 0).toString(36)}`;
+}
+
+function requestFingerprint(type, payload = {}) {
+  const comparable = {
+    type,
+    company: compactText(payload.company),
+    name: compactText(payload.name),
+    phone: String(payload.phone || '').replace(/\D/g, ''),
+    email: compactText(payload.email),
+    message: compactText(payload.message),
+    spec: stableValue(payload.spec || {})
+  };
+  return hashText(JSON.stringify(comparable));
+}
+
+function requestDocId(type, fingerprint, bucket) {
+  const prefix = type === 'quote' ? 'Q' : type === 'sample' ? 'S' : 'I';
+  return `${prefix}-${bucket.toString(36)}-${fingerprint}`;
+}
+
+function requestTime(row) {
+  const time = new Date(row?.createdAtClient || 0).getTime();
+  return Number.isFinite(time) ? time : 0;
+}
+
+function duplicateStatusRank(status) {
+  return ({ 신규: 1, 확인중: 2, 진행중: 3, 견적완료: 4, 완료: 5, 보류: 2 })[status] || 0;
+}
+
+function dedupeAdminRows(rows = [], type = '') {
+  const sorted = [...rows].sort((a, b) => requestTime(b) - requestTime(a));
+  const groups = new Map();
+
+  sorted.forEach((row) => {
+    const fingerprint = requestFingerprint(type || row.type, row);
+    const time = requestTime(row);
+    const candidates = groups.get(fingerprint) || [];
+    const index = candidates.findIndex((entry) => Math.abs(entry.time - time) <= PUBLIC_REQUEST_DEDUPE_WINDOW_MS);
+
+    if (index === -1) {
+      candidates.push({ row, time });
+      groups.set(fingerprint, candidates);
+      return;
+    }
+
+    const current = candidates[index].row;
+    const currentRank = duplicateStatusRank(current.status || '신규');
+    const nextRank = duplicateStatusRank(row.status || '신규');
+    const currentUpdated = new Date(current.updatedAtClient || current.statusUpdatedAt || current.createdAtClient || 0).getTime() || 0;
+    const nextUpdated = new Date(row.updatedAtClient || row.statusUpdatedAt || row.createdAtClient || 0).getTime() || 0;
+
+    if (nextRank > currentRank || (nextRank === currentRank && nextUpdated > currentUpdated)) {
+      candidates[index] = { row, time };
+    }
+  });
+
+  return [...groups.values()]
+    .flat()
+    .map((entry) => entry.row)
+    .sort((a, b) => requestTime(b) - requestTime(a));
+}
+
 export async function savePublicRequest(type, payload) {
   const collectionName = collectionNameFor(type);
-  const data = normalizeRequest(type, { ...payload, status: '신규' });
-  await setDoc(doc(db, collectionName, data.id), {
-    ...data,
-    status: '신규',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  });
-  return data;
+  const baseData = normalizeRequest(type, { ...payload, status: '신규' });
+  const fingerprint = requestFingerprint(type, baseData);
+  const inflightKey = `${type}:${fingerprint}`;
+
+  if (publicRequestInflight.has(inflightKey)) return publicRequestInflight.get(inflightKey);
+
+  const task = (async () => {
+    const now = Date.now();
+    const bucket = Math.floor(now / PUBLIC_REQUEST_DEDUPE_WINDOW_MS);
+    const candidateIds = [
+      requestDocId(type, fingerprint, bucket),
+      requestDocId(type, fingerprint, bucket - 1)
+    ];
+
+    for (const candidateId of candidateIds) {
+      const existingRef = doc(db, collectionName, candidateId);
+      const existing = await getDoc(existingRef);
+      if (!existing.exists()) continue;
+      const existingData = { id: existing.id, ...existing.data() };
+      const created = requestTime(existingData);
+      if (!created || Math.abs(now - created) <= PUBLIC_REQUEST_DEDUPE_WINDOW_MS) {
+        return existingData;
+      }
+    }
+
+    const data = { ...baseData, id: candidateIds[0] };
+    const ref = doc(db, collectionName, data.id);
+
+    try {
+      await setDoc(ref, {
+        ...data,
+        status: '신규',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      return data;
+    } catch (error) {
+      const existing = await getDoc(ref).catch(() => null);
+      if (existing?.exists()) return { id: existing.id, ...existing.data() };
+      throw error;
+    }
+  })();
+
+  publicRequestInflight.set(inflightKey, task);
+  try {
+    return await task;
+  } finally {
+    publicRequestInflight.delete(inflightKey);
+  }
 }
 
 export async function fetchAdminRequests(type, options = {}) {
@@ -86,7 +215,7 @@ export async function fetchAdminRequests(type, options = {}) {
     rows = rows.filter((item) => item.deleted !== true);
   }
 
-  return rows.sort((a, b) => new Date(b.createdAtClient || 0) - new Date(a.createdAtClient || 0));
+  return dedupeAdminRows(rows, type);
 }
 
 export async function fetchTrashRequests() {
