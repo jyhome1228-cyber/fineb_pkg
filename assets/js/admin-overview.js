@@ -45,6 +45,94 @@ function requestTitle(row) {
   return row?.spec?.title || row?.spec?.product || row?.company || row?.name || `${typeLabel(row?.type)} 문의`;
 }
 
+function ensureEnhancementStyles() {
+  if ($('#adminOverviewEnhancementStyles')) return;
+  const style = document.createElement('style');
+  style.id = 'adminOverviewEnhancementStyles';
+  style.textContent = `
+    #soundAlertTest{white-space:nowrap}
+    .inquiry-inbox-bar{position:fixed;z-index:9998;left:50%;bottom:18px;display:flex;align-items:center;gap:12px;width:min(640px,calc(100vw - 32px));min-height:54px;transform:translate(-50%,16px);border:1px solid #cbd5df;border-radius:15px;padding:8px 9px 8px 12px;background:rgba(255,255,255,.97);box-shadow:0 14px 34px rgba(10,34,64,.16);opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;backdrop-filter:blur(12px)}
+    .inquiry-inbox-bar.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+    .inquiry-inbox-mark{position:relative;display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#0A2240;color:#fff;font-size:11px;font-weight:800;letter-spacing:.03em}
+    .inquiry-inbox-mark:after{content:"";position:absolute;right:-2px;top:-2px;width:8px;height:8px;border:2px solid #fff;border-radius:999px;background:#dc554f}
+    .inquiry-inbox-copy{min-width:0;flex:1}
+    .inquiry-inbox-copy strong{display:block;overflow:hidden;color:#172432;font-size:11.5px;font-weight:760;text-overflow:ellipsis;white-space:nowrap}
+    .inquiry-inbox-copy span{display:block;overflow:hidden;margin-top:3px;color:#7d8995;font-size:9.5px;text-overflow:ellipsis;white-space:nowrap}
+    .inquiry-inbox-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+    .inquiry-inbox-actions button{min-height:34px;border:1px solid #d7dfe6;border-radius:10px;padding:0 11px;background:#fff;color:#27333f;font-size:10px;font-weight:700;cursor:pointer}
+    .inquiry-inbox-actions button:hover{border-color:#0A2240;color:#0A2240}
+    .inquiry-inbox-actions .primary{border-color:#0A2240;background:#0A2240;color:#fff}
+    .inquiry-inbox-actions .primary:hover{background:#123557;color:#fff}
+    @media(max-width:760px){.inquiry-inbox-bar{bottom:12px;width:calc(100vw - 24px);gap:9px;padding-left:9px}.inquiry-inbox-mark{width:32px;height:32px;flex-basis:32px}.inquiry-inbox-copy span{max-width:42vw}.inquiry-inbox-actions button{padding:0 9px}.inquiry-inbox-actions .dismiss{display:none}}
+  `;
+  document.head.appendChild(style);
+}
+
+function ensureInboxBar() {
+  let bar = $('#inquiryInboxBar');
+  if (bar) return bar;
+
+  bar = document.createElement('aside');
+  bar.id = 'inquiryInboxBar';
+  bar.className = 'inquiry-inbox-bar';
+  bar.setAttribute('aria-live', 'polite');
+  bar.innerHTML = `
+    <span class="inquiry-inbox-mark" aria-hidden="true">IN</span>
+    <div class="inquiry-inbox-copy">
+      <strong id="inquiryInboxTitle">새 문의가 있습니다.</strong>
+      <span id="inquiryInboxMeta">확인이 필요한 신규 문의</span>
+    </div>
+    <div class="inquiry-inbox-actions">
+      <button type="button" class="dismiss" id="inquiryInboxDismiss">잠시 숨김</button>
+      <button type="button" class="primary" id="inquiryInboxOpen">확인하기</button>
+    </div>
+  `;
+  document.body.appendChild(bar);
+  return bar;
+}
+
+function renderInboxNotice(all) {
+  const bar = ensureInboxBar();
+  const newRows = all.filter((row) => statusLabel(row) === '신규');
+
+  if (!newRows.length) {
+    bar.classList.remove('show');
+    bar.dataset.requestType = '';
+    bar.dataset.requestId = '';
+    return;
+  }
+
+  const newest = newRows[0];
+  const title = $('#inquiryInboxTitle');
+  const meta = $('#inquiryInboxMeta');
+  const openButton = $('#inquiryInboxOpen');
+  const dismissButton = $('#inquiryInboxDismiss');
+
+  if (title) title.textContent = `확인하지 않은 새 문의 ${newRows.length}건이 있습니다.`;
+  if (meta) meta.textContent = `최근 ${typeLabel(newest.type)} 문의 · ${requestTitle(newest)} · ${formatDate(newest.createdAtClient)}`;
+
+  bar.dataset.requestType = newest.type || '';
+  bar.dataset.requestId = newest.id || '';
+  bar.classList.add('show');
+
+  if (openButton) {
+    openButton.onclick = () => {
+      if (bar.dataset.requestType && bar.dataset.requestId) {
+        openRequest(bar.dataset.requestType, bar.dataset.requestId);
+      }
+    };
+  }
+
+  if (dismissButton) {
+    dismissButton.onclick = () => {
+      bar.classList.remove('show');
+      window.setTimeout(() => {
+        if ($('#inquiryInboxBar')?.dataset.requestId === newest.id) bar.classList.add('show');
+      }, 10 * 60 * 1000);
+    };
+  }
+}
+
 function updateSoundButton() {
   const button = $('#soundAlertToggle');
   if (!button) return;
@@ -59,8 +147,8 @@ function updateSoundButton() {
   }
 }
 
-async function unlockAudio() {
-  if (!soundEnabled) return false;
+async function unlockAudio(force = false) {
+  if (!soundEnabled && !force) return false;
   try {
     if (!audioContext) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -93,12 +181,12 @@ function scheduleTone(ctx, startAt, frequency, duration, volume = 0.065) {
   oscillator.stop(startAt + duration + 0.03);
 }
 
-async function playTripleDingDong() {
-  if (!soundEnabled) return;
-  const ready = audioUnlocked || await unlockAudio();
+async function playTripleDingDong(force = false) {
+  if (!soundEnabled && !force) return false;
+  const ready = audioUnlocked || await unlockAudio(force);
   if (!ready || !audioContext) {
-    showLiveToast('새 문의가 들어왔습니다. 알림음을 들으려면 화면을 한 번 클릭해주세요.', 'warning');
-    return;
+    showLiveToast('알림음을 들으려면 화면을 한 번 클릭한 뒤 다시 테스트해주세요.', 'warning');
+    return false;
   }
 
   const base = audioContext.currentTime + 0.04;
@@ -107,6 +195,7 @@ async function playTripleDingDong() {
     scheduleTone(audioContext, at, 880, 0.22, 0.07);
     scheduleTone(audioContext, at + 0.24, 659.25, 0.30, 0.075);
   }
+  return true;
 }
 
 function showLiveToast(message, state = 'ok') {
@@ -175,6 +264,8 @@ function renderOverview(groups) {
     });
   }
 
+  renderInboxNotice(all);
+
   const updated = $('#overviewUpdatedAt');
   if (updated) {
     const now = new Date();
@@ -207,19 +298,26 @@ function startRealtimeWatch() {
         return;
       }
 
-      const added = snapshot.docChanges().filter((change) => change.type === 'added' && change.doc.data()?.deleted !== true);
+      const changes = snapshot.docChanges();
+      if (changes.length) queueOverviewRefresh();
+
+      const added = changes.filter((change) => change.type === 'added' && change.doc.data()?.deleted !== true);
       if (!added.length) return;
 
-      queueOverviewRefresh();
       playTripleDingDong();
       const newest = added[added.length - 1].doc.data();
-      showLiveToast(`새 ${typeLabel(type)} 문의가 들어왔습니다${newest?.name ? ` · ${newest.name}` : ''}.`);
 
       const originalTitle = document.title.replace(/^🔔\s*/, '');
-      document.title = `🔔 새 문의 · ${originalTitle}`;
+      document.title = `🔔 새 ${typeLabel(type)} 문의 · ${originalTitle}`;
       window.setTimeout(() => {
         if (document.title.startsWith('🔔')) document.title = originalTitle;
       }, 12000);
+
+      if (!audioUnlocked && soundEnabled) {
+        showLiveToast(`새 ${typeLabel(type)} 문의가 들어왔습니다. 알림음을 사용하려면 화면을 한 번 클릭해주세요.`, 'warning');
+      }
+
+      if (newest?.name) console.info(`New ${typeLabel(type)} inquiry:`, newest.name);
     }, (error) => console.warn(`Realtime watch failed: ${type}`, error));
   });
 }
@@ -238,10 +336,26 @@ function bindOverviewCards() {
   });
 }
 
+function ensureSoundTestButton() {
+  if ($('#soundAlertTest')) return $('#soundAlertTest');
+  const soundButton = $('#soundAlertToggle');
+  if (!soundButton) return null;
+
+  const testButton = document.createElement('button');
+  testButton.className = 'admin-btn';
+  testButton.id = 'soundAlertTest';
+  testButton.type = 'button';
+  testButton.textContent = '알림음 테스트';
+  soundButton.insertAdjacentElement('afterend', testButton);
+  return testButton;
+}
+
 function bindSoundControls() {
   updateSoundButton();
 
   const soundButton = $('#soundAlertToggle');
+  const testButton = ensureSoundTestButton();
+
   soundButton?.addEventListener('pointerdown', (event) => event.stopPropagation());
   soundButton?.addEventListener('click', async () => {
     if (!soundEnabled) {
@@ -267,8 +381,20 @@ function bindSoundControls() {
     updateSoundButton();
   });
 
+  testButton?.addEventListener('pointerdown', (event) => event.stopPropagation());
+  testButton?.addEventListener('click', async () => {
+    testButton.disabled = true;
+    testButton.textContent = '테스트 중…';
+    const played = await playTripleDingDong(true);
+    if (played) showLiveToast('테스트 알림음이 3회 재생됩니다.');
+    window.setTimeout(() => {
+      testButton.disabled = false;
+      testButton.textContent = '알림음 테스트';
+    }, 2400);
+  });
+
   const gestureUnlock = (event) => {
-    if (event?.target?.closest?.('#soundAlertToggle')) return;
+    if (event?.target?.closest?.('#soundAlertToggle, #soundAlertTest')) return;
     if (soundEnabled && !audioUnlocked) unlockAudio();
   };
   window.addEventListener('pointerdown', gestureUnlock, { passive: true });
@@ -276,6 +402,8 @@ function bindSoundControls() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  ensureEnhancementStyles();
+  ensureInboxBar();
   bindOverviewCards();
   bindSoundControls();
   await refreshOverview();
