@@ -241,19 +241,34 @@ function bindOverviewCards() {
 function bindSoundControls() {
   updateSoundButton();
 
-  $('#soundAlertToggle')?.addEventListener('click', async () => {
-    soundEnabled = !soundEnabled;
-    localStorage.setItem(SOUND_PREF_KEY, String(soundEnabled));
-    if (soundEnabled) {
+  const soundButton = $('#soundAlertToggle');
+  soundButton?.addEventListener('pointerdown', (event) => event.stopPropagation());
+  soundButton?.addEventListener('click', async () => {
+    if (!soundEnabled) {
+      soundEnabled = true;
+      localStorage.setItem(SOUND_PREF_KEY, 'true');
       await unlockAudio();
       showLiveToast(audioUnlocked ? '새 문의 알림음이 켜졌습니다.' : '화면을 한 번 클릭하면 알림음이 활성화됩니다.');
-    } else {
-      showLiveToast('새 문의 알림음을 껐습니다.');
+      updateSoundButton();
+      return;
     }
+
+    if (!audioUnlocked) {
+      localStorage.setItem(SOUND_PREF_KEY, 'true');
+      await unlockAudio();
+      showLiveToast(audioUnlocked ? '새 문의 알림음이 켜졌습니다.' : '화면을 한 번 클릭하면 알림음이 활성화됩니다.');
+      updateSoundButton();
+      return;
+    }
+
+    soundEnabled = false;
+    localStorage.setItem(SOUND_PREF_KEY, 'false');
+    showLiveToast('새 문의 알림음을 껐습니다.');
     updateSoundButton();
   });
 
-  const gestureUnlock = () => {
+  const gestureUnlock = (event) => {
+    if (event?.target?.closest?.('#soundAlertToggle')) return;
     if (soundEnabled && !audioUnlocked) unlockAudio();
   };
   window.addEventListener('pointerdown', gestureUnlock, { passive: true });
