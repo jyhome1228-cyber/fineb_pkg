@@ -15,6 +15,36 @@
     .cloud-sync-state[data-state="loading"]:before{background:#c3912f}
     .cloud-sync-state[data-state="error"]:before{background:#c6534f}
     .admin-meta .cloud-note{display:block;margin-top:8px;color:rgba(255,255,255,.42);font-size:10px;line-height:1.45}
+    .admin-overview-nav{display:flex;align-items:center;justify-content:space-between;min-height:46px;margin-bottom:5px;border:1px solid rgba(255,255,255,.11);border-radius:12px;padding:0 13px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:700;text-decoration:none}
+    .admin-overview-nav:hover{background:rgba(255,255,255,.17)}
+    .admin-overview-nav b{min-width:25px;padding:3px 7px;border-radius:999px;background:#fff;color:#0A2240;font-size:10px;text-align:center}
+    #soundAlertToggle[data-enabled="true"][data-ready="true"]{border-color:#bbd7c7;background:#eef8f2;color:#226342}
+    #soundAlertToggle[data-enabled="true"][data-ready="false"]{border-color:#e4d2a5;background:#fff9e9;color:#7b5b13}
+    #soundAlertToggle[data-enabled="false"]{color:#7d8791;background:#f7f8f9}
+    .request-overview-panel{margin-bottom:14px;border:1px solid #dbe2e8;border-radius:20px;padding:19px;background:#fff;box-shadow:0 4px 18px rgba(10,34,64,.035)}
+    .overview-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:14px}
+    .overview-head small{display:block;color:#718092;font-size:10px;font-weight:700;letter-spacing:.13em}
+    .overview-head h2{margin:4px 0 0;font-size:18px;letter-spacing:-.03em}
+    .overview-head p{margin:0;color:#7e8994;font-size:10.5px;line-height:1.55;text-align:right}
+    .overview-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+    .overview-card{position:relative;overflow:hidden;min-height:92px;border:1px solid #e0e5ea;border-radius:15px;padding:15px 16px;background:#f8fafb;color:#1e2934;text-align:left;cursor:pointer}
+    .overview-card:hover{border-color:#a8b6c4;background:#f3f6f8}
+    .overview-card:first-child{border-color:#b9c6d2;background:#0A2240;color:#fff}
+    .overview-card span{display:block;font-size:10.5px;font-weight:700}
+    .overview-card strong{display:block;margin-top:5px;font-size:29px;line-height:1;font-weight:780;letter-spacing:-.03em}
+    .overview-card small{display:block;margin-top:8px;color:#8a949f;font-size:9.5px;line-height:1.4}
+    .overview-card:first-child small{color:rgba(255,255,255,.58)}
+    .overview-recent-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:17px 1px 8px;padding-top:15px;border-top:1px solid #e8ecef}
+    .overview-recent-head span{color:#0A2240;font-size:11px;font-weight:750}
+    .overview-recent-head small{color:#929ca6;font-size:9.5px}
+    .overview-recent-list{overflow:hidden;border:1px solid #e5e9ed;border-radius:13px;background:#fff}
+    .overview-recent-row{display:grid;grid-template-columns:48px minmax(0,1fr) 60px 84px;gap:10px;align-items:center;width:100%;min-height:54px;border:0;border-bottom:1px solid #edf0f3;padding:9px 12px;background:#fff;color:#26313c;text-align:left;cursor:pointer}
+    .overview-recent-row:last-child{border-bottom:0}.overview-recent-row:hover{background:#f8fafb}
+    .overview-type-badge{display:inline-flex;align-items:center;justify-content:center;min-width:42px;border-radius:8px;padding:5px 7px;background:#edf2f6;color:#0A2240;font-size:9px;font-weight:750}
+    .overview-type-badge[data-request-type="sample"]{background:#eef5ec;color:#3b6940}.overview-type-badge[data-request-type="inquiry"]{background:#f4eef8;color:#684884}
+    .overview-recent-copy{min-width:0}.overview-recent-copy strong{display:block;overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}.overview-recent-copy small{display:block;overflow:hidden;margin-top:3px;color:#88939e;font-size:9px;text-overflow:ellipsis;white-space:nowrap}.overview-recent-row time{color:#89949f;font-size:9px;text-align:right;white-space:nowrap}.overview-empty{padding:30px;color:#909aa5;font-size:11px;text-align:center}
+    .inquiry-live-toast{position:fixed;z-index:9999;right:24px;bottom:24px;max-width:390px;transform:translateY(14px);border:1px solid #b8c7d4;border-radius:14px;padding:13px 16px;background:#0A2240;color:#fff;box-shadow:0 16px 40px rgba(10,34,64,.2);font-size:11.5px;font-weight:700;line-height:1.5;opacity:0;pointer-events:none;transition:.2s ease}
+    .inquiry-live-toast.show{transform:translateY(0);opacity:1}.inquiry-live-toast[data-state="warning"]{background:#7a5a17;border-color:#a88640}
     .visitor-panel{margin-bottom:14px;border:1px solid #dfe5ea;border-radius:18px;padding:18px;background:#fff}
     .visitor-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:13px}
     .visitor-head small{display:block;color:#718092;font-size:10px;font-weight:700;letter-spacing:.13em}
@@ -27,7 +57,8 @@
     .visitor-card span{display:block;color:#7b8792;font-size:10.5px;font-weight:700;letter-spacing:.08em}
     .visitor-card strong{display:block;margin-top:5px;color:#0A2240;font-size:29px;line-height:1;font-weight:760}
     .visitor-card small{display:block;margin-top:7px;color:#929ca6;font-size:9.5px;line-height:1.45}
-    @media(max-width:760px){.admin-account-box{justify-content:flex-start}.cloud-sync-state{max-width:100%}.visitor-head{align-items:flex-start;flex-direction:column}.visitor-meta{text-align:left}.visitor-stats{grid-template-columns:1fr}.visitor-card strong{font-size:26px}}
+    @media(max-width:1000px){.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.admin-account-box{justify-content:flex-start}.cloud-sync-state{max-width:100%}.overview-head{align-items:flex-start;flex-direction:column}.overview-head p{text-align:left}.overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-recent-row{grid-template-columns:44px minmax(0,1fr) 56px}.overview-recent-row time{display:none}.visitor-head{align-items:flex-start;flex-direction:column}.visitor-meta{text-align:left}.visitor-stats{grid-template-columns:1fr}.visitor-card strong{font-size:26px}.inquiry-live-toast{left:14px;right:14px;bottom:14px;max-width:none}}
   </style>
 </head>
 <body>
@@ -35,6 +66,7 @@
     <aside class="admin-side">
       <a class="admin-brand" href="index.html"><img src="assets/logo.svg" alt="FINE.B"><p>PRODUCTION ADMIN</p></a>
       <nav class="admin-nav">
+        <a href="#requestOverview" class="admin-overview-nav"><span>전체 문의 관리</span><b id="navAllCount">0</b></a>
         <button class="active" data-type="quote"><span>견적문의</span><b id="navQuoteCount">0</b></button>
         <button data-type="sample"><span>샘플문의</span><b id="navSampleCount">0</b></button>
         <button data-type="inquiry"><span>제작문의</span><b id="navInquiryCount">0</b></button>
@@ -55,9 +87,25 @@
         </div>
         <div class="admin-actions admin-account-box">
           <span class="cloud-sync-state" id="cloudSyncState" data-state="loading">Firestore 연결 확인 중…</span>
+          <button class="admin-btn" id="soundAlertToggle" type="button" data-enabled="true" data-ready="false">알림음 켜기</button>
           <button class="admin-btn" id="refreshAdmin" type="button">새로고침</button>
         </div>
       </div>
+
+      <section class="request-overview-panel" id="requestOverview">
+        <div class="overview-head">
+          <div><small>ALL INQUIRIES</small><h2>전체 문의 관리 대시보드</h2></div>
+          <p>견적·샘플·제작 문의를 한 화면에서 확인합니다.<br>최근 문의를 누르면 해당 문의 상세로 바로 이동합니다.</p>
+        </div>
+        <div class="overview-grid">
+          <button type="button" class="overview-card" data-overview-type="all"><span>전체 문의</span><strong id="overviewAllCount">0</strong><small>견적 · 샘플 · 제작 전체</small></button>
+          <button type="button" class="overview-card" data-overview-type="quote"><span>견적문의</span><strong id="overviewQuoteCount">0</strong><small>견적 요청 접수</small></button>
+          <button type="button" class="overview-card" data-overview-type="sample"><span>샘플문의</span><strong id="overviewSampleCount">0</strong><small>샘플 제작 요청 접수</small></button>
+          <button type="button" class="overview-card" data-overview-type="inquiry"><span>제작문의</span><strong id="overviewInquiryCount">0</strong><small>일반 제작 상담 접수</small></button>
+        </div>
+        <div class="overview-recent-head"><span>최근 전체 문의</span><small id="overviewUpdatedAt">동기화 중…</small></div>
+        <div class="overview-recent-list" id="overviewRecentList"><div class="overview-empty">전체 문의를 불러오는 중입니다.</div></div>
+      </section>
 
       <section class="visitor-panel">
         <div class="visitor-head">
@@ -120,6 +168,7 @@
   <div class="view-size-control" aria-label="화면 글자 크기"><button type="button" id="viewNormal" class="active">작게보기</button><button type="button" id="viewLarge">크게보기</button></div>
   <div id="pdfPrintRoot" class="pdf-print-root" aria-hidden="true"></div>
   <script type="module" src="assets/js/admin.js"></script>
+  <script type="module" src="assets/js/admin-overview.js"></script>
   <script type="module" src="assets/js/admin-visitors.js"></script>
   <script type="module" src="assets/js/admin-trash.js"></script>
   <script src="assets/js/admin-accessibility.js"></script>
