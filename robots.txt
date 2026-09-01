@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
-Disallow: /admin.html
-Disallow: /admin-portfolio.html
+Disallow: /admin
+Disallow: /FIREBASE_SETUP.md
+Disallow: /SEO_SETUP.md
 
 Sitemap: https://finebpkg.com/sitemap.xml
