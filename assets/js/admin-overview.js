@@ -15,6 +15,7 @@ let audioContext = null;
 let audioUnlocked = false;
 let soundEnabled = localStorage.getItem(SOUND_PREF_KEY) !== 'false';
 let refreshTimer = null;
+let modalDismissedRequestId = '';
 
 function typeLabel(type) {
   return type === 'quote' ? '견적' : type === 'sample' ? '샘플' : '제작';
@@ -63,7 +64,27 @@ function ensureEnhancementStyles() {
     .inquiry-inbox-actions button:hover{border-color:#0A2240;color:#0A2240}
     .inquiry-inbox-actions .primary{border-color:#0A2240;background:#0A2240;color:#fff}
     .inquiry-inbox-actions .primary:hover{background:#123557;color:#fff}
-    @media(max-width:760px){.inquiry-inbox-bar{bottom:12px;width:calc(100vw - 24px);gap:9px;padding-left:9px}.inquiry-inbox-mark{width:32px;height:32px;flex-basis:32px}.inquiry-inbox-copy span{max-width:42vw}.inquiry-inbox-actions button{padding:0 9px}.inquiry-inbox-actions .dismiss{display:none}}
+
+    .inquiry-modal-backdrop{position:fixed;z-index:10020;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(7,18,31,.58);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s ease,visibility .2s ease;backdrop-filter:blur(3px)}
+    .inquiry-modal-backdrop.show{opacity:1;visibility:visible;pointer-events:auto}
+    .inquiry-modal-card{width:min(470px,calc(100vw - 32px));transform:translateY(10px) scale(.985);border:1px solid rgba(255,255,255,.22);border-radius:22px;padding:26px;background:#fff;box-shadow:0 32px 90px rgba(5,18,31,.32);transition:transform .22s ease}
+    .inquiry-modal-backdrop.show .inquiry-modal-card{transform:translateY(0) scale(1)}
+    .inquiry-modal-icon{position:relative;display:grid;place-items:center;width:44px;height:44px;margin-bottom:18px;border-radius:13px;background:#0A2240;color:#fff;font-size:12px;font-weight:800;letter-spacing:.04em}
+    .inquiry-modal-icon:after{content:"";position:absolute;right:-3px;top:-3px;width:10px;height:10px;border:3px solid #fff;border-radius:999px;background:#dc554f}
+    .inquiry-modal-eyebrow{display:block;margin-bottom:7px;color:#708092;font-size:10px;font-weight:800;letter-spacing:.12em}
+    .inquiry-modal-card h2{margin:0;color:#132234;font-size:24px;line-height:1.28;letter-spacing:-.035em}
+    .inquiry-modal-card p{margin:10px 0 0;color:#6f7c89;font-size:12px;line-height:1.65;word-break:keep-all}
+    .inquiry-modal-meta{margin-top:19px;border:1px solid #e2e8ee;border-radius:14px;padding:13px 14px;background:#f7f9fb}
+    .inquiry-modal-meta strong{display:block;color:#1d2c3b;font-size:12px;font-weight:760}
+    .inquiry-modal-meta span{display:block;margin-top:4px;color:#7d8994;font-size:10px;line-height:1.5}
+    .inquiry-modal-actions{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:20px}
+    .inquiry-modal-actions button{min-height:44px;border:1px solid #d8e0e7;border-radius:12px;background:#fff;color:#314050;font-size:11px;font-weight:750;cursor:pointer}
+    .inquiry-modal-actions button:hover{border-color:#0A2240;color:#0A2240}
+    .inquiry-modal-actions .primary{border-color:#0A2240;background:#0A2240;color:#fff}
+    .inquiry-modal-actions .primary:hover{background:#123557;color:#fff}
+    .inquiry-modal-hint{display:block;margin-top:11px;color:#9aa4ad;font-size:9px;line-height:1.5;text-align:center}
+
+    @media(max-width:760px){.inquiry-inbox-bar{bottom:12px;width:calc(100vw - 24px);gap:9px;padding-left:9px}.inquiry-inbox-mark{width:32px;height:32px;flex-basis:32px}.inquiry-inbox-copy span{max-width:42vw}.inquiry-inbox-actions button{padding:0 9px}.inquiry-inbox-actions .dismiss{display:none}.inquiry-modal-backdrop{padding:16px}.inquiry-modal-card{padding:22px 20px}.inquiry-modal-card h2{font-size:21px}.inquiry-modal-actions{grid-template-columns:1fr}.inquiry-modal-actions .primary{order:-1}}
   `;
   document.head.appendChild(style);
 }
@@ -91,14 +112,67 @@ function ensureInboxBar() {
   return bar;
 }
 
+function ensureInboxModal() {
+  let modal = $('#inquiryInboxModal');
+  if (modal) return modal;
+
+  modal = document.createElement('div');
+  modal.id = 'inquiryInboxModal';
+  modal.className = 'inquiry-modal-backdrop';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'inquiryModalTitle');
+  modal.innerHTML = `
+    <div class="inquiry-modal-card">
+      <span class="inquiry-modal-icon" aria-hidden="true">IN</span>
+      <span class="inquiry-modal-eyebrow">NEW INQUIRY</span>
+      <h2 id="inquiryModalTitle">확인이 필요한 새 문의가 있습니다.</h2>
+      <p id="inquiryModalDescription">관리자 페이지에 새 문의가 접수되었습니다. 내용을 확인하면 자동으로 ‘확인중’ 단계로 변경할 수 있습니다.</p>
+      <div class="inquiry-modal-meta">
+        <strong id="inquiryModalMetaTitle">최근 문의</strong>
+        <span id="inquiryModalMetaCopy">문의 정보를 불러오는 중입니다.</span>
+      </div>
+      <div class="inquiry-modal-actions">
+        <button type="button" id="inquiryModalLater">나중에 확인</button>
+        <button type="button" class="primary" id="inquiryModalOpen">내용 확인하기</button>
+      </div>
+      <span class="inquiry-modal-hint">나중에 확인을 눌러도 하단 알림은 유지됩니다. 미확인 상태라면 다음 접속 시 다시 표시됩니다.</span>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function hideInboxModal() {
+  $('#inquiryInboxModal')?.classList.remove('show');
+}
+
+function confirmAndOpenRequest(type, id) {
+  hideInboxModal();
+  openRequest(type, id);
+  window.setTimeout(() => {
+    const activeRow = [...document.querySelectorAll('.request-row')].find((item) => item.dataset.id === id);
+    if (!activeRow) return;
+    const statusText = activeRow.querySelector('.status')?.textContent?.trim();
+    if (statusText === '신규') {
+      document.querySelector('[data-set-status="확인중"]')?.click();
+    }
+  }, 260);
+}
+
 function renderInboxNotice(all) {
   const bar = ensureInboxBar();
+  const modal = ensureInboxModal();
   const newRows = all.filter((row) => statusLabel(row) === '신규');
 
   if (!newRows.length) {
     bar.classList.remove('show');
     bar.dataset.requestType = '';
     bar.dataset.requestId = '';
+    modal.classList.remove('show');
+    modal.dataset.requestType = '';
+    modal.dataset.requestId = '';
+    modalDismissedRequestId = '';
     return;
   }
 
@@ -107,6 +181,12 @@ function renderInboxNotice(all) {
   const meta = $('#inquiryInboxMeta');
   const openButton = $('#inquiryInboxOpen');
   const dismissButton = $('#inquiryInboxDismiss');
+  const modalTitle = $('#inquiryModalTitle');
+  const modalDescription = $('#inquiryModalDescription');
+  const modalMetaTitle = $('#inquiryModalMetaTitle');
+  const modalMetaCopy = $('#inquiryModalMetaCopy');
+  const modalOpen = $('#inquiryModalOpen');
+  const modalLater = $('#inquiryModalLater');
 
   if (title) title.textContent = `확인하지 않은 새 문의 ${newRows.length}건이 있습니다.`;
   if (meta) meta.textContent = `최근 ${typeLabel(newest.type)} 문의 · ${requestTitle(newest)} · ${formatDate(newest.createdAtClient)}`;
@@ -115,10 +195,21 @@ function renderInboxNotice(all) {
   bar.dataset.requestId = newest.id || '';
   bar.classList.add('show');
 
+  modal.dataset.requestType = newest.type || '';
+  modal.dataset.requestId = newest.id || '';
+  if (modalTitle) modalTitle.textContent = `확인이 필요한 새 문의 ${newRows.length}건이 있습니다.`;
+  if (modalDescription) modalDescription.textContent = newRows.length > 1
+    ? '미확인 문의가 여러 건 있습니다. 가장 최근 문의부터 확인하면 자동으로 ‘확인중’ 단계로 변경됩니다.'
+    : '새 문의가 접수되었습니다. 내용을 확인하면 자동으로 ‘확인중’ 단계로 변경됩니다.';
+  if (modalMetaTitle) modalMetaTitle.textContent = `${typeLabel(newest.type)} 문의 · ${requestTitle(newest)}`;
+  if (modalMetaCopy) modalMetaCopy.textContent = `${newest.company || newest.name || '고객 문의'} · ${formatDate(newest.createdAtClient)}`;
+
+  if (modalDismissedRequestId !== newest.id) modal.classList.add('show');
+
   if (openButton) {
     openButton.onclick = () => {
       if (bar.dataset.requestType && bar.dataset.requestId) {
-        openRequest(bar.dataset.requestType, bar.dataset.requestId);
+        confirmAndOpenRequest(bar.dataset.requestType, bar.dataset.requestId);
       }
     };
   }
@@ -129,6 +220,22 @@ function renderInboxNotice(all) {
       window.setTimeout(() => {
         if ($('#inquiryInboxBar')?.dataset.requestId === newest.id) bar.classList.add('show');
       }, 10 * 60 * 1000);
+    };
+  }
+
+  if (modalOpen) {
+    modalOpen.onclick = () => {
+      modalDismissedRequestId = newest.id;
+      if (modal.dataset.requestType && modal.dataset.requestId) {
+        confirmAndOpenRequest(modal.dataset.requestType, modal.dataset.requestId);
+      }
+    };
+  }
+
+  if (modalLater) {
+    modalLater.onclick = () => {
+      modalDismissedRequestId = newest.id;
+      hideInboxModal();
     };
   }
 }
@@ -404,6 +511,7 @@ function bindSoundControls() {
 document.addEventListener('DOMContentLoaded', async () => {
   ensureEnhancementStyles();
   ensureInboxBar();
+  ensureInboxModal();
   bindOverviewCards();
   bindSoundControls();
   await refreshOverview();
