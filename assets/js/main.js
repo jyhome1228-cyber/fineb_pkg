@@ -17,21 +17,23 @@ document.addEventListener('DOMContentLoaded',()=>{
   // GRAD 2026 copy patch: 3-person group benefit, folding-carton samples only.
   const applyGradCampaignFixes=()=>{
     const deals=[...document.querySelectorAll('.grad-deal')];
-    if(deals[1]){
+    if(deals[1]&&deals[1].dataset.gradGroupFixed!=='1'){
       const title=deals[1].querySelector('h3');
       const copy=deals[1].querySelector('p');
       const badge=deals[1].querySelector('.deal-badge');
       if(title)title.innerHTML='3인 이상이면<br><strong>전원 +1개</strong>';
       if(copy)copy.innerHTML='같은 학교 또는 학과에서 3인 이상 함께 진행하면<br>참여 학생 각각의 단상자 샘플을 1개씩 추가로 증정합니다.<br><span class="grad-group-note">※ 단상자 기준 · 선물세트 제외</span>';
       if(badge)badge.textContent='3인 이상 단체 혜택';
+      deals[1].dataset.gradGroupFixed='1';
     }
 
     const popups=[...document.querySelectorAll('.grad-event-popup')];
     popups.slice(1).forEach(el=>el.remove());
     const popup=popups[0];
-    if(popup){
+    if(popup&&popup.dataset.gradCopyFixed!=='1'){
       const popupCopy=popup.querySelector('.grad-event-popup-content p');
       if(popupCopy)popupCopy.textContent='전국 디자인 전공 학생 대상. 무료배송, 1:1 상담, 친구 10% 할인과 3인 이상 단체 샘플 추가 증정 혜택을 확인해보세요.';
+      popup.dataset.gradCopyFixed='1';
     }
   };
   applyGradCampaignFixes();
