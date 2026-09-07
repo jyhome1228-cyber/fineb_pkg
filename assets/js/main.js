@@ -5,9 +5,39 @@ document.addEventListener('DOMContentLoaded',()=>{
   ensureStyle('assets/css/system-ui.css');
   ensureStyle('assets/css/forms.css');
   ensureStyle('assets/css/factory.css');
+
+  // Keep only the dismissible GRAD campaign banner injected by seo-meta.js.
+  // index.html still contains an older static campaign strip, which caused two bars to stack.
+  document.querySelectorAll('.seo-campaign-bar').forEach(el=>el.remove());
+
   if(!document.querySelector('script[src="assets/js/contact-paper-ui.js"]')){const uiScript=document.createElement('script');uiScript.src='assets/js/contact-paper-ui.js';document.body.appendChild(uiScript);}
   if(!document.querySelector('script[src="assets/js/seo-meta.js"]')){const seoScript=document.createElement('script');seoScript.src='assets/js/seo-meta.js';document.body.appendChild(seoScript);}
   if(!document.querySelector('script[src="assets/js/visitor-tracker.js"]')){const visitorScript=document.createElement('script');visitorScript.type='module';visitorScript.src='assets/js/visitor-tracker.js';document.body.appendChild(visitorScript);}
+
+  // GRAD 2026 copy patch: 3-person group benefit, folding-carton samples only.
+  const applyGradCampaignFixes=()=>{
+    const deals=[...document.querySelectorAll('.grad-deal')];
+    if(deals[1]){
+      const title=deals[1].querySelector('h3');
+      const copy=deals[1].querySelector('p');
+      const badge=deals[1].querySelector('.deal-badge');
+      if(title)title.innerHTML='3인 이상이면<br><strong>전원 +1개</strong>';
+      if(copy)copy.innerHTML='같은 학교 또는 학과에서 3인 이상 함께 진행하면<br>참여 학생 각각의 단상자 샘플을 1개씩 추가로 증정합니다.<br><span class="grad-group-note">※ 단상자 기준 · 선물세트 제외</span>';
+      if(badge)badge.textContent='3인 이상 단체 혜택';
+    }
+
+    const popups=[...document.querySelectorAll('.grad-event-popup')];
+    popups.slice(1).forEach(el=>el.remove());
+    const popup=popups[0];
+    if(popup){
+      const popupCopy=popup.querySelector('.grad-event-popup-content p');
+      if(popupCopy)popupCopy.textContent='전국 디자인 전공 학생 대상. 무료배송, 1:1 상담, 친구 10% 할인과 3인 이상 단체 샘플 추가 증정 혜택을 확인해보세요.';
+    }
+  };
+  applyGradCampaignFixes();
+  const gradCampaignObserver=new MutationObserver(applyGradCampaignFixes);
+  gradCampaignObserver.observe(document.body,{childList:true,subtree:true});
+  setTimeout(()=>gradCampaignObserver.disconnect(),8000);
 
   // Homepage visual refresh: user-supplied production imagery only
   const homeHero=document.querySelector('.hero-main .hero-grid');
