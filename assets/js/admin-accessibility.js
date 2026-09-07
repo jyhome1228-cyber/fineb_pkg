@@ -28,7 +28,7 @@
   function html(v){return safe(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   function typeLabel(type){return type==='quote'?'견적문의':type==='sample'?'샘플문의':'제작문의'}
   function reqTitle(r){return r?.spec?.title||r?.spec?.product||r?.company||r?.name||typeLabel(r?.type)}
-  function reqStatus(r){return r?.status||'신규'}
+  function reqStatus(r){const status=r?.status||'신규';return status==='진행중'?'상담완료':status}
   function dateText(v){
     if(!v)return '-';
     const d=new Date(v);if(Number.isNaN(d.getTime()))return '-';
@@ -39,6 +39,38 @@
     if(r?.type==='quote')return [['제품',s.product],['수량',s.qty],['사이즈',s.size],['종이',s.paper],['평량',s.gsm?s.gsm+'gsm':''],['인쇄 방식',s.printMethod],['인쇄 색상',s.printColor],['인쇄 면',s.printSide],['코팅',s.coating],['후가공',s.finishes],['내부 구성',s.insert]];
     if(r?.type==='sample')return [['제품',s.product],['수량',s.qty],['사이즈',s.size],['종이',s.paper],['평량',s.gsm?s.gsm+'gsm':''],['인쇄',s.print],['후가공',s.finish]];
     return [['문의 유형',s.inquiryType],['예상 수량',s.qty],['문의 제목',s.title]];
+  }
+
+  function relabelConsultationStatus(){
+    document.querySelectorAll('.status[data-status-name="진행중"]').forEach(el=>{
+      if(el.textContent.trim()==='진행중')el.textContent='상담완료';
+    });
+
+    const stat=$('#statProgress')?.previousElementSibling;
+    if(stat&&stat.textContent.trim()==='진행중')stat.textContent='상담완료';
+
+    document.querySelectorAll('[data-guide-status="진행중"]').forEach(btn=>{
+      const title=btn.querySelector('b');
+      const copy=btn.querySelector('span');
+      if(title&&title.textContent.trim()==='진행중')title.textContent='상담완료';
+      if(copy&&copy.textContent.trim()==='상담·견적 작업 진행')copy.textContent='상담 완료';
+    });
+
+    document.querySelectorAll('[data-status="진행중"]').forEach(btn=>{
+      if(btn.textContent.trim()==='진행중')btn.textContent='상담완료';
+    });
+
+    document.querySelectorAll('[data-set-status="진행중"]').forEach(btn=>{
+      const title=btn.querySelector('b');
+      const copy=btn.querySelector('span');
+      if(title&&title.textContent.trim()==='진행중')title.textContent='상담완료';
+      if(copy&&copy.textContent.trim()==='상담·견적 작업')copy.textContent='상담 완료';
+    });
+
+    const flowCopy=document.querySelector('.workflow-head p');
+    if(flowCopy&&flowCopy.innerHTML.includes('<b>진행중</b> 상담·견적 작업')){
+      flowCopy.innerHTML=flowCopy.innerHTML.replace('<b>진행중</b> 상담·견적 작업','<b>상담완료</b> 상담 완료');
+    }
   }
 
   let oldTitle='';
@@ -72,6 +104,10 @@
     setView(mode);
     $('#viewNormal')?.addEventListener('click',()=>setView('normal'));
     $('#viewLarge')?.addEventListener('click',()=>setView('large'));
+
+    relabelConsultationStatus();
+    const statusObserver=new MutationObserver(relabelConsultationStatus);
+    statusObserver.observe(document.body,{childList:true,subtree:true});
   });
 
   /* 구형 전역 admin.js에서만 안정형 인쇄를 가로챕니다.
