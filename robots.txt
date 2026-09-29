@@ -1,7 +1,13 @@
+# FINE.B search crawler policy
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /FIREBASE_SETUP.md
 Disallow: /SEO_SETUP.md
+
+# Naver Search (Yeti)
+User-agent: Yeti
+Allow: /
+Disallow: /admin
 
 Sitemap: https://finebpkg.com/sitemap.xml
