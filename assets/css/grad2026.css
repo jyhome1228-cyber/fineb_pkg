@@ -125,3 +125,21 @@
   .grad-scope-row{grid-template-columns:64px 1fr}
   .grad-final{padding:58px 0}
 }
+
+/* Natural Korean line wrapping: keep phrases together and avoid mid-word breaks. */
+.grad-page main :is(h1,h2,h3,h4,p,li,small,strong,.grad-notice){
+  word-break:keep-all;
+  overflow-wrap:break-word;
+}
+.grad-page main :is(.grad-section-head,.grad-hero-grid,.grad-scope,.grad-benefits,.grad-deals,.grad-steps) > *{
+  min-width:0;
+}
+/* Authored desktop line breaks should not force awkward tablet wrapping. */
+@media (min-width:721px) and (max-width:1100px){
+  .grad-page .grad-section-head p br,
+  .grad-page .grad-hero-copy br,
+  .grad-page .grad-deal p br,
+  .grad-page .grad-step p br,
+  .grad-page .grad-scope-row p br,
+  .grad-page .grad-scope>div>p br{display:none}
+}
