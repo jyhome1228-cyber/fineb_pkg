@@ -209,3 +209,11 @@
  .grad-price-item-main strong{font-size:24px}
  .grad-price-rules>div{padding:16px 18px}
 }
+
+/* Shared price modal entry on student campaign */
+.grad-price-launch{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:28px 30px;background:#fff;border:1px solid var(--grad-line);border-radius:16px}
+.grad-price-launch>div{min-width:0}
+.grad-price-launch strong{display:block;font-size:20px;line-height:1.4;letter-spacing:-.03em;color:var(--grad-blue);word-break:keep-all}
+.grad-price-launch p{font-size:13.5px;line-height:1.8;margin:7px 0 0;color:var(--grad-muted);word-break:keep-all}
+.grad-price-launch .btn-primary{flex-shrink:0;cursor:pointer;min-height:44px}
+@media(max-width:720px){.grad-price-launch{align-items:stretch;flex-direction:column;gap:20px;padding:22px 20px}.grad-price-launch strong{font-size:18px}.grad-price-launch .btn-primary{width:100%}}
