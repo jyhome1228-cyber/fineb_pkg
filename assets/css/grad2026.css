@@ -180,3 +180,32 @@
   .grad-price-options>div{align-items:flex-start}
   .grad-price-options strong{font-size:clamp(20px,5.6vw,24px)}
 }
+
+/* Official 2026-11-12 price table: compact, legible and responsive */
+.grad-price-rules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:16px}
+.grad-price-rules>div{display:flex;flex-direction:column;gap:5px;padding:18px 22px;background:#eaf0f7;border:1px solid #dbe5ef;border-radius:12px;min-width:0}
+.grad-price-rules strong{font-size:13px;color:var(--grad-blue)}
+.grad-price-rules span{font-size:13px;color:#586676;line-height:1.65;word-break:keep-all}
+.grad-price-rules b{color:var(--grad-blue)}
+.grad-price-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.grad-price-item{min-width:0;border:1px solid var(--grad-line);border-radius:16px;background:#fff;padding:21px 23px}
+.grad-price-item-head{display:flex;align-items:center;gap:10px;min-width:0}
+.grad-price-no{font-size:10px;letter-spacing:.09em;color:#8794a4;font-weight:700}
+.grad-price-item h3{margin:0;font-size:17px;line-height:1.45;letter-spacing:-.025em;font-weight:650;word-break:keep-all}
+.grad-price-item-main{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px 16px;margin:12px 0 15px}
+.grad-price-item-main strong{color:var(--grad-blue);font-size:clamp(21px,2vw,27px);line-height:1.35;letter-spacing:-.045em;white-space:normal;word-break:keep-all}
+.grad-price-item-main>span{color:#7e8996;font-size:12px;white-space:nowrap}
+.grad-price-item dl{margin:0;border-top:1px solid var(--grad-line);padding-top:10px}
+.grad-price-item dl>div{display:grid;grid-template-columns:55px minmax(0,1fr);gap:9px;padding-top:7px}
+.grad-price-item dt{font-size:11px;color:#84909d}
+.grad-price-item dd{margin:0;color:#536173;font-size:12.5px;line-height:1.55;word-break:keep-all;overflow-wrap:break-word}
+.grad-price-cautions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
+.grad-price-cautions p{margin:0;padding:17px 18px;border:1px solid var(--grad-line);background:#fff;font-size:12.5px;line-height:1.8;color:#667385;word-break:keep-all}
+.grad-price-cautions strong{color:var(--grad-blue)}
+@media(max-width:980px){.grad-price-cautions{grid-template-columns:1fr}}
+@media(max-width:720px){
+ .grad-price-rules,.grad-price-list{grid-template-columns:1fr}
+ .grad-price-item{padding:19px 18px}
+ .grad-price-item-main strong{font-size:24px}
+ .grad-price-rules>div{padding:16px 18px}
+}
