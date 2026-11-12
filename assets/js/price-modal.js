@@ -13,7 +13,7 @@
     overlay=document.createElement('div');
     overlay.className='fineb-price-overlay';
     overlay.setAttribute('role','presentation');
-    overlay.innerHTML='<div class="fineb-price-dialog" role="dialog" aria-modal="true" aria-label="샘플 제작 기준 단가표"><div class="fineb-price-modal-header"><div><small>FINE.B / SAMPLE PRICE</small><strong>샘플 제작 단가표</strong></div><button type="button" class="fineb-price-close" aria-label="단가표 팝업 닫기">×</button></div><iframe class="fineb-price-frame" src="sample-price.html?modal=1#price-list" title="파인비 샘플 제작 공식 단가표" loading="eager"></iframe></div>';
+    overlay.innerHTML='<div class="fineb-price-dialog" role="dialog" aria-modal="true" aria-label="샘플 제작 기준 단가표"><div class="fineb-price-modal-header"><div><small>FINE.B / SAMPLE PRICE</small><strong>샘플 제작 단가표</strong></div><button type="button" class="fineb-price-close" aria-label="단가표 팝업 닫기">×</button></div><iframe class="fineb-price-frame" src="sample-price.html?modal=1#price-list" title="파인비 샘플 제작 단가표" loading="eager"></iframe></div>';
     document.body.appendChild(overlay);
     document.body.style.overflow='hidden';
     overlay.querySelector('.fineb-price-close').addEventListener('click',close);
