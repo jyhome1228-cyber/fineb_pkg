@@ -9,8 +9,7 @@ const SAMPLE_PRODUCTS=[
   {id:'corr-handle',cat:'corrugated',name:'골판지 손잡이 박스',tags:'골판지',visual:'graphic-handle'},
   {id:'corr-shipping',cat:'corrugated',name:'택배박스',tags:'골판지',visual:'photo-corr'},
   {id:'corr-laminated',cat:'corrugated',name:'골판지 합지박스',tags:'골판지',visual:'photo-box'},
-  {id:'bag-basic',cat:'bag',name:'종이 쇼핑백',tags:'쇼핑백',visual:'photo-bag'},
-  {id:'bag-triangle',cat:'bag',name:'삼각 쇼핑백',tags:'쇼핑백',visual:'graphic-bag'}
+  {id:'bag-basic',cat:'bag',name:'종이 쇼핑백',tags:'쇼핑백',visual:'photo-bag'}
 ];
 const SAMPLE_CATS=[['all','전체'],['paper','종이박스'],['corrugated','골판지박스'],['bag','쇼핑백']];
 const SAMPLE_QTY=[1,2,3,5,10,20];
