@@ -143,3 +143,28 @@
   .grad-page .grad-scope-row p br,
   .grad-page .grad-scope>div>p br{display:none}
 }
+
+/* Student sample pricing */
+.grad-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grad-price-card{min-width:0;padding:28px 30px;background:#fff;border:1px solid var(--grad-line);border-radius:17px;display:flex;flex-direction:column}
+.grad-price-card:first-child{border-color:#b7cce5}
+.grad-price-label{color:#77889c;font-size:10px;font-weight:700;letter-spacing:.14em}
+.grad-price-card h3{margin:17px 0 4px;font-size:19px;font-weight:650;letter-spacing:-.035em}
+.grad-price-sub{margin:0;color:var(--grad-muted);font-size:12px;line-height:1.8}
+.grad-price-options{display:grid;gap:0;margin:18px 0 16px;border-top:1px solid var(--grad-line)}
+.grad-price-options>div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--grad-line)}
+.grad-price-options span{font-size:13px;font-weight:600;color:#536173;white-space:nowrap}
+.grad-price-options strong{font-size:clamp(21px,2vw,28px);line-height:1.35;font-weight:750;letter-spacing:-.045em;white-space:nowrap;color:var(--grad-blue)}
+.grad-price-card ul{padding-left:17px;margin:0;color:#667385;font-size:12.5px;line-height:1.85}
+.grad-price-card li+li{margin-top:4px}
+.grad-price-notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.grad-price-notes>div{padding:18px 20px;background:#fff;border:1px solid var(--grad-line);min-width:0}
+.grad-price-notes strong{font-size:13.5px}
+.grad-price-notes p{font-size:12.5px;line-height:1.85;color:var(--grad-muted);margin:7px 0 0}
+.grad-price-disclaimer{border-left:2px solid var(--grad-blue);padding:10px 15px;margin:14px 0 0;background:#edf2f8;font-size:12px;line-height:1.85;color:#58687a}
+@media(max-width:720px){
+ .grad-price-grid,.grad-price-notes{grid-template-columns:1fr}
+ .grad-price-card{padding:22px 20px}
+ .grad-price-options strong{font-size:24px}
+ .grad-price-notes>div{padding:17px 19px}
+}
