@@ -168,3 +168,15 @@
  .grad-price-options strong{font-size:24px}
  .grad-price-notes>div{padding:17px 19px}
 }
+
+/* Price guidance actions and mixed numeric/text price labels */
+.grad-price-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.grad-price-actions .btn-primary,.grad-price-actions .btn-secondary{min-height:44px;padding:10px 20px}
+.grad-price-options strong{overflow-wrap:normal;word-break:keep-all}
+.grad-price-card{min-width:0}
+@media(max-width:720px){
+  .grad-price-actions{flex-direction:column}
+  .grad-price-actions .btn-primary,.grad-price-actions .btn-secondary{width:100%;text-align:center}
+  .grad-price-options>div{align-items:flex-start}
+  .grad-price-options strong{font-size:clamp(20px,5.6vw,24px)}
+}
