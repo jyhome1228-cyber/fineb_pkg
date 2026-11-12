@@ -20,6 +20,14 @@
 .sample-price-page .price-page-intro p{color:#687481;font-size:14px}
 @media(max-width:720px){.sample-price-page .grad-price-section{padding-top:24px}}
 </style>
+<style>
+html.price-embed .header,html.price-embed .footer,html.price-embed .price-return{display:none!important}
+html.price-embed .grad-price-section{padding:24px 0 42px!important}
+html.price-embed body{margin:0;background:#f6f8fb}
+html.price-embed .grad-price-actions{display:none}
+@media(max-width:720px){html.price-embed .grad-price-section{padding:20px 0 38px!important}}
+</style>
+<script>if(new URLSearchParams(location.search).get('modal')==='1')document.documentElement.classList.add('price-embed');</script>
 </head>
 <body class="grad-page sample-price-page">
 <header class="header"><div class="container header-inner"><a class="brand" href="/"><img src="assets/logo.svg" alt="FINE.B 파인비"></a><button class="menu-toggle" type="button" aria-label="메뉴 열기">☰</button><nav class="nav"><a href="about.html">회사소개</a><a href="production.html">제작품목</a><a href="process.html">제작과정</a><a href="works.html">포트폴리오</a><a href="guide.html">주문제작가이드</a><a href="sample.html">샘플제작</a><a href="faq.html">자주묻는질문</a><a href="inquiry.html">제작문의</a><a class="quote-btn" href="quote.html">견적내기 →</a></nav></div></header>
