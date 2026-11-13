@@ -49,3 +49,16 @@
   .request-row{grid-template-columns:55px minmax(0,1fr)}
   .status-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Mobile navigation: prevent full-row links from creating empty grid slots. */
+@media(max-width:760px){
+  .admin-side{width:100%;overflow:hidden}
+  .admin-nav{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-flow:row;align-items:stretch;gap:8px!important;width:100%}
+  .admin-nav > a,.admin-nav > button{grid-column:auto!important;display:flex!important;align-items:center;justify-content:space-between;gap:6px;min-width:0;width:100%;min-height:46px;max-width:100%;padding:10px 11px!important;margin:0!important;border-radius:11px;font-size:12px!important;line-height:1.35;text-align:left;white-space:normal;overflow-wrap:anywhere}
+  .admin-nav > a span,.admin-nav > button span{min-width:0;overflow-wrap:anywhere}
+  .admin-nav > a b,.admin-nav > button b{flex:0 0 auto}
+  .admin-nav > .admin-overview-nav{grid-column:1/-1!important;margin:0!important;min-height:46px}
+  .admin-nav > .admin-site-link{grid-column:auto!important;margin:0!important}
+  .admin-nav > .admin-site-link:last-child{grid-column:1/-1!important;justify-content:center}
+  .admin-nav > a:focus-visible,.admin-nav > button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+}
