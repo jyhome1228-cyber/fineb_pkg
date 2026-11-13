@@ -1,0 +1,51 @@
+/* FINE.B admin mobile usability improvements */
+.mobile-back-to-list{display:none}
+@media(max-width:760px){
+  html{scroll-behavior:smooth}
+  .admin-shell,.admin-main,.admin-content,.admin-list-wrap,.admin-detail{min-width:0;width:100%}
+  .admin-side{padding:14px 14px 12px}
+  .admin-brand img{width:96px}
+  .admin-brand p{margin:6px 0 12px;font-size:9px}
+  .admin-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .admin-nav button{min-width:0;min-height:44px;justify-content:center;gap:6px;padding:8px 5px;font-size:12px;text-align:center}
+  .admin-nav button b{flex-shrink:0}
+  .admin-main{padding:18px 12px 80px}
+  .admin-top{gap:12px}
+  .admin-top h1{font-size:24px}
+  .admin-actions{width:100%;flex-wrap:wrap;gap:7px}
+  .admin-actions .admin-btn{min-height:44px}
+  .request-overview-panel{padding:14px;border-radius:15px}
+  .overview-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .overview-head{align-items:flex-start;flex-direction:column;gap:5px}
+  .overview-head p{text-align:left}
+  .admin-list-wrap,.admin-detail{border-radius:15px}
+  .admin-list-head{padding:14px 12px;gap:10px}
+  .admin-filter{gap:6px}
+  .admin-filter button{min-height:36px;padding:8px 10px;font-size:12px}
+  .admin-search{padding:12px}
+  .admin-search input{min-width:0;font-size:16px}
+  .admin-search button{min-height:42px;font-size:12px}
+  .request-list{max-height:none!important;min-height:0!important;overflow:visible}
+  .request-row{min-height:72px;gap:8px;padding:13px 12px}
+  .request-main strong{font-size:14px;line-height:1.45;white-space:normal;overflow-wrap:anywhere}
+  .request-main small{font-size:11px}
+  .admin-detail{scroll-margin-top:12px;padding:16px 14px 24px;margin-top:0}
+  .mobile-back-to-list{display:inline-flex;align-items:center;justify-content:center;min-height:42px;border:1px solid #d7dee5;border-radius:10px;background:#fff;color:#0A2240;font-size:13px;font-weight:700;padding:0 13px;margin-bottom:18px;cursor:pointer}
+  .detail-title-line{flex-wrap:wrap}
+  .detail-title-line h2{overflow-wrap:anywhere;font-size:19px}
+  .detail-head{gap:10px}
+  .detail-actions{flex-wrap:wrap;gap:6px}
+  .detail-actions .admin-btn{min-height:44px}
+  .detail-field strong{font-size:14px}
+  .detail-message{font-size:13px;overflow-wrap:anywhere}
+  .status-action{min-height:68px}
+  .status-action b{font-size:13px}
+  .status-action span{font-size:11px}
+  .view-size-control{bottom:10px;left:10px}
+}
+@media(max-width:380px){
+  .admin-nav button{font-size:11px}
+  .overview-card{padding:12px}
+  .request-row{grid-template-columns:55px minmax(0,1fr)}
+  .status-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
