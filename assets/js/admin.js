@@ -232,6 +232,9 @@ function renderList() {
       adminState.selected = row.dataset.id;
       renderList();
       renderDetail();
+      if (window.matchMedia('(max-width: 760px)').matches) {
+        $('#requestDetail')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     };
   });
   renderDetail();
@@ -299,7 +302,7 @@ function renderDetail() {
   const phone = val(r.phone).replace(/[^0-9+]/g, '');
   const email = val(r.email);
 
-  wrap.innerHTML = `<div class="detail-head">
+  wrap.innerHTML = `<button class="mobile-back-to-list" type="button" id="mobileBackToList">← 문의 목록</button><div class="detail-head">
     <div class="detail-head-copy">
       <small>${esc(r.id)} · ${labelType(r.type)}</small>
       <div class="detail-title-line"><h2>${esc(requestTitle(r))}</h2><span class="status" data-status-name="${esc(status)}">${esc(status)}</span></div>
@@ -325,6 +328,9 @@ function renderDetail() {
     b.onclick = () => setRequestStatus(r.id, b.dataset.setStatus);
   });
   $('#pdfRequest').onclick = () => printRequest(r);
+  $('#mobileBackToList')?.addEventListener('click', () => {
+    $('#requestList')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 function statusDescription(status) {
